@@ -18,6 +18,21 @@
 
 \newcommand{\xor}{\oplus}
 
+\newcommand{\stickfigure}{
+  \begin{tikzpicture}
+    % Head
+    \draw[thick] (0,0) circle(0.3);
+    % Body
+    \draw[thick] (0,-0.3) -- (0,-1);
+    % Left leg
+    \draw[thick] (0,-1) -- (-0.3,-1.5);
+    % Right leg
+    \draw[thick] (0,-1) -- (0.3,-1.5);
+    % Arms
+    \draw[thick] (-0.5,-0.7) -- (0.5,-0.7);
+  \end{tikzpicture}
+}
+
 \begin{document}
 
 \bibliographystyle{alpha}
@@ -33,7 +48,8 @@
 % lembrar de colocar em cada um dos algoritmos qual é sua entrada e qual é sua saída!!!
 
 \include{apresentacao}
-\include{intro}
+%\include{intro}
+\include{intro-nova}
 \include{cifras-classicas}
 %\include{criptoanalise}
 %\include{sigilo-perfeito}

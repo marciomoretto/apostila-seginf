@@ -1,0 +1,128 @@
+\chapter{Introdução}
+\label{cha:introducao}
+
+A crise que veio à tona com as denúncias de Edward Snowden em 2013 revelou a extensão dos programas de vigilância em massa conduzidos pela NSA e outras agências de inteligência ao redor do mundo.
+Essas revelações mostraram como a privacidade de cidadãos comuns estava sendo sistematicamente violada, provocando uma reação significativa de diversos setores da sociedade civil.
+
+Em resposta à crise de privacidade, grupos autônomos, em parceria com ONGs e outros agentes da sociedade civil organizada, começaram a organizar eventos conhecidos como {\em criptoparties} e {\em cryptorraves}.
+Esses eventos tinham como objetivo promover o uso de criptografia ponta a ponta entre a população, ensinando técnicas e ferramentas para proteger a privacidade das comunicações.
+
+São Paulo tornou-se um importante centro para esses eventos, sediando algumas das maiores criptoparties e cryptorraves do mundo.
+Nesses eventos, voluntários ensinavam aos participantes como usar tecnologias de criptografia para proteger suas comunicações.
+
+Criptografia ponta a ponta (E2EE) é uma técnica de comunicação segura onde somente as partes que estão se comunicando podem ler as mensagens.
+Isso significa que, mesmo que a comunicação seja interceptada, ninguém além dos destinatários pretendidos pode acessar o conteúdo.
+
+Para entender a importância da criptografia ponta a ponta (E2EE), é fundamental compará-la com outros modelos de comunicação segura.
+Um desses modelos é o protocolo SSL/TLS, amplamente utilizado na web.
+
+SSL (Secure Sockets Layer) e seu sucessor, TLS (Transport Layer Security), são protocolos de segurança que protegem as comunicações na internet.
+Quando você acessa um site seguro (por exemplo, um site que começa com {\tt https://}), seu navegador está usando SSL/TLS para estabelecer uma conexão segura com o servidor do site.
+
+Simplificadamente o modelo SSL/TLS funciona da seguinte forma:
+
+\begin{enumerate}
+\item Você envia escreve uma mensagem ($m$) no navegador.
+\item A mensagem é criptografada e se transforma em uma cifra ($c_1$) que é enviada para o servidor.
+\item O servidor tem a chave da cifra ($c_1$) e a descriptografa recuperando a mensagem ($m$).
+\item A mensagem ($m$) é novamente criptografada se transformando em uma nova cifra ($c_2$) e é enviada para o destinatário.
+\item O destinatário tem a chave da cifra ($c_2$) e a descriptografa para recuperar a mensagem ($m$)
+\end{enumerate}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    % SSL/TLS model
+    \node[draw=none] (alice) {\stickfigure};
+    \node[above of=alice, node distance=1.2cm] {$m$};
+    \node[draw, rectangle] (server) [right of=alice, node distance=3.5cm] {Servidor};
+    \node[above of=server, node distance=0.5cm] {$m$};
+    \node[draw=none] (bob) [right of=server, node distance=3.5cm] {\stickfigure};
+    \node[above of=bob, node distance=1.2cm] {$m$};
+    
+    \path[->] (alice) edge node[above] {$c_1$} (server);
+    \path[->] (server) edge node[above] {$c_2$} (bob);
+  \end{tikzpicture}
+  \caption{Modelo tradicional}
+\end{figure}
+
+Criptografia ponta a ponta é um modelo de segurança onde as mensagens são criptografadas no dispositivo do remetente e só podem ser descriptografadas no dispositivo do destinatário.
+Isso significa que nenhum intermediário, nem mesmo o servidor que transmite a mensagem, pode acessar o conteúdo da comunicação.
+
+A criptografia ponta a ponta funciona da seguinte forma:
+\begin{enumerate}
+\item Você escreve uma mensagem ($m$) e a criptografa no seu dispositivo produzindo uma cifra ($c$).
+\item A mensagem criptografada ($c$) é enviada ao servidor.
+\item O servidor transmite a mensagem criptografada ($c$) ao destinatário.
+\item O destinatário recebe a mensagem criptografada ($c$) e a descriptografa no seu dispositivo recuperando a mensagem original ($m$).
+\end{enumerate}
+
+\begin{figure}[h!]
+  \centering
+
+  \begin{tikzpicture}
+    % E2EE model
+    \node[draw=none] (alice) {\stickfigure};
+    \node[above of=alice, node distance=1.2cm] {$m$};
+    \node[draw, rectangle] (server) [right of=alice, node distance=3.5cm] {Servidor};
+    \node[above of=server, node distance=0.5cm] {$c$};
+    \node[draw=none] (bob) [right of=server, node distance=3.5cm] {\stickfigure};
+    \node[above of=bob, node distance=1.2cm] {$m$};
+    
+    \path[->] (alice) edge node[above] {$c$} (server);
+    \path[->] (server) edge node[above] {$c$} (bob);
+
+  \end{tikzpicture}
+  \caption{Criptografia ponta a ponta}
+\end{figure}
+  
+Antes da popularização da E2EE, a vigilância em massa abusava do acesso a servidores de grandes empresas como Microsoft, Meta, Alphabet, Apple etc.
+Quando uma organização como a NSA conseguia acesso a esses servidores, ela podia monitorar os dados de centenas de milhões de usuários dessas plataformas.
+Isso era possível porque, embora a comunicação entre o usuário e o servidor fosse segura (graças ao SSL/TLS), o servidor podia acessar o conteúdo das mensagens.
+
+A popularização da criptografia ponta a ponta obriga uma mudança significativa na abordagem da vigilância.
+Com E2EE, mesmo que uma organização tenha acesso aos servidores intermediários, ela não consegue ler o conteúdo das mensagens.
+Somente os dispositivos dos remetentes e destinatários têm as chaves necessárias para descriptografar as mensagens.
+Isso força as agências de vigilância a mudarem o foco de uma vigilância em massa para uma vigilância direcionada a alvos específicos, que são suspeitos de atividades ilícitas.
+
+Nos primeiros eventos de criptoparty, as tecnologias ensinadas eram frequentemente obsoletas, como o PGP (Pretty Good Privacy).
+Embora o PGP garanta a criptografia ponta a ponta (E2EE), ele é complexo e de difícil uso para a maioria das pessoas, exigindo a troca manual de chaves públicas.
+A complexidade e a dificuldade de uso do PGP limitaram sua adoção em larga escala, evidenciando a necessidade de uma tecnologia mais acessível.
+Reconhecendo essa necessidade, formou-se um consenso entre ativistas e tecnólogos de que era crucial desenvolver ferramentas de criptografia que fossem acessíveis a todos.
+
+Foi nesse contexto que o Signal foi desenvolvido por ativistas de privacidade.
+O Signal oferece criptografia ponta a ponta de forma simples e intuitiva, tornando a segurança acessível para todos os usuários.
+A maior conquista desse movimento foi a implementação do protocolo de criptografia desenvolvido para o Signal no WhatsApp, um aplicativo com uma base de usuários de muitos milhões.
+A adoção do protocolo de criptografia ponta a ponta do Signal pelo WhatsApp marcou um avanço significativo na proteção da privacidade em comunicações digitais, democratizando o acesso a comunicações seguras para uma vasta audiência global.
+
+A primeira edição do curso foi oferecida nesse contexto em que parecia importante sensibilizar as pessoas sobre a importância da adoção de ferramentas de comunicação segura.
+Com as revelações de Edward Snowden sobre a extensão da vigilância em massa, tornou-se evidente a necessidade de capacitar a sociedade para se proteger contra essas práticas invasivas.
+O curso visava não apenas educar, mas também mobilizar os participantes a adotar práticas de segurança em suas comunicações diárias.
+
+A recepção positiva e o feedback dos participantes destacaram a demanda por educação acessível e prática sobre segurança da informação.
+Esse sucesso inicial e o crescente interesse pelo tema me motivaram a adaptar o curso para o formato de graduação, integrando-o ao currículo do curso de Sistemas de Informação da Escola de Artes Ciências e Humanidades (EACH) da USP.
+
+Desde então, o curso tem sido oferecido regularmente.
+Seu objetivo é apresentar as principais primitivas criptográficas, que servem como ``blocos de construção'' para a criação de protocolos robustos.
+O curso é teórico, mas acessível, e segue a abordagem da criptografia moderna.
+Nele, enfatizamos como definir com precisão quando uma primitiva criptográfica é considerada segura.
+Estudamos diferentes definições de segurança e destacamos as suposições que sustentam essas garantias.
+
+Embora não se espere que um estudante de graduação venha a implementar uma primitiva, nem mesmo um protocolo, conhecer suas garantias de segurança deve ajudá-lo a entender os protocolos que utilizará no futuro e, com sorte, evitar que erros sejam cometidos, comprometendo a integridade da informação sob sua tutela.
+
+Esta disciplina é um excelente fechamento para o curso de Sistemas de Informação, pois toca em diversos pontos que foram explorados durante o curso: análise de algoritmos, redes, matemática discreta e teoria da computação.
+Da forma como foi concebida, penso que a disciplina é uma continuação do curso de teoria da computação, funcionando como uma aplicação mais prática da teoria.
+
+Depois desta introdução, a apostila aborda cifras clássicas como a cifra de deslocamento, a cifra de substituição e a cifra de Vigenère, além de discutir técnicas de criptoanálise.
+Veremos as limitações da abordagem clássica e, como primeira aproximação do paradigma moderno, exploraremos o conceito de sigilo perfeito.
+Um dos principais resultados do campo mostra a impossibilidade de alcançar o sigilo perfeito em uma cifra que seja útil na prática.
+Para mitigar esse problema, nascem as principais ideias da criptografia moderna.
+
+É sob esse paradigma que estudaremos as cifras de fluxo e de bloco, incluindo o Data Encryption Standard (DES) e o Advanced Encryption Standard (AES).
+Veremos que os problemas da integridade e da autenticidade são ortogonais ao problema da confidencialidade e, então, introduziremos os conceitos de código de autenticação e criptografia autenticada.
+
+A segunda parte do curso é dedicada à criptografia assimétrica, mas antes disso estudaremos as funções de hash, construções como o SHA-1 e aplicações como o HMAC e funções de derivação de chaves.
+Cobriremos então a distribuição de chaves, incluindo o protocolo de Diffie-Hellman e sistemas assimétricos como ElGamal e RSA.
+A apostila finaliza com capítulos sobre assinaturas digitais e infraestrutura de chaves públicas (PKI).
+Os apêndices introduzem tópicos mais avançados corpos finitos, funções de mão única, sistemas híbridos e protocolos como PGP, Off The Record e Signal.
+
