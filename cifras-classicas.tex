@@ -1,25 +1,35 @@
 ﻿\chapter{Cifras Clássicas}
 \label{cha:cifras-classicas}
 
-Como argumentamos no primeiro capítulo, a internet é um meio de comunicação promíscuo.
-As partes que se comunicam pela rede não tem controle sobre por quais caminhos sua comunicação irá trafegar.
-Essa característica, porém, não se restringe a esse meio.
-Durante o século XVIII, por exemplo, toda correspondência que passava pelo serviço de correios de Viena na Austria era encaminhada para um escritório -- {\em black chamber} -- que derretia o selo, copiava seu conteúdo, recolocava o selo e reincaminhava para o destinatário.
-Todo esse processo durava cerca de três horas para não atrasar a entrega.
-Como a Áustria, todas as potências européias desse período operavam suas {\em back-chambers}.
-As invenções do telegrafo e do rádio só facilitaram a capacidade de criar grampos, no primeiro caso, ou simplesmente captar a comunicação no segundo \cite{Kahn96}.
+A internet é um meio de comunicação inerentemente promíscuo.
+As partes que se comunicam pela rede não têm controle sobre os caminhos que suas mensagens percorrem.
+Essa característica, entretanto, não é exclusiva da era digital.
+No século XVIII, por exemplo, toda correspondência que passava pelo serviço de correios de Viena, na Áustria, era direcionada para um escritório chamado de ``black chamber''.
+Lá, o selo da carta era derretido, o conteúdo copiado, o selo recolocado e a carta reenviada ao destinatário.
+Todo esse processo durava cerca de três horas para evitar atrasos na entrega.
+Tal prática não era isolada; todas as potências europeias da época operavam suas próprias ``black chambers''.
 
-Partiremos, portanto, do seguinte modelo de comunicação.
-Duas partes, o remetente e o destinatário, buscam se comunicar.
-Tradicionalmente denominaremos o remetente de Alice e o destinatário de Bob.
-Nossa suposição principal é que o canal de comunicação entre as partes é inseguro.
-Ou seja, assumiremos que terceiros, que denominaremos de Eva, são capazes de observar as mensagens que trafegam pelo canal de comunicação.
-Essa suposição é conhecida em alguns meios como ``hipótese da comunicação hacker''.
-Para efeitos deste curso, sempre assumiremos essa hipótese.
+Com a invenção do telégrafo e do rádio, a espionagem se tornou ainda mais sofisticada.
+O telégrafo permitiu a instalação de grampos nas linhas de comunicação, enquanto o rádio possibilitou a interceptação de transmissões sem fio \cite{Kahn96}.
 
-A {\em criptografia} (do grego ``escrita secreta'') é a pratica e o estudo de técnicas de comunicação segura na presença de terceiros chamados de {\em adversários}.
-Nosso primeiro desafio no curso é apresentar sistemas de comunicação que garantam a {\em confidencialidade}.
-Ou seja, toda mensagem enviada de Alice para Bob deve ser compreensível apenas para Alice e Bob e deve ser incompreensível para Eva:
+Essa capacidade de monitoramento e interceptação persiste na era digital, onde as comunicações pela internet podem ser facilmente observadas por diversos atores, sejam governamentais ou privados.
+Portanto, a necessidade de métodos robustos de criptografia nunca foi tão crítica.
+
+Vamos adotar o seguinte modelo de comunicação. Duas partes, o remetente e o destinatário, desejam se comunicar.
+Tradicionalmente, chamamos o remetente de Alice e o destinatário de Bob.
+O uso dos nomes Alice e Bob é comum em todos os livros de criptografia, provavelmente porque suas letras iniciais são as duas primeiras letras do alfabeto: A e B.
+
+Nossa principal suposição é que o canal de comunicação entre Alice e Bob é inseguro.
+Isso significa que assumimos que terceiros, a quem chamamos de Eva, podem observar as mensagens que trafegam pelo canal.
+O nome Eva vem do inglês ``Eve'', derivado de ``eavesdrop'', que significa ``bisbilhotar''.
+
+Essa suposição é frequentemente referida como a ``hipótese da comunicação hacker''.
+Para os propósitos deste curso, sempre trabalharemos com essa hipótese.
+
+A {\em criptografia} (do grego ``escrita secreta'') é a prática e o estudo de técnicas para garantir a comunicação segura na presença de terceiros, conhecidos como {\em adversários}.
+O nosso primeiro desafio neste curso é apresentar sistemas de comunicação que garantam a {\em confidencialidade}.
+Em outras palavras, qualquer mensagem enviada de Alice para Bob deve ser compreensível apenas para Alice e Bob e incompreensível para Eva.
+
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
 \node (alice) {Alice};
@@ -30,9 +40,8 @@ Ou seja, toda mensagem enviada de Alice para Bob deve ser compreensível apenas 
 \end{tikzpicture}
 \end{center}
 
-Se a importância da comunicação confidencial entre civis tem se tornado cada vez mais urgente, no meio militar é difícil remontar suas origens.
-Suetônio (69 - 141) por volta de dois mil anos atrás descreveu como o imperador Júlio César (100 a.c. - 44 a.c.) escrevia mensagens confidenciais:
-
+A importância da comunicação confidencial entre civis tem se tornado cada vez mais urgente, mas no meio militar suas origens são ainda mais antigas.
+Suetônio (69-141 d.C.), um historiador e biógrafo romano, descreveu, cerca de dois mil anos atrás, como o imperador Júlio César (100 a.C. - 44 a.C.) escrevia mensagens confidenciais:
 
 \begin{quote}
   ``Se ele tinha qualquer coisa confidencial a dizer, ele escrevia cifrado, isto é, mudando a ordem das letras do alfabeto, para que nenhuma palavra pudesse ser compreendida.
@@ -42,41 +51,39 @@ Suetônio (69 - 141) por volta de dois mil anos atrás descreveu como o imperado
 O esquema que chamaremos de cifra de César é ilustrado pelo seguinte exemplo:
 
 \begin{verbatim}
-Mensagem: transparenciapublicaopacidadeprivada
-Cifra:    XUDQVSDUHQFLDSXEOLFDRSDFLGDGHSULYDGD
+Mensagem: transparencia
+Cifra:    XUDQVSDUHQFLD
 \end{verbatim}
 
-Como descrito por Suetônio, a regra para encriptar uma mensagem consiste em substituir cada letra da mensagem por aquela que está três posições a sua frente na ordem alfabética.
-Para descriptografar a cifra, substituir cada letra por aquela que está três posições atrás.
-O problema com este tipo de sistema é que basta conhecer a regra de criptografia para decifrá-lo.
-Em outras palavras, o segredo da cifra é sua própria regra.
+Como descrito por Suetônio, a regra para encriptar uma mensagem de Júlio César consistia em substituir cada letra da mensagem por aquela que está três posições à frente na ordem alfabética.
+Para descriptografar a cifra, substitui-se cada letra por aquela que está três posições atrás.
 
-Embora técnicas de criptografia e criptoanálise existam desde o império romano, foi com o advento do teléfgrafo e sua capacidade de comunicação eficiente, que o campo se estruturou.
-No fim do século XIX Auguste Kerckhoff estabeleceu seis princípios que as cifras militares deveriam satisfazer:
-\begin{enumerate}
-\item O sistema deve ser indecifrável, se não matematicamente, pelo menos na prática.
-\item O aparato não deve requerer sigilo e não deve ser um problema se ele cair nas mãos dos inimigos.
-\item Deve ser possível memorizar uma chave sem ter que anotá-la e deve ser possível modificá-la se necessário.
-\item Deve ser possível aplicar a sistemas telegráficos.
-\item O aparato deve ser portátil e não deve necessitar de muitas pessoas para manipulá-lo e operá-lo.
-\item Por fim, dadas as circunstâcias em que ele será usado, o sistema deve ser fácil de usar, não deve ser estressante usá-lo e não deve exigir que o usuário conheça e siga uma longa lista de regras.
-\end{enumerate}
+Aqueles que, como César, conheciam ou descobriam essa regra eram capazes de entender as mensagens.
+Para todos os outros, a mensagem parecia apenas uma sequência sem sentido de letras.
+Esse método simples, embora engenhoso para a época, tinha uma grande vulnerabilidade:
+uma vez que a regra de criptografia era conhecida, qualquer um podia decifrar a mensagem facilmente.
+Em outras palavras, o segredo é sua própria regra.
 
-O segundo princípio ficou conhecido como {\em princípio de Kerckhoff}.
-Ele estabelece que a regra usada para criptografar uma mensagem, mesmo que essa regra esteja codificada em um mecanismo, não deve ser um segredo e não deve ser um problema caso ela caia nas mãos do adversário.
-Nas palavras de Claude Shannon: ``o inimigo conhece o sistema''.
-Whitfield Diffie coloca o debate nos seguintes termos:
+Embora técnicas de criptografia e criptoanálise existam desde o Império Romano, foi com o advento do telégrafo e sua capacidade de comunicação eficiente que o campo se estruturou.
+No fim do século XIX, um militar holandês chamado Auguste Kerckhoffs estabeleceu um princípio fundamental para as cifras, que ficou conhecido como o {\em princípio de Kerckhoffs}.
 
-\begin{quote}
-``Um segredo que não pode ser rapidamente modificado deve ser interpretado como uma vulnerabilidade''
-\end{quote}
+Esse princípio estabelece que a regra usada para criptografar uma mensagem, mesmo que codificada em um mecanismo, não deve ser um segredo.
+Ou seja, não deve ser um problema se esse mecanismo cair nas mãos do adversário ou que a regra seja descoberta.
 
-Ou seja, em uma comunicação confidencial as partes devem compartilhar algo que deve ser ``possível de modificar caso necessário''.
-Esse segredo compartilhado é o que chamaremos de {\em chave} da comunicação e assumiremos que ela é a única parte sigilosa do sistema.
-Trazendo o debate para uma discução mais moderna, o sigilo do código-fonte de um sistema não deve em hipótese alguma ser aquilo que garanta sua segurança.
+Outros criptógrafos importantes reafirmaram esse princípio de maneiras diferentes.
+Claude Shannon, considerado o fundador da teoria da informação, dizia que devemos sempre assumir que ``o inimigo conhece o sistema''.
+Whitfield Diffie, um dos pioneiros da criptografia moderna, afirmou que ``um segredo que não pode ser rapidamente modificado deve ser interpretado como uma vulnerabilidade''.
 
-O modelo de {\em criptografia simétrica}, portanto, pode ser descrito da seguite maneira:
-o remetente usa um algoritmo público ($E$) que, dada uma chave ($k$), transforma uma mensagem ($m$) em um texto incompreensível chamado de {\em cifra} ($c$), a cifra é enviada para o destinatário por um meio assumidamente inseguro (hipótese da comunicação hacker) e o destinatário utiliza a mesma chave em um algoritmo ($D$) que recupera a mensagem a partir da cifra.
+Ou seja, em uma comunicação confidencial, as partes devem compartilhar algo que possa ser ``modificado caso necessário''.
+Esse segredo compartilhado é chamado de {\em chave} da comunicação e assumimos que ela é a única parte sigilosa do sistema.
+
+Trazendo o debate para uma discussão mais moderna, o sigilo do código-fonte de um sistema não deve, em hipótese alguma, ser o que garante sua segurança.
+A segurança deve depender apenas da chave secreta, não do algoritmo ou do código-fonte.
+
+O modelo de {\em criptografia simétrica} pode ser descrito da seguinte maneira:
+Alice (a remetente) usa um algoritmo público ($E$) que, dada uma chave ($k$), transforma uma mensagem ($m$) em um texto incompreensível chamado de cifra ($c$).
+A cifra é então enviada a Bob (o destinatário) através de um meio assumidamente inseguro (hipótese da comunicação hacker).
+Bob, por sua vez, usa a mesma chave em um outro algoritmo (D) para recuperar a mensagem original a partir da cifra.
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -100,129 +107,278 @@ o remetente usa um algoritmo público ($E$) que, dada uma chave ($k$), transform
 \end{tikzpicture}
 \end{center}
 
+Este modelo é chamado de simétrico porque assume que ambas as partes, Alice e Bob, compartilham a mesma chave.
+Mais adiante, veremos um outro modelo chamado assimétrico.
+
+Um sistema de criptografia simétrico é formado por três algoritmos:
+\begin{itemize}
+\item $Gen$: o algoritmo que gera uma chave secreta.
+\item $E$: o algoritmo que criptografa, ou seja, transforma uma mensagem em uma cifra.
+\item $D$: o algoritmo que descriptografa, ou seja, recupera a mensagem a partir de uma cifra.
+\end{itemize}
+
+Considere que temos um sistema $\Pi = \langle Gen, E, D \rangle$.
+Digamos que uma mensagem $m$ foi criptografada usando o algoritmo $E$ e a chave $k$, produzindo a cifra $c$ (escrevemos $E(k,m) = c$).
+O sistema é considerado {\em correto} se, ao descriptografarmos $c$ com o algoritmo $D$ usando a mesma chave $k$, recuperamos a mensagem original $m$ (ou seja, $D(k,c) = m$.
+
 \section{Cifra de Deslocamento}
 \label{sec:cifra-deslocamento}
 
-O que chamamos na seção anterior como ``cifra de César'' não deve ser propriamente considerado uma cifra, pois não possui uma chave.
-Porém, é possível e simples adaptar esse esquema para incorporar uma chave.
-Para tanto faremos a seguinte alteração no esquema.
-Ao invés de deslocar as letras sempre três casas para frente vamos assumir que foi sorteado previamente um número $k$ entre $0$ e $23$.
-Esse número será a chave da comunicação e, portanto, assumiremos que as partes a compartilham.
-O mecanismo para criptografar uma mensagem será o de deslocar cada letra $k$ posições para a direita e para descriptografá-la basta deslocar cada letra as mesmas $k$ posições para a esquerda.
+O que chamamos na seção anterior de ``cifra de César'' não deve ser propriamente considerado um sistema de criptografia, pois não possui uma chave.
+No entanto, é possível e simples adaptar esse esquema para incorporar uma chave.
 
-Para formalizar este mecanismo vamos assumir que cada letra do alfabeto seja representada por um número: a letra {\tt a} será representada pelo $0$, a letra {\tt b} pelo $1$ e assim por diante.
-O universo de todas as chaves possíveis é o conjunto $K = \{0 ... 23\}$ (chamaremos este conjunto de $\mathbb{Z}_{26}$ ou de maneira mais genérica $\mathbb{Z}_n = \{0, 1, \dots, n - 1\}$) e o universo de todas as mensagens possíveis é representado pelo conjunto $M = {\mathbb{Z}_{26}}^\star$, ou seja, todas as sequências de números entre $0$ e $23$.
-Além disso, o conjunto das possíveis cifras é $C = M$.
-Precisamos descrever três algorítmos:
-\begin{itemize}
-\item $Gen$ que gera a chave $k \in K$,
-\item $E$ que recebe uma chave $k \in K$ e uma mensagem $m \in M$ e produz uma cifra $c \in C$ (i.e.: $E: K \times M \to C$) e
-\item $D$ que recebe uma chave $k \in K$ e uma cifra $c \in C$ e produz uma mensagem $m \in M$ (i.e.; $D: K \times C \to M$).
-\end{itemize}
+Para fazer isso, em vez de deslocar as letras sempre três casas para frente, vamos assumir que foi sorteado previamente um número $k$ entre $0$ e $25$.
+Ou sejam, nosso algoritmo $Gen$ sorteia um número de $0$ a $25$
+Esse número será a chave da comunicação, e assumiremos que ambas as partes a compartilham.
 
-Um sistema de criptografia simétrica $\Pi$ é formado por essa tripla de algoritmos $\Pi = \langle Gen, E, D \rangle$.
-Além disso, precisamos garantir que quem possui a chave seja capaz de descriptografar a cifra.
-Ou seja, precisamos garantir que:
-\begin{displaymath}
-  D(k, E(k, m)) = m
-\end{displaymath}
-
-O mecanismo que gera uma chave na cifra de substituição é bastante simples, ele simplesmente sorteia com uma distribuição de probabilidade uniforme um número entre $0$ e $23$.
-Escreveremos da seguinte forma:
-\begin{displaymath}
-Gen := k \leftarrow \mathbb{Z}_{26}
-\end{displaymath}
-
-Utilizaremos a partir daqui a convenção de usar uma seta da direita para esquerda indicando que será escolhido um elemento do conjunto com probabilidade uniforme.
-
-O algoritmo para criptografar uma mensagem traz um pequeno problema.
-Escreveremos $m = m_0 m_1 m_2 \dots m_n$ uma mensagem $m$ com $n + 1$ letras cuja primeira letra é $m_0$, a segunda é $m_1$ e assim por diante.
-Nossa primeira tentativa de formalizar $E$ seria somar $k$ a cada uma das letras $m_i$.
-O problema é que esta soma pode resultar em um valor que não corresponde a nenhuma letra i.e. $m_i + k > 23$.
-Para evitar este problema utilizaremos não a aritmética convencional, mas a {\em aritmética modular}.
-
-Dizemos que um número $a$ divide $b$ (escrevemos $a|b$) se existe um número inteiro $n$ tal que $a.n = b$.
-Dois números são equivalentes módulo $n$ (escrevemos $a \equiv b\ (mod\ n)$) se $n|(b-a)$.
-Em outras palavras, dois números são equivalentes módulo $n$ se o resto da divisão de cada um por $n$ for o mesmo reultado.
-O conjunto de todos os números equivalentes módulo $n$ forma uma classe de equivalência que representaremos como $[a\ mod\ n] = \{b \in \mathbb{Z} : a \equiv (b\ mod\ n)\}$.
-Por exemplo $[5 + 7\ mod\ 10] = [2\ mod\ 10]$ pois $5 + 7 = 12$ e o resto de $12$ por $10$ é $2$.
-
-Estamos finalmente em condições de formalizar o sistema da cifra de deslocamento $\Pi = \langle Gen, E, D\rangle$:
-\begin{itemize}
-\item $Gen := k \leftarrow \mathbb{Z}_{26}$
-\item $E(k, m) = [m_0 + k\ mod\ 26] \dots [m_n + k\ mod\ 26]$
-\item $D(k, c) = [c_0 - k\ mod\ 26] \dots [c_n - k\ mod\ 26]$
-\end{itemize}
-
+O mecanismo para criptografar uma mensagem ($E$) será deslocar cada letra $k$ posições para a direita.
+Para descriptografar ($D$), basta deslocar cada letra as mesmas $k$ posições para a esquerda.
 
 \begin{example}
-  Considere a palavra {\tt XUXA}.
-  Usando a cifra de César com chave $k = 3$ obtemos a cifra {\tt BZBD}.
+  Digamos que o algoritmo $Gen$ sorteie a chave $k = 3$:
+
+  A tabela a seguir mostra a posição original de cada letra e a nova posição após o deslocamento de 3 posições.
+  Cada linha da tabela indica a letra original, sua posição no alfabeto, a nova posição após o deslocamento e a letra resultante após o deslocamento.
+
+  
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \textbf{Letra Original} & \textbf{Posição Original} & \textbf{Posição Deslocada} & \textbf{Letra Deslocada} \\
+      \hline
+      \texttt{a} & 0 & 3 & \texttt{D} \\
+      \hline
+      \texttt{b} & 1 & 4 & \texttt{E} \\
+      \hline
+      \texttt{c} & 2 & 5 & \texttt{F} \\
+      \hline
+      \texttt{d} & 3 & 6 & \texttt{G} \\
+      \hline
+      \texttt{e} & 4 & 7 & \texttt{H} \\
+      \hline
+      \texttt{f} & 5 & 8 & \texttt{I} \\
+      \hline
+      \texttt{g} & 6 & 9 & \texttt{J} \\
+      \hline
+      \texttt{h} & 7 & 10 & \texttt{L} \\
+      \hline
+      \texttt{i} & 8 & 11 & \texttt{M} \\
+      \hline
+      \texttt{j} & 9 & 12 & \texttt{N} \\
+      \hline
+      \texttt{l} & 10 & 13 & \texttt{O} \\
+      \hline
+      \texttt{m} & 11 & 14 & \texttt{P} \\
+      \hline
+      \texttt{n} & 12 & 15 & \texttt{Q} \\
+      \hline
+      \texttt{o} & 13 & 16 & \texttt{R} \\
+      \hline
+      \texttt{p} & 14 & 17 & \texttt{S} \\
+      \hline
+      \texttt{q} & 15 & 18 & \texttt{T} \\
+      \hline
+      \texttt{r} & 16 & 19 & \texttt{U} \\
+      \hline
+      \texttt{s} & 17 & 20 & \texttt{V} \\
+      \hline
+      \texttt{t} & 18 & 21 & \texttt{X} \\
+      \hline
+      \texttt{u} & 19 & 22 & \texttt{Z} \\
+      \hline
+      \texttt{v} & 20 & 23 & \texttt{A} \\
+      \hline
+      \texttt{x} & 21 & 0 & \texttt{B} \\
+      \hline
+      \texttt{z} & 22 & 1 & \texttt{C} \\
+      \hline
+    \end{tabular}
+    \caption{Tabela de deslocamento para $k=3$}
+    \label{table:cesar_shift}
+  \end{table}
+
+Para calcular a nova posição de cada letra após o deslocamento, usamos a {\em aritmética modular}.
+A aritmética modular é uma maneira de lidar com valores que ``reiniciam'' após atingirem um certo valor, similar ao funcionamento de um relógio.
+No contexto da cifra de deslocamento, utilizamos a aritmética modular para assegurar que, ao deslocar uma letra, continuamos dentro dos limites do alfabeto.
+
+Como estamos usando o alfabeto latino básico, que possui 23 letras, para obter a posição deslocada somamos $k$ à posição original módulo 23.
+Ou seja, pegamos o resto da soma quando dividido por 23.  
+
+Se a mensagem for {\tt transparencia} a cifra será {\tt XUDQVSDUHQFLD}.
 
   \begin{itemize}
-  \item $E(3, \textrm{\tt 24 21 24 0}) = [1\ mod\ 26] [21\ mod\ 26] [1\ mod\ 26] [3\ mod\ 26]$
-  \item $D(3, \textrm{\tt 1 21 1 3}) = [24\ mod\ 26] [21\ mod\ 26] [24\ mod\ 26] [0\ mod\ 26]$
+  \item E($3$,{\tt transparencia}) =  {\tt XUDQVSDUHQFLD} 
+  \item D($3$,{\tt XUDQVSDUHQFLD}) =  {\tt transparencia} 
   \end{itemize}
-
-  Note que $[27\ mod\ 26] = [1\ mod\ 26]$ e que $[-2\ mod\ 26] = [24\ mod\ 26]$.
 \end{example}
 
+A criptoanálise da cifra de deslocamento revela que ela não é segura, principalmente porque a quantidade de chaves existentes é pequena.
+{\em Criptoanálise} é a prática de analisar e decifrar sistemas criptográficos com o objetivo de encontrar vulnerabilidades ou descobrir o conteúdo de mensagens cifradas sem conhecer a chave secreta.
+Chamamos de {\em universo das chaves} o conjunto que abrange todas as chaves possíveis em um sistema de criptografia.
+No caso da cifra de deslocamento, a chave é um número entre 0 e 22, resultando em apenas 23 chaves possíveis.
+Este pequeno universo de chaves torna o sistema vulnerável a ataques de força bruta.
 
+Um {\em ataque de força bruta} envolve testar todas as chaves possíveis até encontrar a correta.
+Dado que existem apenas 23 chaves possíveis na cifra de deslocamento, um atacante pode simplesmente tentar cada uma delas.
+Em média, precisaríamos testar $\frac{23}{2} =11,5$ chaves até encontrar a correta.
+O valor esperado da quantidade de tentativas necessárias para encontrar a chave correta é sempre metade do tamanho do universo das chaves.
+
+Embora todos os sistemas de criptografia estejam teoricamente sujeitos a ataques de força bruta, a viabilidade prática do ataque depende do tamanho do universo de chaves.
+Em sistemas com um grande universo de chaves, um ataque de força bruta se torna impraticável devido ao tempo e aos recursos computacionais necessários.
+
+\begin{example}
+  Muitos dos roteadores modernos possuem um mecanismo chamado WPS (Wi-Fi Protected Setup), que supostamente simplifica o processo de conexão, especialmente na configuração do hardware.
+  O WPS permite que um usuário se conecte remotamente e sem fio ao roteador, desde que possua um PIN (Personal Identification Number).
+  Esse PIN é uma sequência de oito dígitos de 0 a 9, o que significa que o universo das chaves é $10^8 \approx 2^{27}$.
+
+  Para entender melhor, o universo das chaves, $10^8$, significa que existem 100 milhões de combinações possíveis.
+  Em termos binários, isso é aproximadamente $2^{27}$, que é um número relativamente pequeno para os padrões de segurança modernos.
+
+  Devido ao tamanho limitado do universo das chaves, um ataque de força bruta é viável.
+  Um ataque de força bruta envolve tentar todas as combinações possíveis de PIN até encontrar a correta.
+  Neste contexto, um atacante pode testar sistematicamente cada um dos 100 milhões de PINs possíveis.
+  Dependendo da velocidade da conexão e da capacidade de processamento do atacante, este processo pode levar entre 4 e 8 horas para ser concluído.
+
+  Esse tempo relativamente curto para realizar um ataque de força bruta expõe uma significativa vulnerabilidade no mecanismo WPS.
+  Uma vez que um atacante consegue encontrar o PIN correto, ele pode acessar a rede Wi-Fi, comprometendo a segurança e a privacidade dos dados transmitidos.
+
+  Portanto, enquanto o WPS pode facilitar a configuração inicial do roteador, ele também introduz um risco considerável de segurança.
+  Para mitigar esse risco, é recomendado desativar o WPS e utilizar métodos de configuração de segurança mais robustos, como a configuração manual de uma senha Wi-Fi forte e a utilização de protocolos de segurança avançados como WPA3.
+\end{example}
+
+Como em geral uma chave é uma sequência aleatória de bits, uma chave de $n$ bits corresponde a um universo de $2^n$ chaves.
+O tamanho da chave seguro é algo que depende do avanço tecnológico.
+Nos anos 70, o padrão para criptografia usava chaves com 56 bits, que eram consideradas seguras na época.
+No entanto, em 1998, uma chave deste tamanho foi quebrada em um ataque de força bruta, demonstrando que a evolução tecnológica havia tornado esse tamanho de chave vulnerável.
+
+Apesar disso, um universo de chaves de 80 bits, é tão grande que mesmo os avanços tecnológicos não devem comprometer sua segurança.
+Como veremos, hoje em dia, os sistemas costumam ter chaves com pelo menos 128 bits, o que torna um ataque força bruta contra esses sistemas inviável. 
 
 \section{Cifra de Substituição}
 \label{sec:cifra-monoalfabetica}
 
-Em 1567 a residência da rainha da Mary da Escócia foi destruída por uma explosão que levou a morte do então rei, primo de Mary.
-O principal suspeito do assinato foi dispensado da pena e se casou com Mary no mês seguinte.
-O episódio levou-a a prisão na Inglaterra.
-Neste tempo, para a maioria dos católicos, Mary era a legítima herdeira do trono inglês - ocupado pela protestante Elizabeth I.
-Durante o tempo na prisão Mary conspirou com aliados pela morte de Elizabeth.
-Em 1587 Mary foi executada pelo que ficou conhecido como a conspiração de Babington.
-A principal prova utilizada para a condenação foi uma troca de cartas cifradas interceptadas e decifradas \cite{Singh04}.
+Em 1567, a residência da rainha da Escócia, foi destruída por uma explosão, resultando na morte do então rei, que era seu primo.
+O principal suspeito do assassinato foi dispensado da pena e, surpreendentemente, casou-se com Mary no mês seguinte.
+Este evento tumultuoso levou à prisão de Mary na Inglaterra.
+
+Mary subiu ao trono da Escócia em 1542.
+Muitos católicos consideravam Mary a legítima herdeira do trono inglês, que estava ocupado pela protestante Elizabeth I, que reinava na Inglaterra desde 1558.
+Durante seu tempo na prisão, Mary conspirou com seus aliados para assassinar Elizabeth e reivindicar o trono.
+
+
+Em 1587, Mary foi executada pelo que ficou conhecido como a Conspiração de Babington.
+A principal prova usada para sua condenação foi uma troca de cartas cifradas que foram interceptadas e decifradas pelas autoridades inglesas \cite{Singh04}.
 
 A cifra usada pelos conspiradores é conhecida hoje como {\em cifra de substituição} ou {\em cifra monoalfabética}.
-Neste tipo de criptografia, cada letra ou par de letras é substituída por um símbolo, que pode ser inclusive uma outra letra.
-Assim, a chave desse tipo de cifra é um alfabeto.
+Neste tipo de criptografia, cada letra ou par de letras é substituída por um símbolo, que pode ser inclusive outra letra.
 
+A chave de uma cifra de substituição é uma tabela que associa cada letra a um símbolo.
+Para que a cifra funcione corretamente, a quantidade de símbolos deve coincidir com a quantidade de letras no alfabeto.
+Isso significa que podemos substituir cada letra por outra letra sem perder nenhuma informação.
+
+Em outras palavras, a chave de uma cifra de substituição é uma permutação do alfabeto.
+Cada letra do alfabeto é substituída por outra letra de acordo com esta tabela de permutação.
 
 \begin{example}
-  Considere a seguinte chave de uma cifra monoalfabética.
-  Neste caso os símbolos utilizados letras do mesmo alfabeto em ordem embaralhada:
-  \begin{verbatim}
-    Alfabeto:   abcdefghijklmnopqrstuvwxyz
-    Permutação: ZEBRASCDFGHIJKLMNOPQTUVWXY
-  \end{verbatim}
 
-  A partir desta chave podemos produzir textos substituindo cada letra pela letra correspondente na chave.
-  Para descriptografar, basta fazer o processo inverso, a saber, substituir a letra da cifra pela do alfabeto.
+Vamos considerar que temos a seguinte tabela de substituição:
+  
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Letra Original} & \textbf{Letra Substituída} \\
+\hline
+\texttt{a} & \texttt{Z} \\
+\hline
+\texttt{b} & \texttt{E} \\
+\hline
+\texttt{c} & \texttt{B} \\
+\hline
+\texttt{d} & \texttt{R} \\
+\hline
+\texttt{e} & \texttt{A} \\
+\hline
+\texttt{f} & \texttt{S} \\
+\hline
+\texttt{g} & \texttt{C} \\
+\hline
+\texttt{h} & \texttt{D} \\
+\hline
+\texttt{i} & \texttt{F} \\
+\hline
+\texttt{j} & \texttt{G} \\
+\hline
+\texttt{k} & \texttt{H} \\
+\hline
+\texttt{l} & \texttt{I} \\
+\hline
+\texttt{m} & \texttt{J} \\
+\hline
+\texttt{n} & \texttt{K} \\
+\hline
+\texttt{o} & \texttt{L} \\
+\hline
+\texttt{p} & \texttt{M} \\
+\hline
+\texttt{q} & \texttt{N} \\
+\hline
+\texttt{r} & \texttt{O} \\
+\hline
+\texttt{s} & \texttt{P} \\
+\hline
+\texttt{t} & \texttt{Q} \\
+\hline
+\texttt{u} & \texttt{T} \\
+\hline
+\texttt{v} & \texttt{U} \\
+\hline
+\texttt{w} & \texttt{V} \\
+\hline
+\texttt{x} & \texttt{W} \\
+\hline
+\texttt{y} & \texttt{X} \\
+\hline
+\texttt{z} & \texttt{Y} \\
+\hline
+\end{tabular}
+\caption{Tabela de permutação da cifra de substituição}
+\label{table:substitution_cipher}
+\end{table}
 
-  \begin{verbatim}
-    Mensagem: transparenciapublicaopacidadeprivada
-    Cifra:    QOZKPMZOAKBFZMTEIFBZLMZBFRZRAMOFUZRZ
-  \end{verbatim}
+A partir desta chave, podemos criptografar textos substituindo cada letra pela letra correspondente na chave.
+Por exemplo, usando a tabela de permutação fornecida, a letra {\tt a} seria substituída por {\tt Z}, a letra {\tt b} por {\tt E}, e assim por diante.
+Este processo transforma o texto original em um texto cifrado, onde cada letra do alfabeto original é substituída por sua contraparte definida na chave de permutação.
+
+\begin{verbatim}
+  Mensagem: transparencia
+  Cifra:    QOZKPMZOAKBFZ
+\end{verbatim}
+
+Para descriptografar o texto cifrado, basta reverter o processo.
+Isso significa substituir cada letra do texto cifrado pela letra original do alfabeto.
+Usando novamente a tabela de permutação, se encontrarmos a letra {\tt Z} no texto cifrado, substituímos de volta por {\tt a}, se encontrarmos {\tt E}, substituímos por {\tt b}, e assim por diante.
+Este processo inverso reconstrói o texto original a partir do texto cifrado.
 \end{example}
 
-O desfecho da história da conspiração de Babington sugere que a cifra monoalfabética não é muito segura.
-De fato, no próximo capítulo discutiremos melhor as técnicas de criptonálise para este tipo de cifra.
-Não obstante, até o desenvolvimento das primeiras máquinas de criptografar, versões das cifras monoalfabéticas eram as cifras mais populares no mundo todo.
-Nos anos 70 a editora abril publicou no Brasil o famoso Manual do Escoteiro Mirim da Disney que apresentava uma cifra monoalfabética.
-Mais recentemente, o curioso caso do desaparecimento de um rapaz no Acre viralizou quando seus familiares revelaram que no seu quarto havia uma coleção de livros que ele havia escrito de maneira criptografada.
-Mais tarde foi descoberto que o rapaz usara uma cifra de substituição cuja chave foi eventualmente encontrada.
+O desfecho da história da Conspiração de Babington sugere que a cifra monoalfabética não é muito segura.
+No entanto, até o desenvolvimento das primeiras máquinas de criptografar, versões das cifras monoalfabéticas eram as mais populares no mundo todo.
 
-Para fechar esta seção buscaremos formalizar o sistema de cifra de substituição simples.
-Uma {\em permutação} sobre um conjunto $\Sigma$ qualquer é uma {\em função bijetora} $p: \Sigma \to \Sigma$.
-Funções bijetoras possuem a característica de serem inversíveis, ou seja, existe $q: \Sigma \to \Sigma$ tal que $p(q(x)) = q(p(x)) = x$.
-A função $q$ é chamada de {\em inversa} de $p$, é única e será representada como $p^{-1}$.
-O conjunto de todas as permutações, todas as funções bijetoras, de $\Sigma$ será representado como $Perm(\Sigma)$.
-A chave de uma cifra de substituição é uma permutação do alfabeto $\mathbb{Z}_{26}$ escolhida aleatoriamente.
-Para encriptar uma mensagem basta aplicar essa permutação a cada uma das mensagens e para descriptografá-la basta aplicar a função inversa.
+Um exemplo interessante é que, nos anos 70, a Editora Abril publicou no Brasil o famoso ``Manual do Escoteiro Mirim'' da Disney, que apresentava uma cifra monoalfabética.
+Este manual era um sucesso entre as crianças e ensinava técnicas básicas de criptografia usando cifras de substituição simples.
 
-Formalmente temos que $\Pi = \langle Gen, E, D \rangle$ em que:
-\begin{itemize}
-\item $Gen := k \leftarrow Perm(\mathbb{Z}_{26})$
-\item $E(k, m) = k(m_0) \dots k(m_n)$
-\item $D(k, c) = k^{-1}(c_0) \dots k^{-1}(c_n)$
-\end{itemize}
+Em 2017 o curioso caso do desaparecimento de um rapaz no Acre viralizou quando seus familiares revelaram que, no seu quarto, havia uma coleção de livros que ele havia escrito de maneira criptografada.
+Após investigações, foi descoberto que o rapaz usara uma cifra de substituição.
+
+A cifra de substituição é interessante porque seu universo de chaves é extremamente vasto.
+O universo das chaves da cifra de substituição é o conjunto de todas as permutações possíveis do alfabeto.
+Se estamos usando o alfabeto latino básico, com 23 letras, a análise combinatória nos indica que esse universo possui $23! \approx 4.10^{26} \approx 2^{88}$ combinações possíveis.
+Este número é maior do que dezenas de milhares de vezes maior do que o número de grãos de areia em todas as praias da Terra, estimado em $10^{19}$ e dez vezes maior do que o número de estrelas no universo observável, que é estimado em cerca de $10^{22}$.
+
+Este número colossal torna um ataque de força bruta impraticável, pois seria necessário testar um número inimaginável de chaves para encontrar a correta.
+
+
 
 \section{Cifra de Vigenère}
 \label{sec:cifra-de-vigenere}
