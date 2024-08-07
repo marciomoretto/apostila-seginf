@@ -378,20 +378,66 @@ Este número é maior do que dezenas de milhares de vezes maior do que o número
 
 Este número colossal torna um ataque de força bruta impraticável, pois seria necessário testar um número inimaginável de chaves para encontrar a correta.
 
+Apesar disso, como sabe qualquer pessoa que tenha jogado jogos como criptogramas, que são vendidos pelas famosas revistas Coquetel, é relativamente fácil quebrar uma cifra de substituição.
+Isso porque esse sistema é vulnerável a um outro tipo de ataque, o ataque de frequência.
 
+O ataque de frequência explora as características estatísticas do texto original.
+Em qualquer idioma, certas letras aparecem com mais frequência do que outras.
+Por exemplo, em textos em português, as letras {\tt a}, {\tt e} e {\tt o} são muito comuns, enquanto letras como {\tt x}, {\tt z} e {\tt q} são usadas com menos frequência.
+Um criptoanalista pode analisar a frequência das letras no texto cifrado e compará-las com as frequências conhecidas do idioma para fazer suposições educadas sobre quais letras correspondem a quais.
+
+Para piorar -- ou melhorar dependendo da perspectiva -- na maioria das línguas há dígrafos particulares.
+Por exemplo, no português, dois símbolos repetidos provavelmente representam o {\tt r} ou o {\tt s}, e o {\tt h} quase sempre vem depois do {\tt l}, do {\tt c} ou do {\tt n}.
+Se o texto a ser decifrado for suficientemente longo, essas pistas podem ser suficientes para quebrar a cifra.
+
+No seguinte trecho de ``O escaravelho de ouro'' de Edgar Allan Poe a personagem descreve essa técnica que ela utilizou para decifrar um texto em inglês:
+
+\begin{quote}
+``Ora, no inglês, a letra que ocorre com mais frequência é a letra {\tt e}.
+Depois dela, a sucessão é: {\tt a o i d h n r s t u y c f g l m w b k p q x z}.
+O e prevalece de tal maneira que quase nunca se vê uma frase isolada em que ele não seja predominante.
+Aqui nós temos, portanto, bem no início, uma base que permite mais do que um mero palpite.
+O uso que se pode fazer da tabela é óbvio, mas, neste criptograma em particular, não precisamos nos valer dela por inteiro.
+Como nosso caractere dominante é o {\tt 8}, começaremos assumindo que este é o {\tt e} do alfabeto normal. (...)''
+\end{quote}
+
+Em português, faz sentido separar as letras em cinco blocos, com frequência de ocorrência decrescente:
+\begin{enumerate}
+\item {\tt a}, {\tt e} e {\tt o}
+\item {\tt s}, {\tt r} e {\tt i}
+\item {\tt n}, {\tt d}, {\tt m}, {\tt u}, {\tt t} e {\tt c}
+\item {\tt l}, {\tt p}, {\tt v}, {\tt g}, {\tt h}, {\tt q}, {\tt b} e {\tt f}
+\item {\tt z}, {\tt j}, {\tt x}, {\tt k}, {\tt w} e {\tt y}
+\end{enumerate}
+
+Esses blocos refletem a probabilidade de ocorrência das letras em textos em português, com as letras dos primeiros blocos aparecendo com mais frequência do que as dos últimos blocos.
+Essa distribuição permite que um criptoanalista faça suposições informadas sobre quais letras no texto cifrado correspondem a quais letras no texto original, facilitando a quebra da cifra.
+Foi uma análise assim que permitiu que o governo inglês decifrasse os textos da rainha Mary da Escócia, o que acabou lhe custando a vida.
+
+Esse tipo de análise pode ser feito manualmente ou, hoje em dia, com a ajuda de programas de computador, e é extremamente eficaz contra cifras de substituição simples.
+A análise de frequência foi uma das primeiras técnicas de criptoanálise desenvolvidas e continua a ser uma ferramenta poderosa para quebrar cifras que não introduzem complexidade suficiente para mascarar as características estatísticas do texto original.
+
+Portanto, embora o universo de chaves de uma cifra de substituição seja vasto, a simplicidade do algoritmo o torna vulnerável a técnicas de criptoanálise como a análise de frequência.
 
 \section{Cifra de Vigenère}
 \label{sec:cifra-de-vigenere}
 
-A cifra de Vigènere foi criada no século XV e ainda no começo do século XX era considerada inquebrável -- em 1868 o matemático e autor de Alice no País das Maravilhas, descreveu a cifra como ``inquebrável'' e um artigo da Scientific American de 1917 a descrevia como ``impossível de traduzir''.
-Veremos no próximo capítulo que há um exagero nessas descrições, porém, a sofisticação desse tipo de cifra chamado de {\em polialfabética} tornava sua criptoanálise muito mais sofisticado.
+A cifra de Vigenère foi criada no século XV e, ainda no começo do século XX, era considerada inquebrável.
+Em 1868, o matemático e autor de ``Alice no País das Maravilhas'', Charles Lutwidge Dodgson (mais conhecido pelo pseudônimo Lewis Carroll), descreveu a cifra como ``inquebrável''.
+Além disso, um artigo da revista Scientific American de 1917 a descrevia como ``impossível de traduzir''.
 
-Em poucas palavras, a cifra de Vigenère consiste em deslocar as letras do texto original em distâncias diferentes.
-Em sua versão mais simples, sua chave consiste de uma palavra cuja primeira letra indica quantas casas devemos deslocar a primeira letra da mensagem, a segunda letra da chave indica quantas casa devemos deslocar a segunda letra e assim por diante.
-Quando a mensagem ultrapassa o tamanho da chave, repetimos a chave e continuamos o processo.
+Essa percepção de invulnerabilidade decorre da sofisticação da cifra de Vigenère, que pertence a uma classe de cifras chamadas de {\em polialfabéticas}.
+Diferente das cifras monoalfabéticas, que usam uma única substituição para todo o texto, as cifras polialfabéticas utilizam múltiplos alfabetos de substituição.
+Isso significa que a mesma letra no texto original pode ser cifrada de diferentes maneiras, dependendo de sua posição e da chave utilizada.
+
+Em poucas palavras, a cifra de Vigenère consiste em deslocar as letras do texto original em distâncias diferentes, determinadas por uma chave.
+Em sua versão mais simples, a chave é uma palavra cuja primeira letra indica quantas casas devemos deslocar a primeira letra da mensagem, a segunda letra da chave indica quantas casas devemos deslocar a segunda letra, e assim por diante.
+Quando a mensagem ultrapassa o tamanho da chave, a chave é repetida e o processo continua.
 
 Para facilitar a conta na hora de criptografar e descriptografar, podemos usar uma tabela que indica para cada letra da mensagem e cada letra da chave qual é a letra correspondente na cifra.
 Essa tabela é chamada de {\em tabula recta} e está representada na Figura \ref{fig:tabula-recta}.
+A tabula recta é uma matriz que alinha os alfabetos de forma que cada linha representa um alfabeto deslocado.
+Para cifrar, encontra-se a letra da mensagem na coluna da letra da chave correspondente, e a interseção dá a letra cifrada.
 
 \begin{figure}[htbp]
   \centering
@@ -405,22 +451,39 @@ Essa tabela é chamada de {\em tabula recta} e está representada na Figura \ref
   Considere a seguinte mensagem criptografada com a chave {\tt senha} usando a cifra de Vigenère:
 
 \begin{verbatim}
-Mensagem: transparenciapublicaopacidadeprivada
-Chave:    senhasenhasenhasenhasenhasenhasenhas
-Cifra:    LVNUSHEELNUMNWUTHVJAGTNJIVEQKPJMIHDS
+Mensagem: transparencia
+Chave:    senhasenhasen
+Cifra:    LVNUSHEELNUMN
 \end{verbatim}
 \end{example}
 
-Para fechar o capítulo vamos fazer o exercício de formalizar a cifra de Vigenère.
-A chave consiste em uma sequência de letras, tipicamente escolhidas em um dicionário, mas vamos aqui supor que a escolha seja aleatória e com um tamanho fixado $l$.
-Para criptografar basta desolcar $m_i$ por $k_{[i\ mod\ n]}$ posições.
-Formalmente temos que $\Pi = \langle Gen, E, D \rangle$
+Apesar da fama de ``inquebrável'' que a cifra de Vigenère ostentou até o começo do século XX, desde a metade do século anterior já eram conhecidos métodos de criptoanálise capazes de derrotar esse tipo de cifra.
 
-\begin{itemize}
-\item $Gen := k \leftarrow \mathbb{Z}_{26}^l$
-\item $E(k, m) = [m_0 + k_{[0\ mod\ l]}\ mod\ 26] \dots [m_n + k_{[n\ mod\ l]}\ mod\ 26]$
-\item $D(k, c) = [c_0 - k_{[0\ mod\ l]}\ mod\ 26] \dots [c_n - k_{[n\ mod\ l]}\ mod\ 26]$
-\end{itemize}
+Em 1854, John Hall Brock Thwaites submeteu um texto cifrado utilizando uma cifra supostamente por ele inventada.
+Charles Babbage, o inventor das máquinas que precederam o computador moderno, mostrou que no fundo a cifra de Thwaites era equivalente à cifra de Vigenère.
+Após ser desafiado, Babbage decifrou uma mensagem criptografada por Thwaites duas vezes com chaves diferentes.
+
+Em 1863, Friedrich Kasiski formalizou um ataque contra a cifra de Vigenère que ficou conhecido como {\em teste de Kasiski}.
+O ataque considera o fato de que a chave se repete com uma frequência fixa e, portanto, há uma probabilidade de produzir padrões reconhecíveis.
+Considere o exemplo extraído da Wikipédia:
+
+\begin{example}
+\begin{verbatim}
+Mensagem: cryptoisshortforcryptography
+Chave:    abcdabcdabcdabcdabcdabcdabcd
+Cifra:    CSASTPKVSIQUTGQUCSASTPIUAQJB
+\end{verbatim}
+\end{example}
+
+Note que o padrão {\tt CSASTP} se repete na cifra.
+Isso ocorre porque o prefixo ``crypto'' foi criptografado com a mesma chave.
+Uma vez encontrado um padrão como este, é calculada a distância entre as repetições.
+Neste caso, a distância é 16, o que significa que o tamanho da chave deve ser um divisor de 16 (2, 4, 8 ou 16).
+Com esta informação, podemos aplicar um ataque de frequência nos caracteres de 2 a 2, de 4 a 4, de 8 a 8 e de 16 a 16.
+
+Embora a cifra de Vigenère seja significativamente mais complexa do que as cifras monoalfabéticas, ela não é invulnerável.
+Técnicas avançadas de criptoanálise, desenvolvidas ao longo do tempo, eventualmente permitiram a quebra dessa cifra.
+Por exemplo, o método de Kasiski e a análise de frequência foram ferramentas essenciais na criptoanálise da cifra de Vigenère.
 
 \section{Máquinas de Criptografar}
 \label{sec:maquinas}
@@ -536,6 +599,7 @@ Em português, faz sentido separar as letras em cinco blocos, com frequência de
 \item {\tt l}, {\tt p}, {\tt v}, {\tt g}, {\tt h}, {\tt q}, {\tt b} e {\tt f}
 \item {\tt z}, {\tt j}, {\tt x}, {\tt k}, {\tt w} e {\tt y}
 \end{enumerate}
+
 
 \subsection{Ataques à ``Cifra Invencível''}
 \label{sec:criptoanalise-vegenere}
