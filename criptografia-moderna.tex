@@ -1,54 +1,75 @@
 \chapter{Criptografia Moderna}
 \label{cha:criptografia-moderna}
 
-No final dos anos 40, com o desenvolvimento dos primeiros computadores e a experiência da quebra das cifras mecanicamente produzidas por poderosas máquinas desenvolvidas pelo esforço de guerra do nazismo, alguns cientístas se voltaram para um problema central no campo da criptografia: o que torna um sistema de criptografia seguro?
-As cifras que vimos até agora são conhecidas como ``cifras clássicas'' exatamente porque elas precedem desse debate moderno, e não a toa foram todas derrotadas cedo ou tarde.
-Informalmente, poderíamos dizer que o problema dos esquemas clássicos de criptografia é que eles guardam muita informação sobre a mensagem (frequência das letras, dos dígrafos, letras duplas etc.).
-Não é uma coincidência, portanto, que a primeira tentativa de formalizar o conceito de segurança tenha sido proposto por Claude Shannon, o fundador da teoria da informação.
+No final dos anos 40, com o desenvolvimento dos primeiros computadores e a experiência da quebra das cifras mecanicamente produzidas por poderosas máquinas desenvolvidas pelo esforço de guerra do nazismo, alguns cientistas se voltaram para um problema central no campo da criptografia: o que torna um sistema de criptografia seguro?
+
+As cifras que vimos até agora são conhecidas como {\em cifras clássicas} exatamente porque elas precedem esse debate moderno, e não é à toa que foram todas derrotadas cedo ou tarde.
+Informalmente, poderíamos dizer que o problema dos esquemas clássicos de criptografia é que eles mantêm muita informação sobre a mensagem original, como a frequência das letras, dos dígrafos, letras duplas, entre outros.
+Esses padrões permitem que criptanalistas descubram o texto original sem conhecer a chave.
+
+Não é uma coincidência, portanto, que a primeira tentativa de formalizar o conceito de segurança tenha sido proposta por Claude Shannon, o fundador da teoria da informação.
+Shannon introduziu conceitos fundamentais que ajudaram a definir o que faz um sistema de criptografia ser verdadeiramente seguro.
+Sua abordagem foi a base para o desenvolvimento de métodos mais robustos e seguros de criptografia.
 
 \section{Sigilo Perfeito}
 \label{sec:sigilo-perfeito}
 
-Shannon definiu o que hoje chamamos de {\em sigilo perfeito}.
-Um esquema de criptografia garante o sigilo perfeito se a cifra não guarda nenhuma informação sobre a mensagem que a gerou.
-Ou, de maneira um pouco mais descritiva, se a probabilidade da cifra ocorrer é independente da probabilidade da mensagem:
+Shannon definiu o que hoje chamamos de sigilo perfeito.
+Um sistema de criptografia garante o {\em sigilo perfeito} se a probabilidade da mensagem original for independente da probabilidade da cifra.
 
-\begin{definition}
-  Um esquema de criptografia simétrica $\Pi = \langle Gen, E, D \rangle$ garante o {\em sigilo perfeito} se, supondo que $Pr[C=c] > 0$, para toda distribuição de probabilidade sobre $M$ temos que:
+Vamos relembrar o que são eventos independentes.
+A probabilidade da mensagem original ser $m$ dado que a cifra é $c$ deve ser igual à probabilidade da mensagem ser $m$ independentemente da cifra.
+Em termos matemáticos, isso significa que:
+
 \begin{displaymath}
   Pr[M = m | C = c] = Pr[M = m]
 \end{displaymath}
 
-Ou de maneira equivalente se para todo $m_0, m_1 \in M$ e todo $c \in C$ temos que:
+É nesse sentido preciso que dizemos que a cifra $c$ não guarda nenhuma informação sobre a mensagem $m$.
+Quando essa condição é satisfeita, mesmo que um interceptador obtenha a cifra $c$, ele não obtém nenhuma pista sobre qual era a mensagem $m$.
+Todas as mensagens possíveis são igualmente prováveis, tornando a criptoanálise impossível.
+Ou seja, podemos dizer que um sistema de criptografia garante o sigilo perfeito se as cifras produzidas por ele não guardam informação da mensagem original.
+
+De forma equivalente, um sistema de criptografia garante o sigilo perfeito se uma cifra $c$ qualquer pode ter sido produzida com igual probabilidade por qualquer mensagem $m$.
+Dada uma cifra $c$ e duas mensagens $m_1$ e $m_2$ quaisquer, temos que:
+
 \begin{displaymath}
   Pr[C = c | M = m_0] = Pr[C = c | M = m_1]
 \end{displaymath}
-\end{definition}
 
-Essa segunda formulação é mais intuitiva, ela estabelece que um sistema garante o sigilo perfeito se a probabilidade de $m_0$ produzir a cifra $c$ é idêntica a probabilidade de qualquer outra mensagem $m_1$ produzir a mesma cifra $c$.
-O exemplo a seguir mostra que a cifra de substituição não garante o sigilo perfeito:
 
-\begin{example}
-  Seja $\Pi = \langle Gen, E, D \rangle$ o sistema de criptografia de substituição e sejam $c = \textrm{\tt ANA}$, $m_0 = \textrm{\tt OVO}$ e $m_1 = \textrm{\tt EVA}$.
-Como o sistema $\Pi$ substitui cada letra da mensagem por uma letra na cifra, existem chaves $k$ tal que $E(k, m_0) = c$ -- basta que $k(\textrm{\tt O}) = \textrm{\tt A}$ e $k(\textrm{\tt V}) = \textrm{\tt N}$, de fato a chance de escolher uma chave assim é $\frac{1}{26 \cdot 25} = \frac{1}{650}$ --, mas não existe nenhuma chave $k'$ tal que $E(k', m_1) = c$.
-Portanto temos que:
-\begin{displaymath}
-Pr[C = c | M = m_0] =  \frac{1}{650} \neq Pr[C = c | M = m_1] = 0
-\end{displaymath}
-\end{example}
+A cifra de substituição não garante o sigilo perfeito. Vamos ver um exemplo simples que mostra isso.
 
-Uma forma equivalente, e útil como veremos mais para frente, de definir sigilo perfeito é a partir de um jogo.
-Imaginamos que há um adversário $\mathcal{A}$ cujo objetivo é quebrar a cifra produzida pelo sistema $\Pi$.
+Suponha que nossa cifra é {\tt OVO}.
+Vamos calcular a probabilidade de diferentes mensagens originais terem gerado essa cifra.
+
+Se a mensagem original for {\tt ana}, e usamos uma cifra de substituição específica que mapeia {\tt a} para {\tt O} e {\tt n} para {\tt V}, a mensagem cifrada resultante seria {\tt OVO}.
+Se a chave, que nesse caso é uma permutação, foi escolhida de forma aleatória, temos 1 chance em 23 que a letra {\tt a} da mensagem original tenha sido substituída por {\tt O} na cifra.
+A chance de {\tt n} ser substituído por {\tt V} é então 1 em 22, porque {\tt n} não pode ser substituído por {\tt O} que já foi escolhido.
+Portanto, a probabilidade da mensagem original {\tt ana} gerar a cifra {\tt OVO} é $\frac{1}{22.23} = \frac{1}{650}$.
+
+Agora, considere outra mensagem possível, como {\tt eva}.
+Se a letra {\tt e} fosse substituída por {\tt O}, isso não seria possível porque {\tt a} também precisaria ser substituída por {\tt O}.
+No entanto, na cifra de substituição, uma letra só pode ser mapeada para uma outra única letra, não duas vezes para a mesma letra.
+Portanto, a probabilidade de a mensagem original ser {\tt eva} e gerar a cifra {\tt OVO} é 0.
+
+Esse exemplo simples demonstra que as mensagens originais {\tt ana} e {\tt eva} têm probabilidades diferentes de gerar a cifra {\tt OVO}.
+Em outras palavras, a cifra de substituição não garante o sigilo perfeito, pois a probabilidade da cifra ser gerada não é independente da mensagem original.
+Portanto, algumas mensagens têm uma probabilidade maior de gerar uma cifra específica do que outras, o que pode fornecer pistas para a criptoanálise.
+
+Outra forma de definir o sigilo perfeito é por meio de um jogo entre o sistema de criptografia $\Pi = \langle Gen, E, d \rangle$ e um adversário $\mathcal{A}$ que quer decifrá-lo.
 O jogo funciona da seguinte maneira:
+
 \begin{enumerate}
-\item $\mathcal{A}$ escolhe duas mensagens $m_0$ e $m_1$ com o mesmo tamanho ($|m_0| = |m_1|$) e envia para o sistema $\Pi$.
-\item O sistema gera uma chave $k$ usando o algoritmo $Gen$ e sorteia aleatoriamente uma das mensagens para criptografar ($\Pi$ sorteia $b \leftarrow \{0, 1\}$ e criptografa $m_b$).
-\item A cifra produzida $E(k, m_b) = c$ é enviada de volta para o adversário.
-\item O adversário $\mathcal{A}$ produz um bit $b' \in \{0,1\}$.
+\item O adversário ($\mathcal{A}$) escolhe duas mensagens quaisquer $m_0$ e $m_1$.
+  A única restrição é que elas devem ter o mesmo tamanho.
+  O adversário então envia essas duas mensagens para o sistema $\Pi$.
+\item O sistema então sorteia uma chave $k$ usando o algoritmo $Gen$ e escolhe aleatoriamente uma das duas mensagens.
+\item O sistema criptografa a mensagem escolhida com a chave gerada  ($E(k,m) = c$) e devolve a cifra resultante $c$ para o adversário.
+\item O adversário pode utilizar todos os meios ao seu dispor para descobrir qual das duas mensagens foi criptografada.
 \end{enumerate}
 
-O desafio do adversário é acertar qual das duas mensagens foi cifrada.
-O diagrama abaixo ilustra o processo:
+Um sistema de criptografia garante o sigilo perfeito se, ao final do jogo, o adversário não tiver nenhuma vantagem em descobrir qual mensagem foi criptografada.
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -64,25 +85,10 @@ O diagrama abaixo ilustra o processo:
 \end{tikzpicture}
 \end{center}
 
-Chamamos o experimento ilustrado pelo diagrama de $PrivK^{eav}_{\Pi, \mathcal{A}}$.
-Os subscritos indicam que o experimento depende do sistema $\Pi$ e do adversário $\mathcal{A}$.
-O resultado do experimento deve ser $0$ se o adversário perdeu o desafio e $1$ caso contrário.
-Formalmente temos que:
-\begin{displaymath}
-  PrivK^{eav}_{\Pi, \mathcal{A}} = \left\{
-    \begin{array}{lcl}
-      1 & \textrm{se} & b = b'\\
-      0 & \textrm{c.c.} &\\
-    \end{array}
-    \right.
-\end{displaymath}
+Note que mesmo sem nenhuma informação, o adversário pode acertar qual das duas mensagens foi cifrada com $50\%$ de probabilidade, simplesmente chutando uma das duas.
+O sistema $\Pi$ garante sigilo perfeito se isso for o melhor que o adversário pode fazer.
+Ou seja, se a probabilidade de que ele vença o jogo for exatamente $\frac{1}{2}$
 
-É possível provar que um sistema $\Pi$ garante o {\em sigilo perfeito} se e somente se para qualquer adversário $\mathcal{A}$ temos que:
-\begin{displaymath}
-Pr[PrivK^{eav}_{\Pi, \mathcal{A}} = 1] = \frac{1}{2}
-\end{displaymath}
-
-Em palavras, o sistema possui sigilo perfeito se nenhum adversário é capaz de acertar qual das mensagens produziu a cifra $c$ com probabilidade melhor do que um meio.
 
 \section{One Time Pad}
 \label{sec:otp}
