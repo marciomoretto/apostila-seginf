@@ -79,9 +79,9 @@ Um sistema de criptografia garante o sigilo perfeito se, ao final do jogo, o adv
 \node[player] (system) {$\Pi$};
 \node[player] (adversary) at (10,0) {$\mathcal{A}$};
 \draw[->] (9,.5) -> node[above]{$m_0, m_1 \in M : |m_0| = |m_1|$} (1,.5);
-\draw[->] (1,-.5) -> node[above]{$E(k,m_b) = c$} (9,-.5);
-\draw[->] (0,2) -> node{$b \leftarrow \{0,1\}$} (system);
-\draw[->] (adversary) -> node{$b' \in \{0,1\}$} (10,-2);
+\draw[->] (1,-.5) -> node[above]{$E(k,m) = c$} (9,-.5);
+\draw[->] (0,2) -> node{$m \leftarrow \{m_0,m_1\}$} (system);
+%\draw[->] (adversary) -> node{$b' \in \{0,1\}$} (10,-2);
 \end{tikzpicture}
 \end{center}
 
@@ -89,38 +89,76 @@ Note que mesmo sem nenhuma informação, o adversário pode acertar qual das dua
 O sistema $\Pi$ garante sigilo perfeito se isso for o melhor que o adversário pode fazer.
 Ou seja, se a probabilidade de que ele vença o jogo for exatamente $\frac{1}{2}$
 
+Apresentar esse conceito como um jogo enfatiza que a única informação que o adversário possui é a cifra que foi gerada pelo sistema.
+Para que o sistema garanta sigilo perfeito, o conhecimento sobre a cifra não deve dar nenhuma vantagem ao adversário para que ele consiga distinguir qual das mensagens foi criptografada.
 
 \section{One Time Pad}
 \label{sec:otp}
 
 Temos agora uma definição formal de segurança.
 Vimos que a cifra de substituição não satisfaz essa definição, mas na verdade nenhuma das cifras clássicas a satisfaz.
-Não seria desejável que essas cifras satisfizessem a definição, pois vimos no capítulo anterior que nenhuma das cifras clássicas é segura e todas podem ser derrotadas se o adversário tiver acesso a uma cifra de tamanho suficientemente grande.
-Ficamos então com o desafio de encontrar algum sistema que satisfaça essa definição, caso tal sistema exista.
+As cifras clássicas, como a cifra de César, a cifra de substituição e a cifra de Vigenère, possuem vulnerabilidades inerentes que permitem que adversários determinem informações sobre a mensagem original a partir da cifra.
 
-No que segue, apresentaremos um sistema chamado {\em One Time Pad} (OTP), também conhecido como {\em cifra de Vernan}, e mostraremos que ele garante o sigilo perfeito.
-A partir deste ponto, conforme começarmos a investigar sistemas a serem implementados computacionalmente, consideraremos que o espaço $M$ das mensagens (assim como o espaço $C$ das cifras) será representado como sequências de bits.
-No caso específico do OTP assumiremos que as mensagens e a cifras possuem um tamanho fixo $n$.
-Mais importante é o fato de que o universo das chaves é também um conjunto de sequências de bits do mesmo tamanho.
-Assim temos que $M = C = K = \{0,1\}^n$.
-O sistema $\Pi = \langle Gen, E, D \rangle$ é definido pelos seguintes algoritmos:
+Não seria desejável que essas cifras satisfizessem a definição de sigilo perfeito, pois vimos no capítulo anterior que nenhuma das cifras clássicas é segura.
+Todas elas podem ser derrotadas se o adversário tiver acesso a uma cifra de tamanho suficientemente grande.
+Por exemplo, a análise de frequência pode ser usada para quebrar cifras de substituição, enquanto técnicas como o método de Kasiski podem ser aplicadas para quebrar a cifra de Vigenère.
+
+A definição de sigilo perfeito nos fornece um padrão muito elevado de segurança, onde a cifra não revela absolutamente nenhuma informação sobre a mensagem original.
+Este é um objetivo ideal para sistemas de criptografia, pois garantiria que mesmo um adversário com poder computacional ilimitado não pudesse descobrir a mensagem original a partir da cifra.
+
+Ficamos então com o desafio de encontrar algum sistema que satisfaça essa definição, caso tal sistema exista.
+Esta busca nos leva a explorar técnicas e métodos mais avançados de criptografia.
+Claude Shannon, em seus estudos, encontrou um sistema assim chamado de {\em One-Time Pad} (OTP).
+
+No que segue, apresentaremos um sistema chamado One Time Pad, também conhecido como {\em cifra de Vernam}, e mostraremos que ele garante o sigilo perfeito.
+A partir deste ponto, conforme começarmos a investigar sistemas a serem implementados computacionalmente, consideraremos que o espaço das mensagens (assim como o espaço das cifras) será representado não mais como sequências de letras, mas como sequências de bits.
+
+No caso específico do OTP, assumiremos que as mensagens e as cifras possuem um tamanho fixo.
+Mais importante é o fato de que o universo das chaves é também um conjunto de sequências de bits {\em do mesmo tamanho}.
+Em outras palavras, tanto as mensagens quanto as chaves e as cifras serão representadas por sequências de $n$ bits.
+
+O OTP é um sistema de criptografia:
 \begin{itemize}
-\item $Gen := k \leftarrow \{0,1\}^n$
-\item $E(k,m) = [m_0 + k_0\ mod\ 2] \dots [m_n + k_n\ mod\ 2] = m \xor k$
-\item $D(k,c) = [c_0 + k_0\ mod\ 2] \dots [c_n + k_n\ mod\ 2] = c \xor k$
+\item $Gen$ sorteia uma chave $k$ de $n$ bits.
+\item Para criptografar uma mensagem $m$, que também é uma sequência de $n$ bits, realizamos uma operação bit a bit (bitwise) chamada de XOR (ou exclusivo) entre a mensagem $m$ e a chave $k$:
+  \begin{displaymath}
+    c = k \xor m
+  \end{displaymath}
+\item Para descriptografar a cifra $c$, aplicamos novamente a operação XOR entre a cifra $c$ e a mesma chave $k$:
+  \begin{displaymath}
+    k \xor c
+  \end{displaymath}
 \end{itemize}
 
-Para verificar a corretude do sistema basta notar que:
+A operação XOR entre dois bits é definida como:
 
 \begin{eqnarray*}
-  D(k, E(k, m)) & = & D(k, k \xor m)\\
-                & = & k \xor (k \xor m)\\
-                & = & (k \xor k) \xor m\\
-                & = & m
+  0 \xor 0 & = & 0\\
+  1 \xor 0 & = & 1\\
+  0 \xor 1 & = & 1\\
+  1 \xor 1 & = & 0
 \end{eqnarray*}
 
-A derivação usa o fato de que a operação de {\em ou exclusivo} $\xor$ é associativa, que $x \xor x = 1$ e $1 \xor x = x$ para todo sequência de bits $x \in \{0,1\}^*$.
-Deixamos como exercício mostrar essas três propriedades da operação.
+A operação XOR entre sequências de bits possui algumas propriedades que serão úteis.
+Deixamos como exercício mostrar essas quatro propriedades da operação:
+
+\begin{itemize}
+\item (idempotência) $m \xor m = 0$
+\item (identidade) $m \xor 0 = m$
+\item (comutatividade) $m \xor n = n \xor m$
+\item (associatividade) $(m_1 \xor m_2) \xor m_3 = m_1 \xor (m_2 \xor m_3)$
+\end{itemize}
+
+Essas propriedades são suficientes para mostrar que o sistema é correto.
+Ou seja, se criptografamos uma mensagem ($m$) produzindo uma cifra ($E(k,m) = c$) e depois descriptografamos essa cifra ($c$) com a mesma chave $D(k,c)$ recuperamos a mensagem original.
+
+\begin{itemize}
+\item $E(k,m) = k \xor m = c$
+\item $D(k,c) = k \xor c = k \xor (k \xor m)$
+\item $D(k,c) = (k \xor k) \xor m$ por associatividade
+\item $D(k,c) = 0 \xor m$ por idempotência
+\item $D(k,c) = m$ por identidade
+\end{itemize}
 
 \begin{example}
   Considere uma mensagem $m = 101010$ e uma chave $k = 010001$.
@@ -134,42 +172,43 @@ Usando o sistema One Time Pad a cifra produzida é a seguite:
 \end{displaymath}
 \end{example}
 
+
+
+
 Como antecipado, é possível, e relativamente simples provar que o OTP possui sigilo perfeito.
 
 \begin{theorem}
   O sistema de criptografia {\em One Time Pad} possui sigilo perfeito.
 \end{theorem}
 
-\begin{proof}
-  Seja $K = M = C = \{0,1\}^n$.
-  Dada uma cifra $c \in C$ e uma mensagem qualquer $m \in M$, existe uma única chave $k \in K$ tal que $E(k,m) = c$.
-  A chave é exatamente $k = m \xor c$, pois:
+Para provar o teorema note dada uma cifra $c$ que esiste uma única chave $k$ tal que $E(k,m = c)$, a saber $k = c \xor m$:
 
   \begin{eqnarray*}
     E(k, m) & = & k \xor m \\
-            & = & (m \xor c) \xor m\\
-            & = & (m \xor m) \xor c\\
+            & = & (c \xor m) \xor m\\
+            & = & c \xor (m \xor m)\\
+            & = & c \xor 0\\
             & = & c
   \end{eqnarray*}
 
-Como existe exatamente uma chave possível que faz com que $E(k,m) = c$, temos que a probabilidade de se produzir $c$ dado uma mensagem qualquer $m$ é igual a probabilidade de sortear uma chave específica no universo $K = \{0,1\}^n$ que é $\frac{1}{2^n}$:
-\begin{displaymath}
-  Pr[C = c | M = c] = \frac{1}{2^n}
-\end{displaymath}
+Agora, a probabilidade de escolher essa chave específica entre todas as possíveis chaves (sequências de bits de comprimento $n$) é $\frac{1}{2^n}$.
 
-Essa probabilidade é idêntica para qualquer $m \in M$.
-Portanto, temos que $Pr[C = c| M = m_0] = Pr[C = c | M = m_1] = \frac{1}{2^n}$.
-\end{proof}
+Isso significa que a probabilidade de obter a cifra $c$ a partir de qualquer mensagem $m$ é a mesma, independente de qual mensagem foi escolhida originalmente.
+Essa probabilidade é sempre $\frac{1}{2^n}$.
 
-O {\em One Time Pad} possui duas severas limitações.
-A primeira é indicada pelo próprio nome do sistema.
-O sistema supõe que a chave de criptografia $k$ seja usada exatamente uma vez (``one time'').
-Caso a mesma chave $k$ seja usada para criptografar duas mensagens distintas $m_1$ e $m_2$, o sistema se torna completamente inseguro.
+Portanto, a cifra $c$ é igualmente provável para qualquer mensagem $m$.
+Em outras palavras, o conhecimento da cifra $c$ não fornece ao adversário nenhuma informação adicional sobre qual mensagem foi originalmente enviada, garantindo assim o sigilo perfeito.
+
+O One Time Pad (OTP) possui duas severas limitações que afetam sua aplicação prática.
+
+A primeira limitação é indicada pelo próprio nome do sistema.
+O OTP pressupõe que a chave de criptografia $k$ seja usada exatamente uma vez, ou seja, ``one time''.
+Isso significa que cada chave deve ser única e exclusiva para uma única mensagem.
+Se a mesma chave $k$ for reutilizada para criptografar duas mensagens distintas $m_1$ e $m_2$, o sistema se torna completamente inseguro.
 
 Para ilustrar essa limitação considere que duas cifras $c_0$ e $c_1$ foram produzidas usando a mesma chave $k$.
 Assim temos que $c_0 = k \xor m_0$ e $c_1 = k \xor m_1$.
 Note o que acontece quando aplicamos o ou exclusivo entre as duas cifras eliminamos a chave:
-
 
 \begin{eqnarray*}
   c_0 \xor c_1 & = & (k \xor m_0) \xor (k \xor m_1)\\
@@ -177,15 +216,24 @@ Note o que acontece quando aplicamos o ou exclusivo entre as duas cifras elimina
               & = & m_0 \xor m_1
 \end{eqnarray*}
 
-Uma vez eliminada a chave, é fácil separar as mensagens $m_0$ de $m_1$ utilizando uma técnica similar ao ataque de frequência.
+Isso significa que o adversário pode obter a operação XOR das duas mensagens originais, mesmo sem conhecer a chave $k$.
+
+Com essa informação, o adversário pode realizar uma análise de frequência ou outras técnicas de criptoanálise para tentar deduzir as mensagens originais, especialmente se as mensagens tiverem algum padrão ou conteúdo previsível.
+Esse tipo de ataque é conhecido como {\em ataque de reutilização de chave}, e mostra que a segurança do OTP depende criticamente do uso único de cada chave.
+
+Portanto, a reutilização de uma chave no OTP compromete a segurança do sistema, transformando-o de um sistema teoricamente perfeito em um sistema vulnerável e facilmente quebrável.
 
 A segunda e mais crítica limitação do OTP é o tamanho de sua chave.
 A suposição que fizemos é que o tamanho da chave deve ser tão grande quanto a mensagem a ser cifrada.
 Há uma série de problemas práticos com isso.
-Computacionalmente não é possível gerar chaves aleatórias muito grandes, o que limita o tamanho das mensagens que podemos cifrar.
+Computacionalmente, não é possível gerar chaves aleatórias muito grandes, o que limita o tamanho das mensagens que podemos cifrar.
+
 Além disso, assumimos que as chaves são compartilhadas entre as partes.
-Deixamos os detalhes sobre a distribuição de chaves para o Capítulo \ref{cha:distribuicao-chaves}, mas por ora podemos adiantar que se nossa chave é tão grande quanto a mensagem, porque não enviamos a mensagem pelo mesmo canal que enviaríamos a chave?
-Enfim, um sistema cuja a chave seja tão grande quanto a mensagem é de muito pouca utilidade prática.
+Deixamos os detalhes sobre a distribuição de chaves para o Capítulo \ref{cha:distribuicao-chaves}, mas por ora podemos adiantar que se nossa chave é tão grande quanto a mensagem, por que não enviamos a mensagem pelo mesmo canal que enviaríamos a chave?
+Esse é um ponto crítico, pois, se conseguimos enviar a chave de forma segura, poderíamos, em teoria, enviar a mensagem diretamente pelo mesmo canal, tornando o uso da chave redundante.
+
+Enfim, um sistema cuja chave seja tão grande quanto a mensagem é de muito pouca utilidade prática.
+A dificuldade de gerar, distribuir e gerenciar chaves de tamanho adequado para cada mensagem limita significativamente a aplicabilidade do OTP em contextos reais.
 
 Encerramos este capítulo mostrando que esta segunda limitação do OTP infelizmente não é uma peculiaridade do sistema.
 Na verdade todo sistema que possua sigilo perfeito está fadado a ter chaves tão grandes ou maiores do que a mensagem.
@@ -193,95 +241,151 @@ Esse resultado negativo foi proposto e demonstrado pelo próprio Shannon ainda n
 
 
 \begin{theorem}[Shannon]
-Seja $\Pi = \langle Gen, E, D \rangle$ um sistema que garante o sigilo perfeito, então temos que $|K| \geq |M|$.
+Se um sistema que garante o sigilo perfeito, então seu universo de chaves deve ser pelo menos tão grande quanto seu universo de mensagens, ou seja, o tamanho da chave deve ser maior ou igual ao tamanho da mensagem.
 \end{theorem}
-\begin{proof}
-  Consideraremos $M(c)$ como o conjuto de todas as mensagens que podem produzir $c$, ou seja, as mensagens $m \in M$ tal que $E(k, m) = c$ para algum $k \in K$.
-  Se existissem $m' \neq m''$ tais que $E(k, m') = E(k, m'') = c$ então $\Pi$ não poderia ser correto, pois $D(k, c)$ não poder ser $m'$ e $m''$ ao mesmo tempo.
-  Portanto o número de mensagens que podem ser cifradas como $c$ é menor ou igual ao número de chaves, ou em símbolos, $|M(c)| \leq |K|$.
-  Agora suponha por absurdo que $|K| < |M|$.
-  Neste caso existiria uma mensagem $m \notin M(c)$ e, portanto, $Pr[M = m] \neq 0$.
-  Mas, por definição, temos que $Pr[C = c | M = m] = 0$ contradizendo a hipótese deu que $\Pi$ garante o sigilo perfeito.
-\end{proof}
 
-A definição de Shannon foi a primeira tentativa séria de definir segurança de sistemas de criptografia, mas o próprio autor da definição foi capaz de demonstrar suas limitações.
-Nos próximos capítulos apresentaremos definições de segurança mais fracas e mais úteis para nossos propósitos.
+Consideremos $M(c)$ como o conjunto de todas as mensagens que podem produzir a cifra $c$.
 
-A definição, proposta por Shannon, estabelece que um sistema garante o {\em sigilo perfeito} se a cifra não guarda nenhuma informação da mensagem que a produziu.
-No final do capítulo, porém, vimos que esta definição não é muito útil na prática, pois obriga o universo de chaves a ser pelo menos tão grande quanto o universo das mensagens.
+O tamanho de $M(c)$ deve ser menor ou igual ao número de chaves disponíveis.
+Isso é porque, se uma mesma chave pudesse produzir $c$ a partir de mensagens diferentes, a descriptografia não funcionaria corretamente, pois não poderíamos determinar qual mensagem foi originalmente cifrada.
+
+Agora, imagine que o número de chaves seja estritamente menor do que o número de mensagens.
+Nesse caso, haveria pelo menos uma mensagem $m$ que não estaria em $M(c)$, ou seja, uma mensagem que não pode gerar a cifra $c$.
+
+Isso significa que a probabilidade das mensagens não seria independente da probabilidade das cifras. Para essa mensagem $m$, teríamos:
+\begin{itemize}
+\item A probabilidade de escolher $m$ não seria zero: $Pr[M = m] \neq 0$
+\item A probabilidade de $m$ produzir $c$ seria zero: $Pr[M = m | C = c] = 0$
+\end{itemize}
+
+Ou seja, se houver mais mensagens do que chaves, haveria mensagens que não poderiam produzir certas cifras, tornando a probabilidade das mensagens dependente das cifras.
+Portanto, para garantir o sigilo perfeito, o número de chaves deve ser pelo menos igual ao número de mensagens.
+
+A definição de segurança proposta por Claude Shannon foi a primeira tentativa séria de formalizar a segurança dos sistemas de criptografia.
+No entanto, o próprio Shannon demonstrou as limitações dessa definição.
+Nos próximos capítulos, apresentaremos definições de segurança mais fracas, porém mais práticas e úteis para nossos propósitos.
+
+Shannon definiu que um sistema de criptografia garante o sigilo perfeito se a cifra não guarda nenhuma informação sobre a mensagem que a produziu.
+Em outras palavras, qualquer possível mensagem é igualmente provável, independentemente da cifra interceptada pelo adversário.
+Essa definição estabelece um padrão de segurança extremamente elevado e teórico.
+
+Como acabamos de ver, apesar da robustez teórica, a definição de sigilo perfeito tem uma limitação prática significativa:
+ela exige que o universo de chaves seja pelo menos tão grande quanto o universo das mensagens.
+Isso significa que, para cada mensagem possível, deve existir uma chave única que possa ser utilizada para cifrá-la, resultando em um número enorme de chaves que precisam ser geradas, distribuídas e armazenadas de maneira segura.
 
 Apesar do fracasso desta primeira tentativa de formalizar o conceito de segurança, não abandonaremos a ideia geral.
 A abordagem da {\em criptografia moderna} \cite{Goldwasser84}, que utilizaremos nesta apostila, segue três princípios básicos:
 \begin{enumerate}
-\item {\em definições formais:} As noções de segurança utilizadas serão apresentadas de maneira formal por meio de definições.
-As definições prévias nos ajudam a comparar sistemas e avaliar sua segurança a partir de critérios estabelecidos previamente.
-\item {\em suposições explícitas:} Na maioria dos casos seremos forçados a fazer suposições sobre os sistemas de criptografia que não seremos capazes de demonstrar.
-Ainda assim, é imprescindível explicitar essas suposições de maneira clara e formal.
-Nossa incapassidade de provar tais suposições não nos impede de validá-las empiricamente.
-Grande parte do trabalho envolvido na criptografia moderna consiste em validar testar as suposições sobre um sistema e buscar suposições mais simples e básicas.
-\item {\em demonstrações formais:} Quando somos capazes de formalizar nossas suposições e a definição de segurança desejada, eventualmente podemos demonstrar que um sistema que satisfaz as suposições garante determinada noção de segurança.
-Esse tipo de demonstração reduz o problema da segurança às suposições do sistema que devem ser mais simples e mais fáceis de validar empiricamente.
-Esta redução permite que se substitua um sistema cuja suposição foi falseada antes que ele seja quebrado.
+\item {\em definições formais:}
+  As noções de segurança utilizadas serão apresentadas de maneira formal por meio de definições claras.
+  Essas definições nos ajudam a comparar diferentes sistemas de criptografia e avaliar sua segurança com base em critérios previamente estabelecidos.
+\item {\em suposições explícitas:}
+  Muitas vezes, precisamos fazer suposições sobre os sistemas de criptografia que não podemos provar.
+  No entanto, é crucial que essas suposições sejam explicitadas de maneira clara e formal.
+  Mesmo sem provas definitivas, podemos validar essas suposições empiricamente.
+  Grande parte do trabalho na criptografia moderna envolve testar essas suposições e buscar as mais simples e básicas.
+\item {\em demonstrações formais:}
+  Quando conseguimos formalizar nossas suposições e definir a segurança desejada, podemos eventualmente provar que um sistema que atende a essas suposições garante uma certa noção de segurança.
+  Esse tipo de demonstração reduz o problema da segurança às suposições do sistema, que devem ser mais simples e mais fáceis de validar empiricamente.
+  Essa abordagem permite substituir um sistema se suas suposições forem refutadas, antes que ele seja quebrado.
 \end{enumerate}
 
-As definições de segurança em geral possuem dois componentes: uma garantia de segurança -- o que pode ser considerado um ataque bem sucedido -- e um modelo de ameaças.
-Por exemplo, na definição de {\em sigilo perfeito} a garantia de segurança é que nenhuma informação sobre a mensagem esteja contida na cifra -- ou como formulamos, a probabilidade de ocorrência da cifra deve ser independente da probabilidade de ocorrência da mensagem -- e o modelo de ameaça assume que o adversário tem acesso apenas ao texto cifrado e nada mais.
-Os modelos de ameaças que estudaremos no livros incluem:
+As definições de segurança em criptografia geralmente possuem dois componentes: uma garantia de segurança e um modelo de ameaças.
 \begin{itemize}
-\item {\em ataque ciphertext-only:} Este é o modelo assumido na definição de sigilo perfeito.
-Nele assumimos que o adversário tem acesso apenas a um texto cifrado de tamanho arbitrário.
-\item {\em ataque chosen-plaintext:} Neste modelo, além de assumir que o adversário tem acesso à cifra, assumimos que ele é capaz de escolher uma quantidade de mensagens e verificar como elas seriam cifradas pelo sistema.
-\item {\em ataque chosen-ciphertext:} Neste modelo assumimos que o adversário é também capaz de escolher certas cifras e verificar como elas seriam decifras pelo sistema.
+\item {\em Garantia de Segurança:} Especifica o que pode ser considerado um ataque bem-sucedido.
+\item {\em Modelo de Ameaças:} Define o que o adversário pode ou não pode fazer.
 \end{itemize}
 
-Essas definições são progressivamente mais fortes, ou seja, assumem progressivamente maior capacidade de ataque do adversário.
-Note que nossos modelos de ataque não fazem qualquer suposição sobre a estratégia utilizada pelo adversário.
-Em geral, a definição mais adequada depende das necessidades do problema em mãos -- eventualmente pode ser desejável um sistema mais fraco e mais eficiente.
+Por exemplo, na definição de sigilo perfeito, a garantia de segurança é que nenhuma informação sobre a mensagem esteja contida na cifra.
+Isso significa que a probabilidade de ocorrência da cifra deve ser independente da probabilidade de ocorrência da mensagem.
+O modelo de ameaças assume que o adversário tem acesso apenas ao texto cifrado e nada mais.
+Este modelo de ameaça é destacado na definição que demos, simulando um jogo entre o sistema de criptografia e um adversário.
+No jogo, o adversário tenta adivinhar qual mensagem foi cifrada com base apenas na cifra recebida, sem qualquer informação adicional.
 
-Nossa primeira tentativa de definir segurança esbarrou na limitação inconveniente expressa pelo teorema de Shannon.
-Afirmamos no capítulo anterior que o sigilo perfeito pode ser definido por meio de um jogo.
-O sigilo perfeito é garantido se nenhum adversário for capaz de distinguir qual mensagem foi encriptada pelo sistema.
-Para contornar as limitações expressas pelo teorema de Shannon, enfraqueceremos este tipo de definição de duas formas:
+Os modelos de ameaças que estudaremos na apostila incluem:
 \begin{itemize}
-\item O adversário deve ser {\em eficiente} e usar sua estratégia em um tempo razoável.
-  Ou seja, eventualmente um adversário pode derrotar o sistema desde que seja dado a ele tempo suficiente.
-  A existência de um adversário como este não violará nossa definição de segurança, pois não traz uma real ameaça na prática.
-\item O adversário pode eventualmente derrotar o sistema, mas com uma {\em probabilidade muito pequena}.
-Colocado de outra maneira, a cifra pode guardar alguma informação sobre a mensagem desde que seja muito pouca.
+\item {\em ataque apenas ao texto cifrado (ciphertext-only):} 
+  Este é o modelo assumido na definição de sigilo perfeito.
+  Nele, supomos que o adversário tem acesso apenas a um texto cifrado de tamanho arbitrário.
+\item {\em ataque com escolha de texto plano (ataque chosen-plaintext):}
+  Neste modelo, além de assumir que o adversário tem acesso à cifra, supomos que ele é capaz de escolher algumas mensagens e ver como elas seriam cifradas pelo sistema.
+  Isso dá ao adversário mais informações para tentar descobrir a chave de criptografia ou a mensagem original.
+\item {\em ataque com escolha de texto cifrado (ataque chosen-ciphertext):}
+  Neste modelo, assumimos que o adversário é capaz de escolher certas cifras e ver como elas seriam decifradas pelo sistema.
+  Esse é um modelo de ameaça mais poderoso, pois permite ao adversário interagir com o sistema de criptografia de maneira mais direta e potencialmente descobrir vulnerabilidades.
 \end{itemize}
+
+Esses modelos de ameaças são progressivamente mais fortes, o que significa que cada um assume uma capacidade de ataque cada vez maior por parte do adversário.
+É importante notar que nossos modelos de ataque não fazem suposições sobre a estratégia específica que o adversário pode usar.
+Eles simplesmente definem o que o adversário é capaz de fazer em termos de acesso a informações e interações com o sistema de criptografia.
+Isso nos permite avaliar a segurança de um sistema de maneira abrangente e rigorosa, sem depender de suposições específicas sobre o comportamento do adversário.
+
+Nossa primeira tentativa de definir segurança encontrou uma limitação significativa expressa pelo teorema de Shannon.
+Afirmamos no capítulo anterior que o sigilo perfeito pode ser definido por meio de um jogo, onde o sigilo perfeito é garantido se nenhum adversário for capaz de distinguir qual mensagem foi encriptada pelo sistema.
+No entanto, essa definição rigorosa exige que o número de chaves seja pelo menos tão grande quanto o número de mensagens, o que não é prático.
+
+Para contornar as limitações expressas pelo teorema de Shannon, enfraqueceremos essa definição de segurança de duas formas principais:
+\begin{itemize}
+\item {\em Adversário eficiente}:
+  Assumiremos que o adversário deve ser eficiente, ou seja, ele deve usar sua estratégia em um tempo razoável.
+  Na prática, isso significa que, embora um adversário possa eventualmente derrotar o sistema se lhe for dado tempo suficiente, essa possibilidade não viola nossa definição de segurança.
+  A ideia é que, se o tempo necessário para o adversário quebrar o sistema é impraticavelmente longo, o sistema ainda pode ser considerado seguro.
+  Portanto, a existência de um adversário que possa eventualmente derrotar o sistema, mas que necessite de um tempo excessivo para fazê-lo, não representa uma ameaça real na prática.
+\item {\em Probabilidade pequena}:
+  Permitiremos que o adversário possa eventualmente derrotar o sistema, mas apenas com uma probabilidade muito pequena.
+  Em outras palavras, a cifra pode conter alguma informação sobre a mensagem original, desde que essa quantidade de informação seja insignificante.
+  Isso significa que, embora não possamos garantir que a cifra seja completamente independente da mensagem, a informação que pode ser extraída deve ser tão mínima que não ofereça uma vantagem significativa ao adversário.
+  Dessa forma, mesmo que exista uma pequena chance de o adversário descobrir algo sobre a mensagem, essa chance deve ser tão baixa que o sistema ainda é considerado seguro na prática.
+\end{itemize}
+
+Ao enfraquecer a definição de segurança dessa maneira, movemos de um ideal teórico inatingível para uma abordagem mais prática que ainda oferece altos níveis de segurança.
+Este equilíbrio entre segurança teórica e viabilidade prática é fundamental na criptografia moderna, permitindo-nos desenvolver sistemas que são seguros o suficiente para resistir aos ataques dentro de limites de tempo e probabilidade razoáveis.
 
 \section{Abordagem Assintótica}
 \label{sec:abord-assint}
 
-Em termos práticos o que buscamos uma noção de segurança em que para um adversário ter sucesso ele precisaria rodar seu algoritmo em uma máquina excelente por um intervalo bem grande de tempo.
-Alternativamente esperamos que eventualmente o adversário derrote o sistema em pouco tempo, mas com uma probabilidade muito baixa.
-O problema com essa abordagem é como definir o que seria uma ``máquina excelente'', um ``intervalo bem grande de tempo'' e uma ``probabilidade muito baixa''.
-Essas questões são particularmente complicados em um contexto em que a capacidade computacional evolui de maneira acelerada.
+Em termos práticos, buscamos uma noção de segurança que imponha requisitos severos ao sucesso de um adversário.
+Especificamente, queremos que um adversário precise rodar seu algoritmo em uma máquina extremamente poderosa por um intervalo de tempo muito grande para ter sucesso.
+Alternativamente, esperamos que o adversário possa eventualmente derrotar o sistema em pouco tempo, mas com uma probabilidade extremamente baixa.
 
-Ao invés de estabelecer valores fixos para definir esses limites, partiremos de uma {\em abordagem assintótica}.
-Suporemos que o algoritmo de geração de chaves $Gen$ recebe um {\em parâmetro de segurança} $n$ e estabeleceremos nossos limites em função deste parâmetro -- tipicamente denotaremos esse valor usando a notação unária $1^n$, pois a tempo de execução costuma ser calculado como uma função do tamanho da entrada.
-Para os efeitos desta apostila podemos assumir que o parâmetro está relacionado ao tamanho da chave a ser gerada e que é de conhecimento público.
-O parâmetro de segurânça permite que as partes ajustem seu sistema para o nível desejado de segurança -- aumentar seu tamanho costuma refletir em um aumento no tempo de processamento do sistema e em um aumento no tamanho da chave, portanto, quem projeta o sistema tem um incentivo para querer minimizá-lo as custas de diminuir sua segurança.
-A capacidade de ajustar o parâmetro de segurânça possui grandes vantagens práticas, pois permite se defender de adversários com poder computacional mais forte com o passar do tempo.
+Em termos práticos, buscamos uma noção de segurança que imponha requisitos severos ao sucesso de um adversário.
+Especificamente, queremos que um adversário precise rodar seu algoritmo em uma máquina extremamente poderosa por um intervalo de tempo muito grande para ter sucesso.
+Alternativamente, esperamos que o adversário possa eventualmente derrotar o sistema em pouco tempo, mas com uma probabilidade extremamente baixa.
 
-Vamos estabelecer que o adversário buscará quebrar a cifra usando um algorítmo randomizado polinomial em $n$ e que ele pode vencer com uma probabilidade desprezível em $n$.
-A suposição de que o adversário usa um algoritmos randomizado é forte, significa que ele é capaz de acessar uma quantidade arbitrária de bits aleatórios.
-Isso certamente não é possível na prática, mas serve bem aos propósitos de uma análise de pior caso.
-Já a probabilidade ser {\em desprezível} significa que ela cresce assintoticamente mais devagar do que o inverso de qualquer polinômio.
-Formalmente, $\varepsilon: \mathbb{N} \to \mathbb{N}$ é {\em desprezível} se para todo polinômio $p$ existe um número positivo $N$ tal que para todo $n > N$ temos que $\varepsilon(n) < \frac{1}{p(n)}$.
+\begin{itemize}
+\item {\em Máquina extremamente poderosa}:
+  A definição de uma máquina poderosa varia com o tempo e o avanço da tecnologia.
+  Uma máquina que hoje é considerada de ponta pode se tornar obsoleta em poucos anos.
+  Portanto, qualquer definição baseada na capacidade atual das máquinas é inevitavelmente temporária.
 
-Estamos agora em condições de reescrever a definição de segurança formalmente incorporando os enfraquecimentos descritos neste capítulo.
+\item {\em Intervalo bem grande de tempo}:
+  Similarmente, o que consideramos um tempo razoavelmente longo para resistir a ataques também muda com o tempo.
+  O que era considerado seguro há uma década pode não ser mais seguro hoje.
+  Assim, definir um intervalo de tempo ``bem grande'' é complicado, pois deve se ajustar ao ritmo acelerado de avanços tecnológicos.
 
-\begin{definition}
-  Considere o jogo apresentado no Capítulo \ref{cha:sigilo-perfeito}, um sistema $\Pi = \langle Gen, E, D \rangle$ é seguro contra ataques {\em ciphertext-only} se para todo adversário polinomial $\mathcal{A}$ existe uma função desprezível $\varepsilon$ tal que para todo $n$:
-\begin{displaymath}
-  Pr[PrivK^{eav}_{\Pi, \mathcal{A}}(n) = 1] \leq \frac{1}{2} + \varepsilon(n)
-\end{displaymath}
-\end{definition}
+\item {\em Probabilidade muito baixa}:
+  Determinar uma probabilidade de sucesso muito baixa para um ataque também é desafiador.
+  Uma probabilidade aceitável hoje pode não ser aceitável amanhã à medida que as técnicas de ataque evoluem.
+  Além disso, a definição de ``muito baixa'' deve ser precisa e quantificável, o que pode ser difícil de estabelecer de forma universal.
+\end{itemize}
 
-Lembrando que agora o algoritmo $Gen$ recebe como o parâmetro de segurança $n$ em notação unária para gerar a chave de tamanho apropriado.
-Em palavras, a definição estabelece que um sistema é seguro contra ataques {\em ciphertext-only} se nenhum algoritmo eficiente é capaz de derrotá-lo com probabilidade consideravelmente maior do que $\frac{1}{2}$.
-Resta mostrar um sistema que satisfaça essa definição.
+Em vez de estabelecer valores fixos para esses limites, adotamos uma abordagem assintótica, como fazemos ao analisar algoritmos ou avaliar a complexidade de um problema.
+Vamos supor que, ao gerar a chave, o algoritmo $Gen$ recebe um parâmetro de segurança $n$ e estabelecemos nossos limites em função deste parâmetro.
+
+Para os efeitos desta apostila, podemos assumir que o parâmetro está relacionado ao tamanho da chave a ser gerada e que é de conhecimento público.
+O parâmetro de segurança permite que as partes ajustem seu sistema para o nível desejado de segurança.
+Aumentar o parâmetro de segurança geralmente resulta em um aumento no tempo de processamento do sistema e no tamanho da chave.
+
+A capacidade de ajustar o parâmetro de segurança tem vantagens práticas.
+Ela permite que as partes defendam seus sistemas contra adversários com poder computacional mais forte à medida que o tempo passa e a tecnologia avança.
+Isso significa que, à medida que novas técnicas de ataque e hardware mais poderoso são desenvolvidos, podemos simplesmente aumentar o parâmetro de segurança para manter o sistema protegido.
+
+Com essa abordagem, podemos definir de maneira mais clara nossas garantias de segurança.
+Vamos exigir que nenhum adversário rodando um {\em algoritmo polinomial} em relação ao tamanho do parâmetro de segurança $n$ seja capaz de distinguir as mensagens, exceto com uma probabilidade desprezivelmente maior que $\frac{1}{2}$.
+Por ``desprezivelmente maior'', queremos dizer que esse valor cresce mais lentamente do que qualquer polinômio em relação a $n$.
+
+Em termos práticos, isso significa que, conforme aumentamos o parâmetro de segurança, a probabilidade de um adversário bem-sucedido se torna insignificante.
+Essa abordagem nos permite criar sistemas que são adaptáveis e capazes de fornecer altos níveis de segurança, mesmo diante de adversários com crescente poder computacional.
 
 
 \section{Exercícios}
