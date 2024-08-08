@@ -1,149 +1,297 @@
 \chapter{Cifras de Fluxo}
 \label{cha:cifras-de-fluxo}
 
-No capítulo anterior apresentamos uma definição formal para segurança contra ataques em que o adversário tem acesso apenas ao texto cifrado.
-Neste capítulo vamos apresentar uma forma de construir um sistema que satisfaz essa definição.
-A ideia geral da construação é a seguinte: partimos de uma sequência aleatória de bits chamado de {\em semente} e a partir dela geramos uma sequência maior de bits a ser usada para encriptar a mensagem usando o ou exclusivo como no OTP.
-Apesar desta sequência ser gerada de maneira determinística, a segurança do sistema depende do fato de que ela se pareça aleatória.
-Informalmente, um {\em gerador de números pseudoaleatórios} (PRG) é essa função que recebe uma semente aleatória e a expande em uma sequência com cara de aleatória.
+No capítulo anterior, apresentamos uma definição formal para segurança contra ataques em que o adversário tem acesso apenas ao texto cifrado.
+Neste capítulo, vamos apresentar uma forma de construir um sistema que satisfaz essa definição.
+
+A ideia geral da construção é a seguinte:
+partimos de uma sequência aleatória de bits chamada de semente e, a partir dela, geramos uma sequência maior de bits para encriptar a mensagem usando a operação de OU exclusivo (XOR), assim como no OTP.
+Embora essa sequência seja gerada de maneira determinística, a segurança do sistema depende do fato de que ela se pareça aleatória.
+
+Informalmente, um {\em gerador de números pseudoaleatórios} (PRG) é uma função que recebe uma semente aleatória e a expande em uma sequência maior que aparenta ser aleatória.
+A qualidade de um PRG é medida pela sua capacidade de produzir sequências que são indistinguíveis de sequências verdadeiramente aleatórias para qualquer adversário eficiente.
 
 Sistemas de cifra de fluxo foram estudados extensamente nos anos 80 \cite{Blum84,Yao82}.
-A abordagem para verificar se o gerador de números pseudoaleatórios é suficientemente forte consistia em aplicar uma série de testes estatísticos na sequência gerada para tentar distinguí-lo de uma sequência aleatória.
-Assim, por exemplo, um teste pode verificar se a probabilidade de o primeiro bit da sequência ser igual $1$ é $\frac{1}{2}$ ou que a probabilidade de ocorrência de pelos menos três $0$s em qualquer subsequência de tamanho $4$ deve ser $\frac{5}{16}$ -- existem uma sequência em que o $0$ ocorre quatro vezes e mais quatro sequências possíveis em que ele ocorre três vezes.
-Um teste recebe uma sequencia produzida por um PRG e deve retornar $1$ se o passar e $0$ se falhar.
-O objetivo do teste é distinguir as sequências de bits produzidas por um PRG de uma sequência realmente aleatória.
-Por este motivo, esses testes são chamados {\em distinguidores}.
+A abordagem para verificar se o gerador de números pseudoaleatórios é suficientemente forte consistia em aplicar uma série de testes estatísticos na sequência gerada para tentar distingui-la de uma sequência aleatória.
+
+Por exemplo, um teste pode verificar se a probabilidade de o primeiro bit da sequência ser igual a $1$ é $\frac{1}{2}$.
+Isso significa que, em uma sequência verdadeiramente aleatória, a chance de o primeiro bit ser $1$ deve ser igual à chance de ser $0$, ou seja, $50\%$.
+O teste verifica se essa propriedade é mantida na sequência gerada pelo PRG.
+Se a sequência gerada tiver uma probabilidade significativamente diferente de $\frac{1}{2}$ para o primeiro bit ser $1$, isso pode indicar que a sequência não é suficientemente aleatória.
+
+Outro exemplo de teste é verificar se a probabilidade de ocorrência de pelo menos três $0$s em qualquer subsequência de tamanho 4 é $\frac{5}{16}$.
+Para entender por que essa é a probabilidade esperada, consideremos todas as possíveis subsequências de 4 bits:
+
+\begin{itemize}
+\item Existem exatamente 1 subsequência onde todos os bits são $0$s ($0000$).
+\item Existem 4 subsequências onde três dos quatro bits são $0$s ($0001$, $0010$, $0100$, $1000$).
+\end{itemize}
+
+Portanto, há 5 subsequências que atendem ao critério (1 com quatro $0$s e 4 com três $0$s) em um total de $2^4 = 16$ possíveis subsequências de 4 bits.
+Assim, a probabilidade de ocorrência de pelo menos três $0$s em uma subsequência de 4 bits é $\frac{5}{16}$.
+
+O teste então verifica se a sequência gerada pelo PRG possui essa distribuição específica de $0$s em suas subsequências de 4 bits.
+Se a sequência gerada pelo PRG passar neste teste, isso sugere que a sequência é indistinguível de uma sequência verdadeiramente aleatória em relação a essa propriedade específica.
+
+Devido ao seu papel em diferenciar sequências pseudoaleatórias de sequências verdadeiramente aleatórias, esses testes são chamados de {\em distinguidores}.
+Os distinguidores são essenciais para avaliar a robustez de um PRG, pois nos ajudam a garantir que as sequências geradas são adequadamente aleatórias para serem usadas em sistemas de criptografia seguros.
 
 Uma bateria de distinguidores pode ser usada para verificar a qualidade de um PRG.
-Idealmente nenhum teste eficiente deveria ser capaz de distinguir o PRG de uma sequência aleatória, ou pelo menos incapaz de fazê-lo com probabilidade considerável\footnote{Usaremos o termo considerável para probabilidades não despreziveis.}.
-Definiremos um gerador de números pseudo-aleatórios como um algoritmo $G$ que recebe uma semente $s$ de tamanho $n$ e produz $G(s)$ de tamanho $l(n)$ onde $l$ é um polinômio que define o {\em fator de expansão} do PRG -- quão maior é a sequência produzida em relação a semente -- e tal que nenhum algoritmo polinomial $D$ é capaz de distinguir $G(s)$ de um sequencia $r$ escolhida aleatóriamente em $\{0,1\}^{l(n)}$ com probabilidade não desprezível.
-Formalmente temos o seguinte:
+Idealmente, nenhum teste eficiente deveria ser capaz de distinguir a sequência gerada por um PRG de uma sequência verdadeiramente aleatória, ou pelo menos, deveria ser incapaz de fazê-lo com uma probabilidade considerável\footnote{Usaremos o termo ``considerável'' para probabilidades não desprezíveis.}.
 
+Definimos um gerador de números pseudo-aleatórios (PRG) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
+O fator de expansão do PRG, representado por $l$, indica quanto maior é a sequência produzida em comparação com a semente inicial.
 
-\begin{definition}
-  Seja $l$ um polinômio e $G$ um algoritmo determinístico polinomial que recebe $s \in \{0,1\}^n$ e retorna $G(s) \in \{0,1\}^{l(n)}$ e seja $r \leftarrow \{0,1\}^{l(n)}$.
-  O algoritmo $G$ é um {\em gerador de números pseudo-aleatórios} se:
-\begin{enumerate}
-\item $l(n) > n$ para todo $n$ e
-\item para todo algoritmo polinomial $D$ existe uma função desprezível $\varepsilon$ tal que:
+Para que um PRG seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória.
+Em outras palavras, não deve ser possível para nenhum algoritmo eficiente distinguir entre a sequência gerada pelo PRG e uma sequência aleatória com uma probabilidade significativa.
+
+Isso significa que, mesmo com o melhor algoritmo possível, um adversário não deve ser capaz de dizer com confiança se uma sequência veio do PRG ou se é completamente aleatória.
+A segurança do PRG depende dessa incapacidade de distinção, garantindo que as sequências geradas sejam suficientemente aleatórias para serem usadas em contextos criptográficos.
+
+Formalmente, um PRG é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência (ou seja, se ela foi gerada pelo PRG ou é aleatória) for desprezível.
+Em notação formal, temos o seguinte:
+
 \begin{displaymath}
   |Pr[D(r) = 1] - Pr[D(G(s)) = 1]| \leq \varepsilon(n)  
 \end{displaymath}
+
+A restrição de que o distinguidor seja eficiente é estritamente necessária.
+Isso se deve ao fato de que, em teoria, sempre é possível construir um distinguidor usando uma espécie de ataque de força bruta.
+Vamos explorar como isso funciona.
+
+Imagine que temos uma sequência de bits $w$ e queremos saber se ela foi gerada por um PRG $G$  se é uma sequência verdadeiramente aleatória.
+Um algoritmo $D$, nosso distinguidor, pode realizar a seguinte estratégia:
+
+\begin{enumerate}
+    \item Para cada possível semente $s$, o algoritmo $D$ verifica se $G(s) = w$  . 
+    \item Se encontrar uma semente $s$ tal que $G(s) = w$, $D$ devolve $1$ (indicando que a sequência foi gerada pelo PRG).
+    \item Se não encontrar nenhuma semente que gere $w$, $D$ devolve $0$ (indicando que a sequência é aleatória).
 \end{enumerate}
-\end{definition}
+
+Esse método de teste é eficaz porque a probabilidade de o distinguidor $D$ devolver $1$ para uma sequência gerada pelo PRG é muito pequena (desprezível).
+Isso acontece porque $D$ verifica se uma semente específica $s$ gera a sequência $w$.
+Para uma semente de $n$ bits, existem $2^n$ possíveis combinações.
+Como apenas uma dessas combinações de $s$ gera $w$ corretamente, a chance de $D$ encontrar essa combinação é $\frac{1}{2^n}$.
 
 
-\begin{example}
-  Considere um algoritmo $G$ que recebe $s \in \{0,1\}^n$ e devolve $0^{l(n)}$.
-  Certamente $G$ não é um PRG e podemos mostrar isso com um distinguidor $D$ que recebe $w \in \{0,1\}^{l(n)}$ e devolve $1$ se $w = 0^{l(n)}$ e $0$ caso contrário.
-  É fácil ver que para $r \leftarrow \{0,1\}^{l(n)}$ e $s \leftarrow \{0,1\}^n$ temos que $Pr[D(r) = 1] = \frac{1}{2^{l(n)}}$ e $Pr[D(G(s)) = 1] = 1$ e, portanto, temos que:
-\begin{displaymath}
-  |Pr[D(r) = 1] - Pr[D(G(s)) = 1]| = 1 - \frac{1}{2^{l(n)}}
-\end{displaymath}
+No entanto, o problema com esse teste é que ele não é eficiente.
+Para testar todas as possíveis sementes $s$, o tempo esperado é exponencial, mais precisamente $2^{n-1}$.
+Esse tempo de execução torna o método impraticável para valores grandes de $n$.
+Portanto, embora seja teoricamente possível distinguir sequências geradas por um PRG de sequências aleatórias usando força bruta, na prática, a restrição de que o distinguidor seja eficiente é essencial para garantir que o PRG seja útil e seguro.
 
-\end{example}
+Em resumo, a necessidade de eficiência no distinguidor é crucial para a segurança prática dos PRGs.
+Sem essa restrição, métodos de força bruta poderiam sempre distinguir entre sequências pseudoaleatórias e verdadeiramente aleatórias, embora esses métodos sejam computacionalmente impraticáveis.
 
-
-A restrição de que o distinguidor seja eficiente é extritamente necessária.
-Em particular é sempre possível construir um distinguidor usando uma espécie de ataque de força bruta.
-Dado uma sequência $w$, o algoritmo $D$ testa todos as possíveis sementes $s$, verifica se $G(s) = w$ e devolve $1$ caso essa semente exista e $0$ se todas falharem.
-Esse teste é eficaz pois $Pr[D(G(s)) = 1] =  \frac{1}{2^n}$, mas $Pr[D(r) = 1] = \frac{1}{2^{l(n)}}$ -- existem muito menos sequências em $\{0,1\}^{l(n)}$ geradas por alguma semente do que geradas aleatóriamente.
-Porém, o teste não é eficiente.
-De fato o tempo esperado para testar todos os valores de $s$ é exponencial, mais precisamente $2^{n-1}$. 
 
 \section{Segurança das Cifras de Fluxo}
 \label{sec:streamcipher-sec}
 
-Como adiantamos no capítulo anterior, uma vez definida claramente a suposição que estamos fazendo podemos tentar provar que com essa suposição somos capazes de construir um sistema seguro.
-A abordagem para este tipo de prova é uma redução aos moldes das reduções que vimos em Teoria da Computação.
-Neste caso vamos reduzir o problema de construir um sistema seguro contra ataques {\em ciphertext only} ao problema de construir um PRG.
+Como adiantamos no capítulo anterior, uma vez definida claramente a suposição que estamos fazendo, podemos tentar provar que, com essa suposição, somos capazes de construir um sistema seguro.
+A abordagem para este tipo de prova é uma redução, similar às reduções que vimos em Teoria da Computação.
+Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um gerador de números pseudo-aleatórios (PRG).
 
+Reduções são ferramentas poderosas em teoria da computação e criptografia.
+Elas nos permitem transformar um problema desconhecido ou difícil em um problema conhecido ou mais simples.
+Se conseguirmos mostrar que resolver um problema implica resolver outro problema, estabelecemos uma relação de dependência entre eles.
+Neste contexto, se pudermos construir um PRG seguro, podemos utilizar esse PRG para construir um sistema de criptografia que seja seguro contra ataques ciphertext-only.
+
+O processo de redução pode ser descrito da seguinte maneira:
+
+\begin{itemize}
+\item {\em Definir a Suposição}:
+  Primeiro, definimos claramente a suposição que estamos fazendo, no caso, a existência de um PRG seguro.
+  Um PRG seguro é um gerador que produz sequências de bits que não podem ser distinguidas de sequências verdadeiramente aleatórias por qualquer algoritmo eficiente.
+
+\item {\em Transformar o Problema}:
+  Em seguida, transformamos o problema de construir um sistema seguro contra ataques ciphertext-only em um problema que envolve o PRG.
+  Mostramos que, se temos um PRG seguro, podemos usar esse PRG como base para criar um sistema de criptografia que resista a ataques ciphertext-only.
+
+\item {\em Prova de Segurança}:
+  Finalmente, provamos que o sistema de criptografia resultante é seguro sob a suposição de que o PRG é seguro.
+  Isso geralmente envolve demonstrar que qualquer ataque bem-sucedido ao sistema de criptografia implicaria em um ataque bem-sucedido ao PRG, o que contradiria a suposição de que o PRG é seguro.
+\end{itemize}
+
+Essa abordagem de redução nos permite construir sistemas de criptografia confiáveis baseando-nos em componentes cuja segurança já foi estabelecida ou assumida.
+Ela também facilita a compreensão das relações entre diferentes problemas de segurança e a reutilização de soluções existentes para resolver novos problemas.
+
+Ao estabelecer essa conexão entre PRGs e sistemas de criptografia, criamos uma base sólida para desenvolver e analisar algoritmos de criptografia modernos, garantindo que nossas construções sejam robustas e confiáveis sob as suposições corretas.
+
+A {\em cifra de fluxo} é um método de criptografia que converte texto claro $m$ em texto cifrado $c$, utilizando um fluxo de chaves pseudoaleatórias gerado por um gerador de números pseudoaleatórios (PRG).
+Este método é amplamente utilizado devido à sua eficiência e capacidade de operar em dados de tamanho variável, tornando-o ideal para aplicações como comunicação em tempo real e transmissão de dados.
+
+O processo para criptografar uma mensagem $m$ usando uma cifra de fluxo é o seguinte:
+\begin{itemize}
+\item Primeiro, uma semente aleatória $k$ de tamanho fixo $n$ é gerada.
+  Esta semente deve ser segura e conhecida apenas pelas partes autorizadas.
+  Ela será a chave do sistema.
+\item A semente é fornecida ao PRG $G$, que expande a semente em um fluxo de chaves $G(k)$ de comprimento adequado para criptografar a mensagem inteira.
+\item A mensagem original (texto claro) é combinada bit a bit (ou byte a byte) com o fluxo de chaves usando a operação XOR.
+  O resultado é o texto cifrado.
+
+  \begin{displaymath}
+    c = m \oplus G(k)
+  \end{displaymath}
+\end{itemize}
+
+Para descriptografar o processo é similar:
+\begin{itemize}
+\item A mesma semente $k$ utilizada para criptografar a mensagem é novamente fornecida ao PRG $G$ para gerar o mesmo fluxo de chaves $G(k)$.
+\item O texto cifrado é combinado bit a bit (ou byte a byte) com o fluxo de chaves usando a operação XOR.
+  \begin{displaymath}
+    c \oplus G(k)
+  \end{displaymath}
+  O resultado é a mensagem original.
+\end{itemize}
 
 \begin{theorem}
-\label{theo:stream}
-  Se $G$ é um gerador de números pseudo-aleatórios com fator de expansão $l$ então o seguinte sistema $\Pi = \langle Gen, E, D \rangle$ é seguro contra ataques {\em ciphertext only} para mensagens de tamanho fixo $m \in \{0,1\}^{l(n)}$:
-\begin{itemize}
-\item $Gen(1^n) := k \leftarrow \{0,1\}^n$
-\item $E(k,m) = G(k) \xor m$
-\item $D(k,c) = G(k) \xor c$
-\end{itemize}
+  \label{theo:stream}
+  Uma cifra de fluxo para uma mensagem de tamanho fixo $n$ que utiliza um gerador de número pseudoaleatório para expandir a chave é seguro contra ataques {\em ciphertext only}.
 \end{theorem}
-\begin{proof}
-  Seja $\mathcal{A}$ um algoritmo polinomial.
-Construiremos um distinguidor $D$ que recebe um string $w \in \{0,1\}^{l(n)}$ e faz o seguinte:
-\begin{itemize}
-\item Roda $\mathcal{A}(1^n)$ para obter o par de mensagens $m_0, m_1 \in \{0,1\}^{l(n)}$
-\item Escolhe $b \leftarrow \{0,1\}$ e computa $c = w \xor m_b$.
-\item Entrega $c$ para $\mathcal{A}$ e devolve $1$ se o resultado for igual a $b$ e $0$ caso contrário.
-\end{itemize}
 
-Pela definição, $D$ devolve $1$ exatamente nas mesmas situações em que $\mathcal{A}$ vence o desafio.
-Portanto temos que:
-\begin{displaymath}
-Pr[D(G(k)) = 1] = Pr[PrivK^{eav}_{\Pi, \mathcal{A}}(n) = 1]  
-\end{displaymath}
+Para provar o teorema vamos mostrar que se existisse um adversário capaz de quebrar nosso sistema de criptografia, poderíamos usar esse adversário para criar um teste eficiente (distinguidor) que diferencie entre uma sequência gerada por um PRG e uma sequência aleatória.
 
-Além disso, sendo $\Pi'$ o sistema do OTP e $w \leftarrow \{0,1\}^{l(n)}$ temos que:
-\begin{displaymath}
-Pr[D(w) = 1] = Pr[PrivK^{eav}_{\Pi', \mathcal{A}}(n)] = \frac{1}{2}  
-\end{displaymath}
- 
-Como $G$ é um PRG temos que existe uma função desprezível $\varepsilon$ tal que $|Pr[D(G(k)) = 1] - Pr[D(w) = 1]| \leq \varepsilon(n)$ e, portanto:
-\begin{displaymath}
-  |Pr[PrivK^{eav}_{\Pi, \mathcal{A}}(n) = 1] - \frac{1}{2}| \leq \varepsilon(n)
-\end{displaymath}
+Vamos supor que temos um adversário $\mathcal{A}$ que pode quebrar nosso sistema de criptografia.
+Isso significa que, dado um texto cifrado, $\mathcal{A}$ consegue determinar informações sobre a mensagem original com uma precisão melhor do que a pura sorte.
 
-Ou equivalentemente: 
-\begin{displaymath}
-   Pr[PrivK^{eav}_{\Pi, \mathcal{A}}(n) = 1] \leq \frac{1}{2} + \varepsilon(n)
-\end{displaymath}
-\end{proof}
+Usamos o adversário $\mathcal{A}$ para construir um distinguidor $D$.
+Este distinguidor funciona da seguinte forma:
 
-Algoritmos validados empiricamente como bons PRG podem ser usados portanto para gerar cifras seguras, ao menos contra ataques {\em ciphertext-only}.
-Nos próximos capítulos exploraremos definições mais fortes de segurança e suas respectivas suposições.
-Para fechar este capítulo lembramos que as cifras de fluxo sofrem do mesmo problema do OTP quanto à repetição do uso de uma mesma chave.
+\begin{enumerate}
+  \item $D$ recebe uma sequência $w$ e precisa determinar se $w$ foi gerada por um PRG ou se é uma sequência verdadeiramente aleatória.
+  \item $D$ roda o mesmo algoritmo do adversário $\mathcal{A}$ para obter duas mensagens $m_0$ e $m_1$.
+  \item $D$ escolhe aleatoriamente uma das duas mensagens $m$ e calcula $c = w \oplus m$.
+  \item $D$ entrega $c$ ao adversário $\mathcal{A}$ e devolve 1 se $\mathcal{A}$ adivinhar corretamente qual das mensagens foi cifrada e 0 caso contrário.
+\end{enumerate}
+
+O distinguidor $D$ que acabamos de construit devolve 1 com a mesma probabilidade com que $\mathcal{A}$ consegue quebrar o sistema.
+Se $w$ é uma sequência verdadeiramente aleatória, $\mathcal{A}$ não terá qualquer vantagem e só poderá adivinhar corretamente com uma probabilidade de $50\%$.
+
+Se o adversário $A$ pode quebrar o sistema de criptografia, o distinguidor $D$ pode usar essa capacidade para diferenciar entre uma sequência gerada por um PRG e uma sequência verdadeiramente aleatória.
+Isso mostraria que o PRG não é seguro, pois podemos construir um distinguidor eficiente que o quebra.
+
+Ou seja, se o PRG é seguro, então não existe adversário eficiente capaz de derrotar o sistema.
+
+Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (PRG) podem, portanto, ser utilizados para gerar cifras seguras, pelo menos contra ataques do tipo ciphertext-only.
+Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do PRG de uma sequência verdadeiramente aleatória.
+
+Nos próximos capítulos, vamos explorar definições mais robustas de segurança e as suposições associadas a essas definições.
+Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto claro escolhido (chosen-plaintext) e ataques de texto cifrado escolhido (chosen-ciphertext).
+
+Antes de concluir este capítulo, é importante lembrar que as cifras de fluxo compartilham uma limitação significativa com a cifra de uso único (One-Time Pad, OTP):
+a repetição do uso da mesma chave.
+Assim como no OTP, se a mesma chave for reutilizada para criptografar diferentes mensagens, a segurança do sistema é comprometida.
+Isso ocorre porque a reutilização da chave permite que um adversário determine informações sobre as mensagens originais ao analisar as cifras resultantes.
+
+Para mitigar esse problema, é crucial garantir que cada chave utilizada seja única e nunca repetida.
+Além disso, a gestão segura das chaves e a geração de chaves verdadeiramente aleatórias ou suficientemente pseudoaleatórias são aspectos fundamentais para manter a integridade e a segurança das cifras de fluxo.
 
 \section{Modos de Operação}
 \label{sec:modos-de-operacao}
 
-Há uma pequena distância entre o resultado do Teorema \ref{theo:stream} e as aplicações práticas das cifras de fluxo da seção \ref{sec:lfsr}, pois o resultado do teorema vale apenas para mensagens de tamanho fixo previamente conhecido.
-Em todas situações práticas estamos interessados em criptografar cifras de tamanho arbitrário.
-Há duas possíveis soluções para este problema, dois {\em modos de operação} para as cifras de fluxo: síncrono e assíncrono.
+O Teorema \ref{theo:strean} supõe que a mensagem a ser criptografada tem um tamanho fixo previamente conhecido.
+No entanto, em muitas aplicações práticas, precisamos criptografar mensagens de tamanho arbitrário.
+Para resolver esse problema, existem dois modos de operação para cifras de fluxo: o modo síncrono e o modo assíncrono.
 
-Tipicamente, um PRG é formado por um par de algoritmos $\langle Init, GenBits \rangle$.
-O primeiro recebe a semente $s$ como entrada e opcionalmente um vetor inicial $IV$ (ver seção seguinte) e devolve um estado inicial $st_0$.
-O segundo algoritmo recebe como entrada o estado atual $st_i$, devolve um bit $y$ e atualiza o estado para $st_{i+1}$.
-Para cada semente, então, o algoritmo produz um {\em fluxo} de bits -- sendo os $l(n)$ primeiros bits geram $G(s)$.
+No modo síncrono, o gerador de chaves (PRG) gera um fluxo contínuo de bits independente do texto claro.
+Já no modo assíncrono, o fluxo de chaves depende tanto da chave inicial quanto do texto cifrado anterior, permitindo uma ressincronização automática em caso de perda de dados.
 
-No modo {\em síncrono} consideramos uma sequência de mensagens $m_0, m_1, \dots$ como uma única grande mensagem $m$.
-O algoritmo $Init(s)$ gera o estado inicial $st_0$ e a cada comunicação $GetBits$ parte do estado anterior e gera os bits necessários para encriptar a nova parte da mensagem enviada na comunicação.
-A limitação desta abordagem é que as partes precisam mater o estado atual sincronizado, ou seja, quando Alice atualiza $st$, Bob precisa atualizar também.
+Tipicamente, um gerador de números pseudo-aleatórios (PRG) é composto por dois algoritmos: 
+\begin{itemize}
+\item O primeiro algoritmo, $Init$, recebe como entrada uma semente $s$ e, opcionalmente, um {\em vetor inicial} $IV$ (discutido na próxima seção).
+  Ele devolve um estado inicial $st_0$.
+\item  O segundo algoritmo, $GenBits$, recebe o estado atual $st_i$ como entrada, gera um bit $y$ e atualiza o estado para $st_{i+1}$.
+\end{itemize}
 
-O outro modo é {\em assíncrono}.
-Neste assumimos que além da semente $s$ a algoritmo $G$ recebe uma sequência de bits chamada {\em vetor inicial} $IV$.
-O vetor inicial não é sigiloso, mas deve mudar cada vez que uma nova mensagem é criptografada.
-Desta forma garantimos que a sequência produzida por $G$ com a mesma chave seja distinta e assim impedimos que ataques de repetição de chaves como mostramos no Capítulo \ref{cha:sigilo-perfeito}.
+Assim, para cada semente $s$, o PRG produz um fluxo contínuo de bits.
+Os primeiros $l(n)$ bits desse fluxo formam $G(s)$, a sequência pseudo-aleatória desejada.
+
+No modo \textit{síncrono}, tratamos uma sequência de mensagens $m_0, m_1, \dots$ como uma única grande mensagem $m$, dividida em pedaços menores.
+O processo funciona da seguinte maneira:
+
+\begin{enumerate}
+    \item O algoritmo $Init$ recebe a semente $s$ gera o estado inicial $st_0$.
+    \item Cada vez que uma nova parte da mensagem ($m_i$) é enviada, o algoritmo $GenBits$ usa o estado atual para gerar os bits necessários para encriptar essa parte da mensagem.
+    \item O estado é então atualizado para $st_{i+1}$ após cada comunicação.
+\end{enumerate}
+
+A limitação desse modo é que ambas as partes, Alice e Bob, precisam manter seus estados sincronizados.
+Isso significa que, quando Alice atualiza o estado $st$, Bob também precisa atualizar seu estado correspondente de forma sincronizada.
+
+O outro modo é assíncrono. Nesse modo, além da semente $s$, o algoritmo $G$ recebe uma sequência de bits chamada {\em vetor inicial} (IV).
+O vetor inicial não é sigiloso, mas deve ser alterado a cada nova mensagem criptografada.
+
+\begin{enumerate}
+    \item O algoritmo $Init$ recebe a semente $s$ e o vetor inicial $VI$ para gerar estado inicial $st_0$.
+    \item Cada vez que uma nova parte da mensagem ($m_i$) é enviada, o algoritmo $GenBits$ um novo vetor inicial $IV$ é gerado.
+      Esse vetor inicial é público e pode ser transmitido junto com o texto cifrado sem comprometer a segurança do sistema.
+      O acrescimo do vetor inicial garante que o algoritmo não repita a mesma chave para criptografar pedaços diferentes da mensagem.
+\end{enumerate}
+
+Ao garantir que o vetor inicial $IV$ seja diferente para cada pedaço da mensagem, evitamos a repetição de chaves.
+Isso é crucial para impedir ataques onde um adversário poderia identificar padrões entre diferentes mensagens cifradas com a mesma chave.
+
+Diferentemente do modo síncrono, onde a perda de sincronização pode comprometer toda a comunicação, o modo assíncrono permite que cada mensagem seja tratada de forma independente.
+Isso melhora a tolerância a falhas e erros de transmissão.
+Embora o vetor inicial não precise ser mantido em segredo, ele deve ser escolhido de maneira que não seja previsível.
 
 % CITAR OS ARTIGOS QUE APRESENTAM O TRIVIUM, O RC4 E O ATAQUE CONTRA O WEP
 
 \begin{example}
-O Wired Equivalent Privacy (WEP) era o padrão para segurança em conexões WiFi desde 97 e é essencialmene uma cifra de fluxo que opera de modo assíncrono.
-Para gerar um fluxo de bits pseudo-aleatórios o WEP utiliza o RC4 \cite{Rivest16} -- um PRG proposto por Ron Rivest em 87 -- que recebe como entrada a semente de 40 ou 104 bits e um vetor inicial não sigiloso de 24 bits.
-Para cada pacote transimitido, o WEP gera um novo $IV$ e utiliza a mesma chave para criptografar seu conteúdo.
-Acontece que 24 bits é um tamanho consideravelmente pequeno e se repete com 50\% de chance a cada 5000 pacotes tornando-o completamente inseguro \cite{Fluhrer01}.
+  O Wired Equivalent Privacy (WEP) era o padrão para segurança em conexões WiFi desde 1997 e é essencialmente uma cifra de fluxo que opera de modo assíncrono.
+  Para gerar um fluxo de bits pseudo-aleatórios, o WEP utiliza o RC4 \cite{Rivest16} — um gerador de números pseudo-aleatórios (PRG) proposto por Ron Rivest em 1987.
+  O RC4 recebe como entrada uma semente de 40 ou 104 bits e um vetor inicial (IV) não sigiloso de 24 bits.
 
-Hoje em dia, um script que implementa este tipo de ataque chamado {\tt aircrack-ng}\footnote{http://www.aircrack-ng.org/} é capaz de quebrar uma senha WEP usando uma computador pessoal em questão de minutos.
-Esse tipo de vulnerabilidade do protocolo WEP levou-o a ser substituído em pelo protocolo WPA e em seguida pelo WPA2 entre 2004 e 2006.
+  Para cada pacote transmitido, o WEP gera um novo IV.
+  Este IV, combinado com a chave secreta, é utilizado para inicializar o PRG RC4.
+
+  O RC4 gera um fluxo de chaves a partir da combinação da chave secreta e do IV.
+  Este fluxo de chaves é então combinado com o conteúdo do pacote usando a operação XOR, produzindo o texto cifrado.
+
+  Embora o IV de 24 bits não precise ser mantido em segredo, seu tamanho é consideravelmente pequeno.
+  Devido ao espaço limitado de possíveis IVs, há uma alta probabilidade de repetição.
+  Especificamente, com $50\%$ de chance, o IV se repete a cada 5000 pacotes transmitidos.
+  Essa repetição torna o WEP vulnerável a ataques de criptografia, como demonstrado por Fluhrer, Mantin e Shamir em 2001 \cite{Fluhrer01}.
+  Eles mostraram que a repetição do IV permite que um adversário possa recuperar a chave secreta após coletar uma quantidade suficiente de pacotes.
+
+  Hoje em dia, scripts como o {\tt aircrack-ng}\footnote{http://www.aircrack-ng.org/} são capazes de explorar essas vulnerabilidades.
+  Utilizando um computador pessoal, é possível quebrar uma senha WEP em questão de minutos.
+  Esta vulnerabilidade crítica levou à obsolescência do WEP.
+
+  Devido às suas fraquezas, o WEP foi substituído pelo Wi-Fi Protected Access (WPA) e, posteriormente, pelo WPA2 entre 2004 e 2006.
+  Esses novos padrões introduziram melhorias significativas na segurança, incluindo a utilização de protocolos de criptografia mais robustos e a implementação de vetores iniciais maiores e mais seguros, reduzindo drasticamente a probabilidade de repetição e aumentando a resistência contra ataques.
+
 \end{example}
 
 \section{Construções Práticas}
 \label{sec:construcoes-praticas}
 
-A existência de PRGs não foi demonstrada matematicamente.
-No Apêndice \ref{cha:owf} mostraremos porque é tão difícil encontrar uma PRG demonstradamente seguro.
-O importante por enquanto é que é difícil demonstrar a segurança de um sistema e, portanto, a abordagem utilizada em relação a PRG é empírica.
-Ou seja, os candidatos a PRG são empiricamente validados a cada tentativa frustrada de construir um distinguidor para eles.
+A existência de geradores de números pseudo-aleatórios (PRGs) não foi demonstrada matematicamente.
+No Apêndice \ref{cha:owf}, discutimos por que é tão desafiador encontrar um PRG que seja comprovadamente seguro.
+O ponto crucial, por enquanto, é que é extremamente difícil demonstrar matematicamente a segurança de um sistema de criptografia baseado em PRGs.
 
+Devido a essa dificuldade, a abordagem predominante na validação de PRGs é empírica.
+Em vez de provar rigorosamente que um PRG é seguro, os candidatos a PRG são validados através de extensivos testes e tentativas de quebra.
+A segurança de um PRG é então inferida a partir da incapacidade de construir um distinguidor eficiente que possa diferenciá-lo de uma sequência verdadeiramente aleatória.
+
+O processo de validação segue os seguintes passos:
+\begin{enumerate}
+\item \textbf{Proposição de Candidatos}:
+  Novos algoritmos PRG são propostos por criptógrafos e pesquisadores.
+  Estes algoritmos devem passar por um rigoroso processo de avaliação.
+\item \textbf{Testes de Distinção}:
+  Diversos testes estatísticos e distinções são aplicados aos candidatos.
+  Esses testes tentam identificar padrões ou irregularidades que possam diferenciar a saída do PRG de uma sequência aleatória.
+\item \textbf{Tentativas de Quebra}:
+  Comunidades de criptógrafos e pesquisadores tentam construir distinguidores que possam quebrar a segurança dos PRGs propostos.
+  Cada tentativa frustrada de construir um distinguidor fortalece a confiança na segurança do PRG.
+\item \textbf{Validação Empírica}:
+  A segurança de um PRG é considerada válida empiricamente quando ele resiste a extensivos testes e tentativas de quebra ao longo do tempo.
+  Isso não prova a segurança de forma absoluta, mas fornece uma base prática sólida para sua utilização.
+\end{enumerate}
+
+A abordagem empírica para a validação de PRGs é fundamental para o avanço da criptografia moderna.
+Embora não possamos provar matematicamente que um PRG é seguro, a validação empírica oferece um método robusto para garantir a eficácia e a confiabilidade dos sistemas de criptografia na prática.
+Esse processo contínuo de avaliação e teste é essencial para identificar e utilizar PRGs que oferecem altos níveis de segurança.
 
 \subsection{Linear-Feedback Shift Registers}
 \label{sec:lfsr}
