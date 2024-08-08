@@ -296,69 +296,242 @@ Esse processo contínuo de avaliação e teste é essencial para identificar e u
 \subsection{Linear-Feedback Shift Registers}
 \label{sec:lfsr}
 
-Uma classe de exemplos deste tipo de algoritmo são os chamados {\em Linear-Feedback Shift Registers} (LFSRs).
-Um LFSR consiste de um vetor de registradores $s_{n-1} \dots s_0$, que guardam exatamente um bit cada, e uma sequência de bits $c_{n-1} \dots c_0$ chamada {\em coeficientes de feedback}.
-A cada passo o estado é atualizado deslocando todo vetor uma posição para a direita e produzindo um novo bit que é calculado como
-\begin{displaymath}
-s_{n-1} := \bigoplus_{i=0}^{n-1}c_is_i  
-\end{displaymath}
+Os registradores de deslocamento com realimentação linear, conhecidos como \textit{Linear-Feedback Shift Registers} (LFSRs), são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
+
+Um LFSR é composto por duas partes principais:
+\begin{enumerate}
+    \item {\em Vetor de Registradores}: Um vetor de registradores \(s_{n-1}, s_{n-2}, \dots, s_0\) que armazena exatamente um bit cada.
+    \item {\em Coeficientes de Feedback}: Uma sequência de bits \(c_{n-1}, c_{n-2}, \dots, c_0\), conhecida como coeficientes de feedback, que determina como o novo bit é calculado a cada passo.
+\end{enumerate}
+
+O funcionamento de um LFSR pode ser descrito em etapas simples:
+
+\begin{enumerate}
+    \item O LFSR começa com um {\em estado inicial} definido pelo vetor de registradores.
+    \item A cada passo, o estado do LFSR é atualizado da seguinte maneira:
+    \begin{itemize}
+        \item Todos os bits no vetor de registradores são deslocados uma posição para a direita.
+        \item O bit mais à esquerda ($s_{n-1}$) é atualizado com um novo valor calculado usando uma operação XOR sobre os bits do vetor de registradores ponderados pelos coeficientes de feedback.
+    \end{itemize}
+    A fórmula para calcular o novo bit $s_{n-1}$ é:
+    \begin{displaymath}
+    s_{n-1} := \bigoplus_{i=0}^{n-1} c_i s_i
+    \end{displaymath}
+
+    \item A cada atualização, o bit mais à direita ($s_0$) do vetor de registradores é produzido como parte da sequência pseudo-aleatória.
+\end{enumerate}
 
 \begin{example}
-  Considere um LFSR com quatro registradores sendo o primeiro e o terceiro parte do coeficiete de feedback.
-Se a configuração inicial dos registradores é $\langle 0,0,1,1 \rangle$ os próximos passos são os seguintes:
-\begin{displaymath}
-  \langle 0,0,1,1 \rangle \vdash
-  \langle 1,0,0,1 \rangle \vdash 
-  \langle 1,1,0,0 \rangle \vdash
-  \langle 1,1,1,0 \rangle \vdash
-  \langle 1,1,1,1 \rangle
-\end{displaymath}
+  Para ilustrar, considere um LFSR com três registradores ($n=3$) e coeficientes de feedback $c_2 = 1$, $c_1 = 0$, $c_0 = 1$.
+  Suponha que o valor inicial (semente) dos registradores seja $s_2 = 1$, $s_1 = 0$, $s_0 = 1$.
+  A cada passo, o estado é atualizado da seguinte maneira:
+
+\begin{itemize}
+    \item O novo valor de $s_2$ é calculado como $s_2 := c_2 s_2 \oplus c_1 s_1 \oplus c_0 s_0$.
+    \item O vetor de registradores é então deslocado para a direita, e o valor de $s_0$ é emitido como parte da sequência de saída.
+\end{itemize}
+
+Vamos demonstrar os primeiros passos desse LFSR:
+
+\begin{enumerate}
+    \item Estado inicial: $s_2 = 1$, $s_1 = 0$, $s_0 = 1$
+    \begin{itemize}
+        \item $s_2 := (1 \cdot 1) \oplus (0 \cdot 0) \oplus (1 \cdot 1) = 1 \oplus 0 \oplus 1 = 0$
+        \item $s_2 \leftarrow 0$, $s_1 \leftarrow 1$, $s_0 \leftarrow 0$
+        \item O primeiro bit produzido é 1.
+    \end{itemize}
+    
+    \item Novo estado: $s_2 = 0$, $s_1 = 1$, $s_0 = 0$
+    \begin{itemize}
+        \item $s_2 := (1 \cdot 0) \oplus (0 \cdot 1) \oplus (1 \cdot 0) = 0 \oplus 0 \oplus 0 = 0$
+        \item $s_2 \leftarrow 0$, $s_1 \leftarrow 0$, $s_0 \leftarrow 1$
+        \item O segundo bit produzido é 0.
+    \end{itemize}
+    
+    \item Novo estado: $s_2 = 0$, $s_1 = 0$, $s_0 = 1$
+    \begin{itemize}
+        \item $s_2 := (1 \cdot 0) \oplus (0 \cdot 0) \oplus (1 \cdot 1) = 0 \oplus 0 \oplus 1 = 1$
+        \item $s_2 \leftarrow 1$, $s_1 \leftarrow 0$, $s_0 \leftarrow 0$
+        \item O terceiro bit produzido é 1.
+    \end{itemize}
+    
+    \item Novo estado: $s_2 = 1$, $s_1 = 0$, $s_0 = 0$
+    \begin{itemize}
+        \item $s_2 := (1 \cdot 1) \oplus (0 \cdot 0) \oplus (1 \cdot 0) = 1 \oplus 0 \oplus 0 = 1$
+        \item $s_2 \leftarrow 1$, $s_1 \leftarrow 1$, $s_0 \leftarrow 0$
+        \item O terceiro bit produzido é 0.
+    \end{itemize}
+\end{enumerate}
+
+Portanto, os primeiros bits da sequência gerada seriam: 1, 0, 1, 0.
+
 \end{example}
 
-Um LSFR com $n$ registradores é capaz de gerar no máximo $2^n$ bits até começar a repetir sua sequência.
-Bons LFSR são aqueles que geram a maior quantidade de bits antes de começar a repetir -- essa quantidade de bits é chamada de {\em tamanho do ciclo}.
+Um LFSR com $n$ registradores é capaz de gerar no máximo $2^n$ bits antes de começar a repetir sua sequência.
+Isso ocorre porque o número de estados possíveis de um vetor de registradores com $n$ bits é $2^n$.
+Eventualmente, o LFSR deve retornar a um estado anterior, iniciando assim um ciclo.
 
-O segredo do LFSR, sua ``chave'', é a semente $s_{n-1} \dots s_0$ -- lembrem que assumimos que o mecanismo (neste caso os coeficiente de feedback) são sempre conhecidos. 
-Um ataque relativamente simples a um LFSR consiste em observar os $n$ primeiros bits gerados $y_{n+1} \dots y_{2n}$ e resolver o seguinte sistema linear:
+O tamanho do ciclo de um LFSR refere-se à quantidade de bits gerados antes que a sequência comece a se repetir.
+Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo LFSR.
+Um bom LFSR é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
 
-\begin{eqnarray*}
-  y_{n+1} &    =   & c_{n-1}y_n \xor \dots \xor c_0 y_1\\
-         & \vdots &  \\
-  y_{2n}  &    =   & c_{n-1}y_{2n-1} \xor \dots \xor c_0 y_n\\      
-\end{eqnarray*}
+Em aplicações de criptografia, um ciclo longo é crucial para garantir a segurança.
+Um ciclo curto pode ser facilmente identificado e explorado por um adversário, comprometendo a segurança do sistema.
+Um LFSR com um ciclo longo geralmente oferece uma melhor qualidade de aleatoriedade, pois a repetição tardia dos padrões aumenta a imprevisibilidade da sequência gerada.
 
+
+O segredo de um LFSR, ou sua ``chave'', é a semente $s_{n-1} \dots s_0$.
+Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
+
+Um ataque relativamente simples a um LFSR envolve a observação dos $n$ primeiros bits gerados, \(y_{n+1}, \dots, y_{2n}\), e a resolução de um sistema linear.
+A ideia é que, conhecendo os primeiros bits gerados, podemos inferir os coeficientes de feedback e, portanto, prever os próximos bits gerados pelo LFSR.
+
+Quando observamos os $n$ primeiros bits gerados pelo LFSR, podemos configurar um sistema de equações lineares para resolver os coeficientes de feedback.
+Considere os bits $y_1, y_2, \dots, y_{2n}$ gerados pelo LFSR.
+Podemos expressar cada bit como uma combinação linear dos bits anteriores, ponderada pelos coeficientes de feedback $c_{n-1}, c_{n-2}, \dots, c_0$:
+
+\begin{displaymath}
+  \begin{array}{rcl}
+    y_{n+1} & = & c_{n-1}y_n \oplus c_{n-2}y_{n-1} \oplus \cdots \oplus c_0 y_1 \\
+    y_{n+2} & = & c_{n-1}y_{n+1} \oplus c_{n-2}y_n \oplus \cdots \oplus c_0 y_2 \\
+    & \vdots & \\
+    y_{2n} & = & c_{n-1}y_{2n-1} \oplus c_{n-2}y_{2n-2} \oplus \cdots \oplus c_0 y_n \\
+  \end{array}
+\end{displaymath}
 
 É possível mostrar que essas equações são linearmente independentes e, portanto, elas determinam unicamente os coefientes.
 Uma vez determinados os valores $y_0 \dots y_n = s_0 \dots s_n$, podemos prever cada novo bit da sequência.
 Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
 
-Resumindo, o LFSR não é seguro pois a operação que gera novos bits é linear, o que permite que ela seja previsível.
-LFSRs não são PRG seguros, mas muitos PRGs nada mais são do que versões alteradas deste esquema geral.
-Tipicamente os PRGs usados na prática substituem a operação de ou exclusivo por alguma operação não linear.
+\begin{example}
+  Vamos considerar que os coeficientes de feedback são $c_2 = 1$, $c_1 = 0$, $c_0 = 1$.
+
+  O adversário sabe esses valores porque isso é parte do mecanismo.
+
+  Imagine que observamos os três primeiros valores:
+  \begin{displaymath}
+    \begin{array}{rcl}
+      y_4 & = & 0 \\
+      y_5 & = & 1 \\
+      y_6 & = & 0 \\
+    \end{array}
+  \end{displaymath}
+
+  Temos então que:
+
+  \begin{displaymath}
+    \begin{array}{rcl}
+      0 & = & y_3 \oplus y_1 \\
+      1 & = & y_4 \oplus y_2 \quad (\text{já sabemos que } y_4 = 0, \text{ então }) \\
+      1 & = & 0 \oplus y_2 \\
+      y_2 & = & 1 \\
+      0 & = & y_5 \oplus y_3 \quad (\text{já sabemos que } y_5 = 1, \text{ então }) \\
+      0 & = & 1 \oplus y_3 \\
+      y_3 & = & 1 \\
+    \end{array}
+  \end{displaymath}
+
+  Agora substituímos $y_2$ e $y_3$ na primeira equação e obtemos $0 = y_3 \oplus y_1 = 1 \oplus y_1$ e concluimos que $y_1 = 1$.
+  Portanto, a semente inicial é $y_1 = 1$, $y_2 = 1$ e $y_3 = 1$.
+
+  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do LFSR.
+  Isso demonstra como um adversário pode comprometer a segurança do LFSR ao observar um número suficiente de bits gerados.
+\end{example}
+
+Resumindo, o LFSR (Linear-Feedback Shift Register) não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
+Essa linearidade permite que o LFSR seja previsível e, portanto, vulnerável a ataques.
+Um adversário que observa um número suficiente de bits gerados pelo LFSR pode resolver um sistema de equações lineares para determinar a semente inicial e, consequentemente, prever todos os bits subsequentes.
+
+Embora os LFSRs não sejam seguros, muitos Geradores de Números Pseudo-Aleatórios (PRGs) usados na prática são versões modificadas deste esquema geral.
+A segurança dos PRGs modernos geralmente depende da introdução de não-linearidades no processo de geração de bits.
+Em vez de usar exclusivamente operações lineares como a XOR, os PRGs seguros utilizam funções não lineares.
+Essas funções podem incluir operações aritméticas complexas, substituições de bits baseadas em tabelas (substituições S-box) ou outras transformações matemáticas que dificultam a previsão dos bits gerados.
 
 \subsection{Trivium}
 \label{sec:trivium}
 
-Em um concurso científico de 2008 para produção de cifras de fluxo seguras, uma série de algoritmos foram apresentados como alternativas seguras e eficientes para este problema.
-Um dos algoritmos selecionados pelo projeto eSTREAM é o {\em Trivium} \cite{DeCanniere06}.
-Este algoritmo recebe dois valores como entrada ambos com 80 bits, a semente e o vetor incial.
-Um estado no Tivium é um vetor com 288 bits e seu ciclo tem tamanho $2^{64}$, ou seja, $Triv: \{0,1\}^{80}\times \{0,1\}^{80} \to \{0,1\}^{2^{64}}$.
+Em 2008, um concurso científico focado na produção de cifras de fluxo seguras foi realizado com o objetivo de identificar algoritmos que fossem tanto seguros quanto eficientes.
+Este concurso, conhecido como projeto eSTREAM, reuniu diversas propostas de algoritmos de criptografia de fluxo, cada um competindo para se destacar como uma solução viável para a criptografia moderna.
 
-O Trivium possui três registradores A, B e C de tamanhos de 93, 84 e 111 respectivamente, somando 288 bits.
-Em cada passo cada registrador:
+Entre os algoritmos selecionados pelo projeto eSTREAM, o {\em Trivium} \cite{DeCanniere06} se destacou como uma alternativa segura e eficiente.
+O Trivium foi desenvolvido por Christophe De Canniere e Bart Preneel em 2006.
+Este algoritmo é projetado para ser simples e leve, mas ao mesmo tempo, capaz de oferecer um alto nível de segurança.
+
+O Trivium recebe dois valores como entrada, ambos com 80 bits:
 \begin{enumerate}
-\item calcula o AND do penúltimo com o ante-penúltimo bit e calcula o XOR do bit resultante com o último bit e com mais um bit de uma certa posição fixa chamado {\em feedfoward bit} para produzir um bit chamado {\em bit de saída},
-\item o bit de saída é enviado para o registrador adjacente -- A envia para B, B para C e C para A,
-\item cada registrador move seus bits uma posição para a direita, como no LFSR,
-\item cada registrador aplica o XOR do bit que recebeu com um bit de uma certa posição fixa, chamado {\em feedbackward bit}, e insere bit resultante na primeira posição e, por fim,
-\item calcula-se o XOR dos três bits de saída para produzir um bit do fluxo.
+    \item \textbf{Semente (Key)}: Uma sequência de 80 bits que serve como chave secreta do algoritmo.
+    \item \textbf{Vetor Inicial (IV)}: Outra sequência de 80 bits, que é usada para garantir a unicidade da cifra gerada para diferentes mensagens, mesmo quando a mesma chave é utilizada.
 \end{enumerate}
 
-A chave do Trivium é inserida nas primeiras posições do registrador A, e o vetor inicial nas úlitmas posições do registrador B.
-As demais posições são preenchidas com $0$ excetos as últimas três do registrador C que são preenchidas com $1$.
-Antes de começar a produzir o fluxo de bits, o processo roda $4 \times 288 = 1152$ no que é chamado de {\em fase de aquecimento}. 
-Até a escrita destas notas, não existem ataques conhecidos ao algoritmo mais eficientes do que o ataque de força-bruta.
+O estado interno do Trivium é representado por um vetor de 288 bits.
+Esse estado é atualizado iterativamente para gerar a sequência de saída pseudo-aleatória.
+A atualização do estado é projetada de tal forma que o ciclo do Trivium tem um tamanho de $2^{64}$ bits, ou seja, o Trivium pode gerar uma sequência de até $2^{64}$ bits antes de começar a repetir.
 
+Até o momento, o Trivium tem resistido a uma ampla gama de ataques criptoanalíticos, o que reforça sua reputação como um algoritmo seguro.
+Além disso, ele é eficiente em termos de uso de recursos computacionais, tornando-o adequado para aplicações com restrições de hardware, como dispositivos embarcados.
+
+\subsection*{Estrutura e Funcionamento do Trivium}
+
+O Trivium possui três registradores denominados A, B e C, com tamanhos de 93, 84 e 111 bits, respectivamente, totalizando 288 bits.
+
+A inicializaćão dos registradores é feita da seguinte forma:
+
+\begin{enumerate}
+\item {\em Chave (Key)}:
+  \begin{itemize}
+  \item A chave de 80 bits é inserida nas primeiras posições do registrador A.
+  \item As demais posições do registrador A são preenchidas com zeros.
+  \end{itemize}
+  
+\item {\em Vetor Inicial (IV)}:
+  \begin{itemize}
+  \item O vetor inicial de 80 bits é inserido nas últimas posições do registrador B.
+  \item As demais posições do registrador B são preenchidas com zeros.
+  \end{itemize}
+    
+\item Todas as posições do registrador C são preenchidas com zeros, exceto as últimas três posições, que são preenchidas com uns.    
+\end{enumerate}
+
+Antes de começar a produzir o fluxo de bits, o Trivium passa por uma {\em fase de aquecimento}.
+Durante esta fase, o algoritmo roda $4 \times 288 = 1152$ ciclos para misturar completamente o estado interno.
+Esta fase de aquecimento ajuda a assegurar que o estado inicial não revele diretamente a chave ou o vetor inicial.
+
+Os passos seguintes do Trivium são:
+\begin{enumerate}
+    \item {\em Cálculo do Bit de Saída}:
+    \begin{itemize}
+        \item Cada registrador calcula o AND entre o penúltimo e o antepenúltimo bit.
+        \item O resultado é então combinado usando XOR com o último bit e com um bit de uma posição fixa chamada de \textit{feedforward bit}.
+        \item Este cálculo gera o \textit{bit de saída}.
+    \end{itemize}
+    
+    \item {\em Envio do Bit de Saída}:
+    \begin{itemize}
+        \item O bit de saída de cada registrador é enviado para o registrador adjacente:
+        \begin{itemize}
+            \item Registrador A envia seu bit de saída para o registrador B.
+            \item Registrador B envia seu bit de saída para o registrador C.
+            \item Registrador C envia seu bit de saída para o registrador A.
+        \end{itemize}
+    \end{itemize}
+    
+    \item {\em Deslocamento dos Bits}:
+    \begin{itemize}
+        \item Cada registrador desloca seus bits uma posição para a direita, semelhante ao LFSR (Linear-Feedback Shift Register).
+    \end{itemize}
+    
+    \item {\em Inserção do Novo Bit}:
+    \begin{itemize}
+        \item Cada registrador aplica XOR entre o bit recebido e um bit de uma posição fixa chamada de \textit{feedbackward bit}.
+        \item O resultado é inserido na primeira posição do registrador.
+    \end{itemize}
+    
+    \item {\em Geração do Bit de Fluxo}:
+    \begin{itemize}
+        \item O XOR dos três bits de saída dos registradores A, B e C é calculado.
+        \item Este resultado final é o bit do fluxo gerado pelo Trivium.
+    \end{itemize}
+\end{enumerate}
 
 \begin{figure}
   \centering
@@ -366,10 +539,17 @@ Até a escrita destas notas, não existem ataques conhecidos ao algoritmo mais e
   \caption{Estrutura circular do Trivium}
 \end{figure}
 
+Resumindo, o Trivium é um algoritmo de cifra de fluxo que utiliza três registradores interligados para gerar uma sequência pseudoaleatória de bits.
+Em cada passo, os registradores realizam operações lógicas e de deslocamento, trocando bits de saída entre si e inserindo novos bits com base em cálculos de feedback.
+A combinação dos bits de saída dos três registradores gera o fluxo de bits que é usado para criptografar ou descriptografar mensagens.
 
-A escolha de um bom gerador de números pseudo-aleatórios é central para a segurança de uma cifra de fluxo.
-Um erro típico é utilizar funções padrão, como a função {\tt rand} da biblioteca padrão do {\tt C}, que não são adequadas para aplicações de segurança.
-A orientação geral é buscar os geradores selecionados pelo projeto eSTREAM como o Trivium mencionado nesta seção ou o SALSA20.
+A escolha de um bom gerador de números pseudo-aleatórios (PRG) é crucial para garantir a segurança de uma cifra de fluxo.
+Utilizar geradores inadequados pode comprometer seriamente a integridade do sistema criptográfico. Um erro comum é utilizar funções padrão de bibliotecas de programação, como a função \texttt{rand} da biblioteca padrão da linguagem \texttt{C}.
+Embora essas funções sejam adequadas para simulações e outras aplicações não críticas, elas não oferecem o nível de segurança necessário para aplicações criptográficas.
+
+Para garantir a segurança de sistemas criptográficos, é essencial utilizar PRGs que foram rigorosamente avaliados e validados pela comunidade criptográfica.
+A orientação geral é utilizar geradores selecionados pelo projeto eSTREAM, que foram submetidos a testes extensivos e demonstraram ser seguros contra uma variedade de ataques criptoanalíticos.
+Dois exemplos notáveis de geradores aprovados pelo projeto eSTREAM são o Trivium, que foi detalhado nesta seção, e o SALSA20.
 
 
 \section{Exercicios}
