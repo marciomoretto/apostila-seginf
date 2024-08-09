@@ -1,27 +1,33 @@
 \chapter{Cifras de Bloco}
 \label{cha:cifras-de-bloco}
 
-No capítulo anterior mostramos que somos capazes de construir um sistema seguro contra ataques do tipo {\em ciphertext only}.
-Para isso precisamos supor a existência um gerador de números pseudo-aleatórios, ou seja, um algoritmo capaz de gerar uma sequência de bits indintinguível, para todos efeitos práticos, de uma sequência aleatória.
-Nossa definição de ataque é um pouco mais fraca do que a apresentada no Capítulo \ref{cha:sigilo-perfeito}, mas nosso sistema não requer chaves tão grandes.
-As cifras de fluxo, porém, compartilham com o OTP dois problemas: são totalmente inseguras caso haja repetição de chaves e não apresentam qualquer garantia de segurança caso o adversário conheça partes do mensagem.
+No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques do tipo ``ciphertext only'' (onde o atacante só tem acesso ao texto cifrado).
+Para que isso seja viável, é necessário supor a existência de um gerador de números pseudo-aleatórios, ou seja, um algoritmo capaz de gerar uma sequência de bits que, para todos os efeitos práticos, não pode ser distinguida de uma sequência realmente aleatória.
 
-O modelo das cifras de fluxo é adequado para descrever as Máquinas Enigma utilizadas pelo exército nazista nos anos 40.
-Sua cifra, porém, foi derrotada não apenas pelo desenvolvimento tecnológico que levou a contrução da máquina Bombe e do Colossus, mas porque os aliados tiveram acesso a trechos de mensagens descriptografas.
-Com a teoria da criptografia moderna, diríamos hoje que o tipo de ataque que os ingleses fizeram foi do tipo {\em known plaintext}.
+Embora essa definição de segurança seja um pouco mais fraca do que a apresentada no Capítulo \ref{cha:sigilo-perfeito}, ela tem a vantagem de não exigir chaves extremamente longas.
+No entanto, assim como o ``One-Time Pad'' (OTP), as cifras de fluxo também apresentam dois problemas importantes:
+se uma chave for reutilizada, a segurança é completamente comprometida, e se o adversário souber partes da mensagem original, não há garantias de segurança.
 
-Neste capítulo nos voltaremos para um modelo de ataque ainda mais poderoso.
-Ataques do tipo {\em chosen plaintext} (CPA) supõe que o adversário, além de acessar o texto cifrado, é capaz de fazer com que o sistema produza as cifras de mensagens produzidas por ele \cite{Bellare97}.
-É evidente que um ataques do tipo {\em known plaintext} são casos particulares deste, mas existem situações em que devemos assumir esse poder maior por parte do adversário.
+O modelo das cifras de fluxo é ideal para descrever as Máquinas Enigma, utilizadas pelo exército nazista durante a década de 1940.
+A cifra empregada por essas máquinas foi quebrada não apenas pelo avanço tecnológico, que possibilitou a construção da máquina Bombe e do computador Colossus, mas também porque os aliados conseguiram obter trechos de mensagens já descriptografadas.
 
-Vamos formalizar segurança contra ataques CPA de forma análoga à segurança contra ataques {\em ciphertext only}.
-O modelo de ameaças é formalizado por meio do seguinte jogo:
+Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque de ``known plaintext'', onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
+
+Neste capítulo, vamos explorar um modelo de ataque ainda mais poderoso: os ataques do tipo chosen plaintext (CPA). Nesses ataques, o adversário não apenas tem acesso ao texto cifrado, mas também pode escolher mensagens específicas e observar como o sistema as cifra \cite{Bellare97}.
+
+É importante notar que os ataques known plaintext são um caso particular desse modelo mais geral, mas há situações em que devemos considerar que o adversário possui essa capacidade adicional, o que torna o cenário de segurança ainda mais desafiador.
+
+
+Vamos explicar a segurança contra ataques do tipo \textit{chosen plaintext} (CPA) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}). A garantia de segurança que buscamos continua sendo a mesma que discutimos anteriormente, mas agora vamos considerar um cenário de ameaças mais poderoso.
+
+O modelo pode ser descrito da seguinte forma:
+
 \begin{enumerate}
-\item O adversário $\mathcal{A}$ escolhe duas mensagens $m_0$ e $m_1$ com o mesmo tamanho ($|m_0| = |m_1|$) e envia para o sistema $\Pi$.
-\item O sistema gera uma chave $k$ usando o algoritmo $Gen$ e sorteia aleatoriamente uma das mensagens para criptografar ($\Pi$ sorteia $b \leftarrow \{0, 1\}$ e criptografa $m_b$).
-\item Durante todo o processo (mesmo depois de receber a cifra) $\mathcal{A}$ pode consultar o sistema $\Pi$ sobre como uma série de mensagens $q_0, \dots, q_{n'-1}$ seriam criptografadas.
-\item A cifra produzida $E(k, m_b) = c$ e enviada de volta para o adversário.
-\item O adversário $\mathcal{A}$ produz um bit $b' \in \{0,1\}$.
+    \item O adversário, $\mathcal{A}$, escolhe duas mensagens de mesmo tamanho, $m_0$ e $m_1$, e as envia para o sistema de criptografia $\Pi$.
+    \item O sistema gera uma chave secreta e escolhe aleatoriamente uma dessas mensagens para criptografar.
+    \item Durante o processo, e mesmo depois de receber o texto cifrado, o adversário pode perguntar ao sistema como outras mensagens escolhidas por ele seriam cifradas.
+    \item O sistema então retorna o texto cifrado para o adversário.
+    \item Com base nas informações disponíveis, o adversário tenta adivinhar qual das duas mensagens foi cifrada.
 \end{enumerate}
 
 \begin{center}
@@ -36,69 +42,57 @@ O modelo de ameaças é formalizado por meio do seguinte jogo:
 \draw[->] (1,-0.5) -> node[above]{$E(k, q_0), \dots, E(k, q_{n'-1})$} (9,-0.5);
 \draw[->] (1,-1.5) -> node[above]{$E(k,m_b) = c$} (9,-1.5);
 \draw[->] (0,3) -> node{$b \leftarrow \{0,1\}$} (system);
-\draw[->] (adversary) -> node{$b' \in \{0,1\}$} (10,-3);
 \end{tikzpicture}
 \end{center}
 
-A garantia de segurança é idêntica a da cifra de fluxo.
-O desafio de $\mathcal{A}$ é acertar qual das duas mensagens foi encriptada.
-Chamamos o experimento de $PrivK^{cpa}_{\Pi, \mathcal{A}}$:
-\begin{displaymath}
-  PrivK^{cpa}_{\Pi, \mathcal{A}}(n) = \left\{
-    \begin{array}{lcl}
-      1 & \textrm{se} & b = b'\\
-      0 & \textrm{c.c.} &\\
-    \end{array}
-    \right.
-\end{displaymath}
+Um sistema é {\em seguro contra CPA} se nenhum adversário polinomial tiver uma vantagem significativa para vencer o jogo que acabamos de descrever.
+Ou seja, a probabilidade de que um adversário consiga vencer o jogo é apenas desprezivelmente maior do que $\frac{1}/{2}$
 
-Um sistema $\Pi$ é {\em seguro contra CPA} se para todo adversário polinomial $\mathcal{A}$ temos que existe uma função desprezível $\varepsilon$ tal que:
-\begin{displaymath}
-  Pr[PrivK^{cap}_{\Pi, \mathcal{A}} = 1] \leq \frac{1}{2} + \varepsilon(n)
-\end{displaymath}
+Para construir um sistema seguro contra ataques CPA, precisamos usar o conceito de funções pseudoaleatórias.
+Em termos simples, uma função pseudoaleatória é um processo que transforma uma entrada (um conjunto de bits) em uma saída que parece aleatória.
 
-Para construir um sistema seguro contra CPA assumiremos a existência de {\em funções pseudoaleatórias}.
-Considere o conjunto de todas as funções $f: \{0,1\}^n \to \{0,1\}^n$.
-Chamaremos esse conjunto de $Func_n$ e não é difícil calcular que $|Func_n| = 2^{n2^n}$.
-Gostaríamos de escolher aleatoriamente uma função $f \leftarrow Func_n$, mas isso não é possível, o melhor que podemos fazer é escolher uma chave $k \leftarrow \{0,1\}^n$ e tentar produzir uma função $f_k: \{0,1\}^n \to \{0,1\}^n$ que se pareça com uma função escolhida aleatoriamente.
-Assim, como um PRG, uma {\em função pseudoaleatória} (PRF) é tal que não existe algoritmo efeciente capaz de distingui-la de uma função aleatória com probabilidade considerável \cite{Goldreich86}.
+A diferença principal é que a função pseudoaleatória não apenas estende ou gera uma sequência longa a partir de um pequeno pedaço de informação (como um gerador de números pseudoaleatórios faria), mas sim utiliza uma chave para definir a própria função que realiza essa transformação.
+Em outras palavras, a chave é usada para escolher a função específica dentro de um grande conjunto de funções possíveis.
+Quando aplicamos essa função a uma entrada, ela ``embaralha'' os bits de maneira que a saída pareça aleatória, mesmo sendo gerada de forma determinística.
 
-Uma {\em cifra de bloco} é uma {\em permutação pseudoaleatória} (PRP), uma função bijetora $p_k: \{0,1\}^n \to \{0,1\}^n$ (permutação), cuja inversa $p_k^{-1}$ pode ser calculado de maneira eficiente e não existe algoritmo polinomial capaz de distinguir $p_k$ de uma permutação aleatória com probabilidade não desprezível.
+A segurança de uma função pseudoaleatória é garantida pelo fato de que não existe um algoritmo eficiente (ou seja, que funcione em tempo polinomial) capaz de distinguir entre uma função pseudoaleatória e uma função escolhida de maneira verdadeiramente aleatória.
+Em outras palavras, para qualquer adversário que tente diferenciar entre essas duas situações, a função pseudoaleatória será tão boa quanto uma função completamente aleatória.
 
-Uma {\em cifra de bloco} é capaz de criptografar uma mensagem de tamanho fixo $m \in \{0,1\}^n$, chamado de {\em bloco}, $p_k(m) = c$ e decifrar usando sua inversa $p_k^{-1}(p_k(m)) = m$.
-Na próxima seção mostraremos como combinar os blocos para criptografar um mensagem de tamanho arbitrário e provaremos a segurança desses sistemas.
+Uma {\em cifra de bloco} é um tipo específico de função pseudoaleatória, que chamamos de {\em permutação pseudoaleatória}.
+Sua característica distintiva é a capacidade de reverter o processo de ``embaralhamento'' dos bits.
+Isso significa que, além de transformar uma mensagem de tamanho fixo (o {\em bloco}) em uma saída que parece aleatória, ela também permite que essa transformação seja desfeita de forma eficiente, recuperando a mensagem original.
+
+Assim como outras funções pseudoaleatórias, a cifra de bloco utiliza uma chave para definir como os bits serão embaralhados.
+A segurança dessa cifra vem do fato de que, para um adversário, ela é indistinguível de uma permutação completamente aleatória.
+Ou seja, não existe um método eficiente para diferenciar entre o comportamento da cifra de bloco e o de uma função que simplesmente embaralha os bits de maneira aleatória.
+
+Na próxima seção, veremos como essas cifras de bloco podem ser combinadas para criptografar mensagens de qualquer tamanho, mantendo a segurança do sistema criptográfico.
 
 \section{Modos de Operação}
 \label{sec:modos-de-operacao-bloco}
 
-Uma cifra de bloco é usada para criptografar um bloco de tamanho fixo.
-Tipicamente, porém, desejamos criptografar uma mensagem de tamanho arbitrário $m \in \{0,1\}^*$.
-Para tanto temos que combinar de alguma forma os blocos criptografados pelas cifra de bloco.
-A forma mais natural, e insegura, de fazer isso é chamada {\em Eletronic Code Book} (ECB).
-Neste {\em modo de operação} dividimos a mensagem $m$ em pedaços do tamanho do bloco ($m = m_0 || m_1 || \dots || m_l$ onde $|m_i| = n$), usamos a cifra de bloco $p_k$ para criptografar cada bloco e contatenos eles, ou seja, $c = p_k(m_0) \dots p_k(m_l)$.
-Este modo de operação não garante a segurança contra ataques {\em ciphertext only} porque blocos iguais são criptografados de maneira igual (Figura \ref{fig:ecb-exemplo}\footnote{Imagem tirada do verbete {\em Modo de Operação (criptografia)} da Wikipédia (\url{https://pt.wikipedia.org})}).
-Considere o seguinte adversário $\mathcal{A}$ que derrota esta cifra:
-\begin{enumerate}
-\item $\mathcal{A}$ envia $m_0 = m||m$ e $m_1=m||m'$ para $\Pi$ de forma que $m \neq m'$ e $|m| = |m'| = n$ onde $n$ é o tamanho do bloco,
-\item $\Pi$ vai sortear uma das duas mensagens ($b \leftarrow \{0,1\}$) e devolve $E(k, m_b) =c$,
-\item se $c$ for formado por dois blocos idênticos $\mathcal{A}$ devolve $0$, caso contrário devolve $1$.
-\end{enumerate}
+Uma cifra de bloco é usada para criptografar informações em pedaços de tamanho fixo, chamados de blocos.
+No entanto, na prática, muitas vezes precisamos criptografar mensagens que são maiores ou menores que esse tamanho fixo.
+Para lidar com isso, precisamos de uma forma de combinar os blocos criptografados pela cifra de bloco para proteger a mensagem inteira.
 
-\begin{center}
-\begin{tikzpicture}[node distance=2cm,auto,>=latex]
-\node (m0) at (0,0)  {$m_0$};
-\node (c0) at (0,-3)  {$c_0$};
-\node (m1) at (2,0) {$m_1$};
-\node (c1) at (2,-3) {$c_1$};
-\node at (4,0) {\dots};
-\node at (4,-3) {\dots};
-\node (ml) at (6,0) {$m_l$};
-\node (cl) at (6,-3) {$c_l$};
-\draw[->] (m0) -> node[left]{$p_k$} (c0);
-\draw[->] (m1) -> node[left]{$p_k$} (c1);
-\draw[->] (ml) -> node[left]{$p_k$} (cl);
-\end{tikzpicture}
-\end{center}
+Uma maneira simples e intuitiva de fazer isso é chamada de {\em Electronic Code Book} (ECB).
+Nesse modo de operação, dividimos a mensagem em vários blocos do mesmo tamanho e, em seguida, criptografamos cada um desses blocos separadamente com a cifra de bloco.
+Depois de criptografar todos os blocos, simplesmente juntamos os blocos cifrados para formar a mensagem final cifrada.
+
+No entanto, esse método tem uma grande falha de segurança:
+blocos idênticos na mensagem original serão criptografados da mesma maneira, resultando em blocos idênticos no texto cifrado.
+Isso significa que, se um adversário observar blocos repetidos no texto cifrado, ele pode deduzir que partes da mensagem original são iguais, o que compromete a segurança.
+
+Por exemplo, imagine que um adversário queira descobrir se duas partes de uma mensagem criptografada são iguais ou diferentes.
+Ele pode criar duas mensagens de teste:
+uma onde a mesma parte se repete, e outra onde as duas partes são diferentes.
+
+Se ele criptografar essas mensagens e o texto cifrado resultar em dois blocos idênticos, o adversário saberá que a mensagem original tinha partes iguais.
+Se os blocos cifrados forem diferentes, ele saberá que as partes da mensagem original também eram diferentes.
+
+Em outras palavras, esse adversário consegue distinguir entre as duas cifras ao observar como cada bloco é criptografado.
+Isso significa que o modo ECB não é seguro nem mesmo contra ataques apenas contra a cifra.
+A Figura \ref{fig:ecb-exemplo} ilustra essa vulnerabilidade.\footnote{Imagem tirada do verbete {\em Modo de Operação (criptografia)} da Wikipédia (\url{https://pt.wikipedia.org})}).
 
 \begin{figure}[!htp]
   \label{fig:ecb-exemplo}
@@ -108,23 +102,31 @@ Considere o seguinte adversário $\mathcal{A}$ que derrota esta cifra:
   \caption{Imagem criptografada no modo ECB}
 \end{figure}
 
-Essa maneira ingênua de combinar os blocos não garante a segurança contra o modelos de ataque mais simples que apresentamos.
-O que estamos buscando é um sistema que seja seguro contra CPA.
+Essa forma ingênua de combinar os blocos não garante a segurança contra os tipos de ataques mais básicos que discutimos anteriormente.
+O que realmente precisamos é de um sistema que seja seguro contra ataques CPA, onde o adversário pode escolher mensagens e ver como elas são criptografadas.
 
-Pela definição de segurança contra CPA que apresentamos, o adversário possui acesso a um oráculo que ele pode consultar para verificar como uma mensagem seria criptografada.
-Essa definição força o algoritmo $E$ de criptografia a ser não determinístico.
-Caso contrário, o adversário poderia derrotar o sistema simplesmente enviando duas mensagens cuja cifra ele consultou.
+Na definição de segurança contra CPA, o adversário tem a capacidade de ``consultar'' o sistema para descobrir como uma mensagem específica seria criptografada.
+Isso significa que, para proteger o sistema, o processo de criptografia precisa ser imprevisível, ou seja, não pode produzir o mesmo resultado toda vez que a mesma mensagem é criptografada.
+Se fosse previsível, o adversário poderia facilmente enganar o sistema ao enviar mensagens que ele já consultou antes.
 
-Para garantir o não determinismo do sistema incluiremos um bloco aleatório no começo da mensagem chamado de {\em vetor inicial}.
-Como no caso da cifra de fluxo, o vetor inicial não é um segredo, mas garante que toda mensagem será criptografada de maneira diferente.
+Para garantir essa imprevisibilidade, incluímos um bloco aleatório no início de cada mensagem, conhecido como {\em vetor inicial} (IV).
+Esse vetor inicial não precisa ser mantido em segredo, mas ele assegura que cada vez que uma mensagem é criptografada, o resultado será diferente, mesmo que a mensagem original seja a mesma.
+Assim como nas cifras de fluxo, o vetor inicial é fundamental para evitar que padrões previsíveis apareçam no texto cifrado, aumentando a segurança do sistema.
 
-No modo de operação {\em Cipher Block Chaining} cada bloco depende não apenas da cifra de bloco $p$ e do bloco $m_i$ a ser encriptado, mas também da cifra do bloco imediatamente anterior $c_{i-1}$.
-O algoritmo $E(k,m) := c_0 c_1 \dots c_l$ onde cada $c_i$ tem o tamanho de um bloco $n$ e cada $c_i$ é computado da seguinte maneira:
+No modo de operação {\em Encadeamento de Blocos de Cifra} ou {\em Cipher Block Chaining} (CBC), cada bloco de texto cifrado não depende apenas da cifra de bloco aplicada ao bloco de texto original, mas também do bloco cifrado que veio imediatamente antes dele.
+Isso cria uma ``cadeia'' onde cada bloco cifrado influencia o próximo, aumentando a segurança do processo.
 
-\begin{eqnarray*}
-  c_0 & := & IV \leftarrow \{0,1\}^n \\
-  c_i & := & p_k(c_{i-1} \xor m_i) \textrm{ para } i = 1, \dots, l
-\end{eqnarray*}
+O funcionamento é o seguinte:
+
+\begin{itemize}
+\item Primeiro, temos um bloco aleatório inicial, o vetor inicial (IV), que inicia o processo ($c_0 = IV$).
+  Esse bloco serve para garantir que cada mensagem cifrada será única.
+\item Em seguida, cada bloco da mensagem original é combinado com o bloco cifrado anterior antes de ser criptografado ($p_k(c_{i-1} \xor m_i)$).
+  Isso significa que, para criptografar um bloco da mensagem, usamos a cifra de bloco, mas também consideramos o resultado do bloco anterior.
+\end{itemize}
+
+Essa cadeia de dependência faz com que, mesmo que dois blocos da mensagem original sejam iguais, seus blocos cifrados finais sejam diferentes, porque cada um deles leva em conta o bloco anterior.
+Ao final, o resultado é uma sequência de blocos cifrados, onde cada um depende do anterior, tornando o sistema muito mais seguro.
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -154,29 +156,29 @@ O algoritmo $E(k,m) := c_0 c_1 \dots c_l$ onde cada $c_i$ tem o tamanho de um bl
 \end{tikzpicture}
 \end{center}
 
+Para descriptografar uma mensagem que foi cifrada usando o modo CBC, o processo é basicamente o inverso da criptografia.
 
-Para descriptografar precisamos aplicar $D(k,c) := m_0 \dots m_l$ da seguinte forma:
-\begin{eqnarray*}
-  m_{i} & := & p_k^{-1}(c_{i+1}) \xor c_{i} \textrm{ para } i = 0, \dots, l-1
-\end{eqnarray*}
+Cada bloco da mensagem original é recuperado usando o bloco cifrado correspondente e o bloco cifrado anterior.
+Em outras palavras, para descriptografar um bloco específico, aplicamos o processo inverso da cifra de bloco ao bloco cifrado seguinte e, em seguida, combinamos esse resultado com o bloco cifrado anterior ($m_{i}  :=  p_k^{-1}(c_{i+1}) \xor c_{i}$).
+
+Esse processo continua ao longo de toda a sequência de blocos cifrados, revertendo o ``encadeamento'' até que todos os blocos da mensagem original tenham sido restaurados.
 
 É possível provar que este sistema é seguro contra CPA.
 
 \begin{theorem}
-  Se $p$ é uma PRP então o sistema $\Pi$ tal qual apresentado acima, modo CBC, é seguro contra CPA.
+Um sistema que utiliza uma permutação pseudoaleatória segura no modo CBC é seguro contra ataques do tipo CPA.
 \end{theorem}
 
 
-A principal limitação do modo CBC é que os blocos precisam ser processados em sequência, ou seja, o algoritmo não é paralelizável.
-O {\em modo contador} (Ctr), por outro lado, não tem essa limitação.
-Este modo opera de maneira muito similar a uma cifra de fluxo.
-Como no modo CBC o primeiro bloco é uma sequência de bits aleatória ($IV$).
-Para ada bloco é calculado somando o índice do bloco com $IV$ e aplicado uma função pseudoaleatória ao resultado.
-Calculamos por fim o XOR do valor obtido com o bloco da mensagem:
-\begin{eqnarray*}
-  c_0 & := & IV \leftarrow \{0,1\}^n \\
-  c_i & := & m_i \xor f_k(IV + i) \textrm{ para } i = 1, \dots, l
-\end{eqnarray*} 
+A principal limitação do modo CBC é que os blocos de dados precisam ser processados em sequência, ou seja, cada bloco só pode ser criptografado depois que o bloco anterior foi processado.
+Isso significa que o algoritmo não pode ser facilmente paralelizado, o que pode tornar o processo mais lento.
+
+Por outro lado, o {\em modo contador} (Ctr) não tem essa limitação.
+Esse modo funciona de maneira semelhante a uma cifra de fluxo, permitindo que os blocos sejam processados simultaneamente, o que aumenta a eficiência.
+
+No modo Ctr, o processo começa com uma sequência de bits aleatória, o vetor inicial (IV), que é usado como ponto de partida.
+Em vez de depender do bloco anterior, cada bloco da mensagem é combinado com um valor único, gerado ao somar o índice do bloco ao vetor inicial ($IV + i$).
+Esse valor é então processado por uma função pseudoaleatória, e o resultado é combinado com o bloco da mensagem para produzir o texto cifrado ($c_i = m_i \xor f_k(IV + i)$).
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -206,86 +208,48 @@ Calculamos por fim o XOR do valor obtido com o bloco da mensagem:
 \end{tikzpicture}
 \end{center}
 
-O algoritmo $D(k,c)$ é exatamente a mesma coisa, como se poderia esperar:
-\begin{eqnarray*}
-  m_i & := & c_i \xor f_k(c_0 + i) \textrm{ para } i = 1, \dots, l
-\end{eqnarray*} 
+Para descriptografar uma mensagem no modo contador (Ctr), o processo é simples e eficiente.
+Primeiro, somamos o vetor inicial (IV) ao número do bloco que estamos tentando recuperar.
+Em seguida, aplicamos a mesma função usada durante a criptografia para gerar o bloco de bits correspondente e, por fim, realizamos a operação XOR entre essa sequência e o bloco cifrado correspondente ($c_i \xor f_k(IV + i)$).
 
+Ao contrário do modo CBC, não precisamos reverter a função utilizada na criptografia.
+Em outras palavras, não é necessário usar uma permutação pseudoaleatória que permita desfazer o processo de ``embaralhamento''.
+Uma função simples que embaralha os bits de maneira segura é suficiente para tanto a criptografia quanto a descriptografia.
 
-A segurança do modo contador exige apenas uma função pseudoaleatória que não precisa ser inversível:
-
+O modo Ctr também é seguro contra ataques do tipo CPA.
 
 \begin{theorem}
-  Seja $f$ uma função pseudoaleatória, o sistema $\Pi$ tal qual apresentado acima, modo Ctr, é segura contra CPA.
+Um sistema que utiliza uma função pseudoaleatória segura no modo Ctr é seguro contra ataques do tipo CPA.
 \end{theorem}
-\begin{proof}
-  Seja $\Pi$ o sistema de criptografia usando uma função pseudoaleatória em modo Ctr e $\Pi'$ o mesmo sistema, mas usando uma função realmente aleatória.
-Usamos o adversário $\mathcal{A}$ para construir um distinguidor $D$ que recebe uma entrada $1^n$ e acesso a um oráculo $O:\{0,1\}^n \to \{0,1\}^n$ da seguinte forma:
+
+Para se convencer de que o teorema é válido, vamos considerar dois sistemas de criptografia:
+o sistema $\Pi$, que usa uma função pseudoaleatória no modo contador (Ctr), e o sistema $\Pi'$, que é semelhante, mas usa uma função realmente aleatória.
+
+Suponha que exista um adversário $\mathcal{A}$ que tenta atacar o sistema.
+Para analisar a segurança, podemos imaginar que estamos tentando construir um distinguidor que tenta identificar se o sistema está usando uma função pseudoaleatória ou uma função realmente aleatória.
+
+O processo seria o seguinte:
+
 \begin{enumerate}
-\item Sempre que $\mathcal{A}$ fizer uma consulta a seu oráculo em um mensagem $m$, fazemos o seguinte:
-\begin{enumerate}
-\item Geramos $IV \leftarrow \{0,1\}^n$.
-\item Consultamos $O(IV + i)$ para cada $i \in 0, \dots, l$ para receber $y_0, \dots, y_l$ como resposta.
-\item Devolvemos $y_0 \xor m_0 \dots y_l \xor m_l$ para $\mathcal{A}$
-\end{enumerate}
-\item Quando $\mathcal{A}$ envia $m_0$ e $m_1$ para o sistema, escolhemos $b \leftarrow \{0,1\}$ e:
-\begin{enumerate}
-\item Geramos $IV \leftarrow \{0,1\}^n$.
-\item Consultamos $O(IV + i)$ para cada $i \in 0, \dots, l$ para receber $y_0, \dots, y_l$ como resposta.
-\item Devolvemos $y_0 \xor m_{b0} \dots y_l \xor m_{bl}$ para $\mathcal{A}$
-\end{enumerate}
-\item Quando $\mathcal{A}$ devolve o bit $b'$ devolvemos $1$ se $b = b'$ e $0$ caso contrário.
+\item Sempre que o adversário $\mathcal{A}$ quiser saber como uma mensagem seria criptografada, geramos um vetor inicial (IV) e, em seguida, aplicamos a função (seja ela pseudoaleatória ou realmente aleatória) ao vetor inicial somado ao número do bloco correspondente.
+  O resultado é então combinado com a mensagem original para gerar o texto cifrado que é devolvido ao adversário.
+\item Quando o adversário $\mathcal{A}$ tenta adivinhar entre duas mensagens enviadas ao sistema, o processo é o mesmo:
+  geramos um vetor inicial, aplicamos a função escolhida e combinamos o resultado com as mensagens que o adversário deseja testar.
 \end{enumerate}
 
-$D$ opera em tempo polinomial, pois $\mathcal{A}$ também opera em tempo polinomial e conforme ambos operam da maneira idêntica, temos que:
+Se o sistema $\Pi'$ usa uma função realmente aleatória, ele se comporta como uma ``caixa preta'' que não permite que o adversário aprenda nada útil sobre a mensagem original, além do que poderia descobrir por simples adivinhação.
+Neste caso, a chance de sucesso do adversário é equivalente a um palpite aleatório ($50\%$).
 
-\begin{eqnarray*}
-  Pr_{k \leftarrow \{0,1\}^n}[D^{f_k}(1^n) = 1] & = & Pr[PrivK^{cpa}_{\mathcal{A},\Pi}(n) = 1]\\
-  Pr_{f \leftarrow Func_n}[D^{f}(1^n) = 1] & = & Pr[PrivK^{cpa}_{\mathcal{A},\Pi'}(n) = 1]
-\end{eqnarray*}
- 
-Como $f$ é uma função pseudoaleatória, por definição, temos que existe $\varepsilon$ desprezível tal que:
-\begin{displaymath}
-  |Pr_{k \leftarrow \{0,1\}^n}[D^{f_k}(1^n) = 1] - Pr_{f \leftarrow Func_n}[D^{f}(1^n) = 1]| \leq \varepsilon(n)
-\end{displaymath}
+Agora, precisamos verificar se o sistema $\Pi$, que usa uma função pseudoaleatória, se comporta de maneira suficientemente semelhante ao sistema $\Pi'$ para que o adversário não possa distinguir entre eles.
+Se a função pseudoaleatória usada for segura, ela será praticamente indistinguível de uma função realmente aleatória, o que significa que a chance do adversário distinguir entre as duas será desprezivelmente superior a $\frac{1}{2}$.
 
-Juntando tudo temos que:
+A única maneira de o adversário ganhar uma vantagem é se o vetor inicial usado para criptografar coincider com o da mensagem que ele está testando.
+No entanto, como o número total de possibilidades para o vetor inicial é enorme ($2^n$ para um bloco de tamanho $n$), a probabilidade de tal coincidência ocorrer é desprezível.
 
-\begin{displaymath}
-  |Pr[PrivK^{cpa}_{\mathcal{A},\Pi}(n) = 1] - Pr[PrivK^{cpa}_{\mathcal{A},\Pi'}(n) = 1]| \leq \varepsilon(n)
-\end{displaymath}
+Portanto, a chance do adversário ter sucesso em um ataque CPA contra o sistema $\Pi$ é apenas desprezivelmente superior a $\frac{1}{2}$.
+Isso nos permite concluir que o sistema $\Pi$ é seguro contra ataques CPA.
 
-Se conseguirmos mostrar que $Pr[PrivK^{cpa}_{\mathcal{A},\Pi'}(n) = 1] < \frac{1}{2} + \varepsilon'(n)$ para um $\varepsilon'$ desprezível, então resolvemos o problema, pois teremos:
-\begin{displaymath}
-  Pr[PrivK^{cpa}_{\mathcal{A},\Pi}(n) = 1] < \frac{1}{2} + \varepsilon(n) + \varepsilon'(n)
-\end{displaymath}
-
-Vamos chamar de $IV$ o primeiro bloco da cifra $c$ produzida pelo sistema $\Pi'$ e $IV_i$ o primeiro bloco de cada cifra $c_i$ resultado das consultas de $\mathcal{A}$ ao oráculo.
-\begin{enumerate}
-\item Se para nenhuma $IV + j$ usado para encriptar algum bloco $j$ de $m_b$ coincidir com nenhum $IV_i + j'$ de algum bloco $j'$ de uma consulta então $\Pi'$ se comporta exatamente como um OTP e temos que $Pr[PrivK^{cpa}_{\mathcal{A},\Pi'}(n) = 1] = \frac{1}{2}$.
-\item Caso contrário é possível que o $\mathcal{A}$ seja capaz de distinguir as mensagens.
-\end{enumerate}
-
-Resta, portanto, calcular a probabilidade de uma coincidência como essa ocorrer.
-Como $\mathcal{A}$ tem que ser polinomial, o número de consultas máximo que ele pode fazer está limitado a $q(n)$ onde $q$ é um polinômio.
-Seja $l$ o número de blocos de $c$ e $l_i'$ o número de blocos da $i$-ésima consulta.
-Essa coincidência quando $IV + 1 \dots IV + l$ intersecciona $IV_i + 1 \dots IV_i + l'$, ou seja, quando:
-\begin{displaymath}
-  IV - l' + 1 \leq IV_i \leq IV + l -1
-\end{displaymath}
-
-Ou seja, existem $l + l' - 1$ casos em que ocorre uma intersecção, num universo de $2^n$ valores.
-Assim, a probabilidade dessa coincidência é $\frac{l + l' -1}{2^n}$.
-Essa probabilidade é maximizada para os maiores valores possíveis de $l$ e $l'$, a saber, $q(n)$.
-Portanto a maior probabilidade possível para essa intersecção é $\frac{2q(n) - 1}{2^n}$ que é desprezível.
-Concluímos que:
-
-\begin{displaymath}
-Pr[PrivK^{cpa}_{\mathcal{A},\Pi'}(n) = 1] < \frac{1}{2} + \frac{2q(n) - 1}{2^n}
-\end{displaymath}
-\end{proof}
-
-A demonstração indica que o tamanho dos blocos também influencia em sua segurança.
+A explicação indica que o tamanho dos blocos também influencia em sua segurança.
 Isso ocorre, pois quanto menores os blocos maior a chance de gerar vetores inciais idênticos, e portanto, de criptografar duas mensagens distintas com a mesma chave.
 %Como exemplo, tomando o caso concreto do DES, seu bloco tem tamanho $64$ e,portanto, esperamos uma colisão depois de $2^{32}$ blocos (ver Capítulo \ref{cha:hash}), ou cerca de 4Gb.
 %No momento em que estas notas são escritas, este valor é alto, mas plausível em muitas aplicações práticas.

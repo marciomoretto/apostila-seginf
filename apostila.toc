@@ -19,11 +19,11 @@
 \contentsline {subsection}{\numberline {4.3.2}Trivium}{61}{subsection.4.3.2}%
 \contentsline {section}{\numberline {4.4}Exercicios}{65}{section.4.4}%
 \contentsline {chapter}{\numberline {5}Cifras de Bloco}{67}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Modos de Operação}{69}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Construções Práticas}{74}{section.5.2}%
+\contentsline {section}{\numberline {5.1}Modos de Operação}{70}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Construções Práticas}{75}{section.5.2}%
 \contentsline {subsection}{\numberline {5.2.1}Data Encryption Standard (DES)}{75}{subsection.5.2.1}%
 \contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{77}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Exercícios}{78}{section.5.3}%
+\contentsline {section}{\numberline {5.3}Exercícios}{79}{section.5.3}%
 \contentsline {chapter}{\numberline {6}Integridade e Autenticidade}{81}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{82}{section.6.1}%
 \contentsline {subsection}{\numberline {6.1.1}CBC-MAC}{84}{subsection.6.1.1}%
