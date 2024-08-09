@@ -1,45 +1,51 @@
 \chapter{Integridade e Autenticidade}
 \label{cha:mac}
-Até agora nos focamos em sistemas de criptografia simétricos que garantem a {\em confidencialidade} da comunicação entre as partes.
-No modelo de ataque mais poderoso que vimos até aqui o adversário tem a capacidade de verificar como mensagens escolhidas seriam cifradas e mostramos sistemas seguros contra este modelo.
-Neste capítulo nos voltamos pra outros dois problemas:
+
+Até agora, exploramos sistemas de criptografia simétricos que têm como principal objetivo garantir a confidencialidade da comunicação entre as partes.
+No cenário mais poderoso de ataque que estudamos, o adversário tem a capacidade de escolher mensagens e verificar como elas seriam cifradas.
+Também discutimos sistemas que são seguros contra esse tipo de ataque.
+
+Neste capítulo, vamos expandir nossa discussão para abordar outros dois problemas essenciais em criptografia:
+
 \begin{itemize}
-\item {\em integridade:} garantia de que a mensagem recebida não foi alterada durante o tráfego e
-\item {\em autenticidade:} grantia de que a mensagem recebida foi enviada por quem esperamos.
+\item {\em Integridade:} Como garantir que a mensagem recebida não foi alterada durante a transmissão.
+\item {\em Autenticidade:} Como garantir que a mensagem foi realmente enviada por quem deveria enviá-la.
 \end{itemize}
 
-A importância dessas duas garantias é evidente.
-Por exemplo, considere uma comunicação entre um cliente e um banco.
-O banco envia um mensagem cobrando uma dívida do cliente com um terceiro e o cliente autoriza o pagamento, digamos, de R\$1000,00.
-É de suma importância para o cliente saber que a mensagem recebida foi de fato enviada pelo banco e não se trata de um golpe (autenticidade) e é de suma importância para o cliente e para o banco que não seja possível a um terceiro alterar o valor autorizado.
+A importância dessas garantias é clara.
+Imagine, por exemplo, uma comunicação entre um cliente e seu banco.
+O banco envia uma mensagem cobrando uma dívida de um terceiro, e o cliente autoriza um pagamento de R\$1000,00.
+É crucial que o cliente tenha a certeza de que a mensagem realmente veio do banco e não é um golpe (autenticidade).
+Além disso, tanto o cliente quanto o banco precisam ter certeza de que ninguém alterou o valor autorizado (integridade).
 
-Um erro muito frequênte é assumir que os sistemas de criptografia que vimos até aqui são suficientes para garantir a integridade de uma mensagem.
-Não apenas os sistemas não oferecem nenhuma garantia quanto a isso, como alguns deles são {\em maleáveis}, ou seja, sua cifra é fácil de ser alterada para produzir o efeito desejado pelo adversário.
-Para ilustrar isso considere o caso em que utilizamos uma cifra de fluxo para encriptar uma mensagem $m$ e suponha que o adversário conheça uma parte do texto, por exemplo o cabeçalho $m_0$.
-Ou seja, $m = m_0||m_r$ em que $m_0$ é o cabeçalho e $m_r$ é o resto da mensagem.
-Assim temos que $E(k, m) = c_0||c_r$ em que, por definição, $c_0 = m_0 \xor G(k)_0$ e $G(k)_0$ são os primeiros bits de $G(k)$.
-Como o adversário conhece $m_0$ ele pode alterar $c = c_0||c_r$ por $c' = (c_0 \xor m_0 \xor m')c_r$ onde $m'$ é a mensagem que ele quer inserir no cabeçalho.
-Quando a nova cifra for descriptografada ela produzirá a seguinte mensagem:
+Um erro comum é pensar que os sistemas de criptografia que discutimos até agora também garantem a integridade de uma mensagem.
+Na realidade, esses sistemas não oferecem nenhuma proteção contra modificações no conteúdo da mensagem, e alguns deles são até {\em maleáveis}.
+Isso significa que a cifra pode ser facilmente alterada por um adversário para produzir um efeito desejado.
 
-\begin{eqnarray*}
-  D(k,c) & = & (G(k)_0 \xor c')||(G(k)_r \xor c_r)\\
-         & = & (G(k)_0 \xor c_0 \xor m_0 \xor m')||m_r\\
-         & = & (G(k)_0 \xor G(k_0) \xor m_0 \xor m_0 \xor m')||m_r\\
-         & = & m'||m_r
-\end{eqnarray*}
+Vamos considerar um exemplo para ilustrar como um adversário pode injetar uma mensagem $m'$ em uma cifra.
+Suponha que o adversário conheça a mensagem original $m$ e queira enganar o destinatário, fazendo-o acreditar que a mensagem recebida é $m'$.
 
-Desta forma, mesmo sem conhecer a chave $k$, o adversário foi capaz de alterar o cabeçalho da cifra.
-O mesmíssimo ataque funciona nas cifras de bloco em modo Ctr que também são maleáveis.
-Em modo CBC a criptografia é menos maleável, mas não garante nenhuma defesa contra esse tipo de ataque.
+O adversário pode interceptar a cifra $c$, que foi gerada pela operação $c = G(k) \xor m$, e substituí-la por uma nova cifra $c'$, calculada da seguinte forma:
 
-Outro erro comum é inserir um {\em checksum} junto com a mensagem cifrada.
-Um cehcksum nada mais é do que um hash da mensagem, é um sequência de bits que identificam quase univocamente a mensagem (veremos isso em detalhes no próximo capítulo).
-Seja $h$ a função de hash usada, colocaríamos $h(m)$, digamos, no fim de $m$ e só então criptografaríamos $E(k, m||h(m)) = c$.
-A ideia, insitimos errada (!), é que ao receber a cifra Bob pode descriptografar e recuperar $m$ e $h(m)$ e verificar que $h(m)$ identifica $m$.
-Se $m$ for alterado para $m'$, $h(m')$ não será igual a $h(m)$ e então Bob deve descartar a mensagem.
-Checksums são usados e funcionam bem no caso de produção acidental de erros, para acusar um pequeno ruído que tenha alterado a integridade de um arquivo ou mensagem.
-Eles não garantem nenhum tipo de segurança contra adversários maliciosos, pois, se o adversário pode alterar $m$, ele pode muito bem alterar $h(m)$ de acordo.
+\begin{displaymath}
+c' = c \xor m \xor m' = G(k) \xor m \xor m \xor m' = G(k) \xor m'
+\end{displaymath}
 
+Note que, quando o destinatário descriptografar $c'$ usando a chave $k$, ele vai recuperar $m'$, exatamente como o adversário planejou.
+
+Embora a cifra $c$ seja perfeitamente segura do ponto de vista da confidencialidade, ela não garantiu a integridade da mensagem.
+Isso permitiu ao adversário alterar o conteúdo da mensagem mesmo sem que ele possuisse a chave.
+
+Um erro comum é tentar garantir a integridade de uma mensagem cifrada usando um checksum. Um checksum é como uma ``assinatura digital'' da mensagem, gerada por uma função que produz uma sequência de bits quase única para cada mensagem.
+(Vamos explorar isso em mais detalhes no próximo capítulo.)
+
+A ideia seria a seguinte: você gera um checksum para a mensagem $m$, anexa esse checksum ao final da mensagem, e só então criptografa tudo.
+A lógica por trás disso é que, ao receber a cifra, o destinatário pode descriptografar, recuperar a mensagem e seu checksum, e verificar se o checksum corresponde à mensagem.
+Se alguém alterar a mensagem durante o envio, o checksum não corresponderá mais, e o destinatário poderá perceber que houve uma alteração e descartar a mensagem.
+
+Embora isso pareça uma boa ideia, ela não oferece proteção contra um adversário mal-intencionado.
+Se um adversário consegue alterar a mensagem $m$, ele também pode alterar o checksum correspondente, enganando o destinatário.
+Checksums funcionam bem para detectar erros acidentais, como pequenos ruídos que possam corromper a mensagem durante a transmissão, mas não são eficazes contra ataques intencionais.
 
 \section{Código de Autenticação de Mensagem}
 \label{sec:mac}
