@@ -31,9 +31,11 @@ O nosso primeiro desafio neste curso é apresentar sistemas de comunicação que
 Em outras palavras, qualquer mensagem enviada de Alice para Bob deve ser compreensível apenas para Alice e Bob e incompreensível para Eva.
 
 \begin{center}
-\begin{tikzpicture}[node distance=2cm,auto,>=latex]
-\node (alice) {Alice};
-\node (bob) at (10,0) {Bob};
+  \begin{tikzpicture}[node distance=2cm,auto,>=latex]
+    \node[draw=none] (alice) {\stickfigure};
+    \node[above of=alice, node distance=1.2cm] {Alice};
+    \node[draw=none] (bob) at (10,0) {\stickfigure};
+    \node[above of=bob, node distance=1.2cm] {Bob};
 \node (eva) at (5,2) {Eva};
 \draw[->] (alice) -> node[above]{mensagem} (bob);
 \path[->] (eva) edge (5,.5);

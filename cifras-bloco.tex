@@ -13,17 +13,22 @@ A cifra empregada por essas máquinas foi quebrada não apenas pelo avanço tecn
 
 Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque de ``known plaintext'', onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
 
-Neste capítulo, vamos explorar um modelo de ataque ainda mais poderoso: os ataques do tipo chosen plaintext (CPA). Nesses ataques, o adversário não apenas tem acesso ao texto cifrado, mas também pode escolher mensagens específicas e observar como o sistema as cifra \cite{Bellare97}.
+Neste capítulo, vamos explorar um modelo de ataque ainda mais poderoso:
+os ataques do tipo chosen plaintext (CPA).
+Nesse modelo, imaginamos que o adversário tem acesso a um ``oráculo''.
+Esse oráculo é como uma caixa mágica que permite ao adversário enviar mensagens de sua escolha e receber de volta a versão criptografada dessas mensagens.
+O adversário pode usar essas informações para tentar descobrir a chave de criptografia ou outros segredos do sistema \cite{Bellare97}.
 
 É importante notar que os ataques known plaintext são um caso particular desse modelo mais geral, mas há situações em que devemos considerar que o adversário possui essa capacidade adicional, o que torna o cenário de segurança ainda mais desafiador.
 
 
-Vamos explicar a segurança contra ataques do tipo \textit{chosen plaintext} (CPA) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}). A garantia de segurança que buscamos continua sendo a mesma que discutimos anteriormente, mas agora vamos considerar um cenário de ameaças mais poderoso.
+Vamos explicar a segurança contra ataques do tipo \textit{chosen plaintext} (CPA) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}).
+A garantia de segurança que buscamos continua sendo a mesma que discutimos anteriormente, mas agora vamos considerar um cenário de ameaças mais poderoso.
 
 O modelo pode ser descrito da seguinte forma:
 
 \begin{enumerate}
-    \item O adversário, $\mathcal{A}$, escolhe duas mensagens de mesmo tamanho, $m_0$ e $m_1$, e as envia para o sistema de criptografia $\Pi$.
+    \item O adversário escolhe duas mensagens de mesmo tamanho, $m_0$ e $m_1$, e as envia para o sistema de criptografia.
     \item O sistema gera uma chave secreta e escolhe aleatoriamente uma dessas mensagens para criptografar.
     \item Durante o processo, e mesmo depois de receber o texto cifrado, o adversário pode perguntar ao sistema como outras mensagens escolhidas por ele seriam cifradas.
     \item O sistema então retorna o texto cifrado para o adversário.
@@ -35,13 +40,13 @@ O modelo pode ser descrito da seguinte forma:
 \tikzset{
   player/.style={draw,shape=rectangle,rounded corners,minimum width=5em,minimum height=9em}
 }
-\node[player] (system) {$\Pi$};
-\node[player] (adversary) at (10,0) {$\mathcal{A}$};
-\draw[->] (9,1.5) -> node[above]{$m_0, m_1 \in M : |m_0| = |m_1|$} (1,1.5);
-\draw[->] (9,0.5) -> node[above]{$q_0, \dots, q_{n'-1} \in M$} (1,0.5);
-\draw[->] (1,-0.5) -> node[above]{$E(k, q_0), \dots, E(k, q_{n'-1})$} (9,-0.5);
-\draw[->] (1,-1.5) -> node[above]{$E(k,m_b) = c$} (9,-1.5);
-\draw[->] (0,3) -> node{$b \leftarrow \{0,1\}$} (system);
+\node[draw=none] (adversary) {\stickfigure};
+\node[player] (system) at (10,0) {$\Pi$};
+\draw[->] (1,1.5) -> node[above]{$m_0, m_1$} (9,1.5);
+\draw[->] (1,0.5) -> node[above]{$q_0, \dots, q_{n'-1}$} (9,0.5);
+\draw[->] (9,-0.5) -> node[above]{$E(k, q_0), \dots, E(k, q_{n'-1})$} (1,-0.5);
+\draw[->] (9,-1.5) -> node[above]{$E(k,m) = c$} (1,-1.5);
+\draw[->] (10,3) -> node{$m \leftarrow \{m_0,m_1\}$} (system);
 \end{tikzpicture}
 \end{center}
 

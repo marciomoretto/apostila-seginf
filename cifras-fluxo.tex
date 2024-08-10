@@ -48,12 +48,7 @@ Em outras palavras, não deve ser possível para nenhum algoritmo eficiente dist
 Isso significa que, mesmo com o melhor algoritmo possível, um adversário não deve ser capaz de dizer com confiança se uma sequência veio do PRG ou se é completamente aleatória.
 A segurança do PRG depende dessa incapacidade de distinção, garantindo que as sequências geradas sejam suficientemente aleatórias para serem usadas em contextos criptográficos.
 
-Formalmente, um PRG é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência (ou seja, se ela foi gerada pelo PRG ou é aleatória) for desprezível.
-Em notação formal, temos o seguinte:
-
-\begin{displaymath}
-  |Pr[D(r) = 1] - Pr[D(G(s)) = 1]| \leq \varepsilon(n)  
-\end{displaymath}
+Em outras palavras, um PRG é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência ($|Pr[D(r) = 1] - Pr[D(G(s)) = 1]|$) for desprezível.
 
 A restrição de que o distinguidor seja eficiente é estritamente necessária.
 Isso se deve ao fato de que, em teoria, sempre é possível construir um distinguidor usando uma espécie de ataque de força bruta.
@@ -408,30 +403,34 @@ Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
 
   O adversário sabe esses valores porque isso é parte do mecanismo.
 
-  Imagine que observamos os três primeiros valores:
-  \begin{displaymath}
-    \begin{array}{rcl}
-      y_4 & = & 0 \\
-      y_5 & = & 1 \\
-      y_6 & = & 0 \\
-    \end{array}
-  \end{displaymath}
-
+  Imagine que observamos os três primeiros valores: $y_4 = 0$, $y_5 = 1$ e $y_6 = 0$.
   Temos então que:
 
   \begin{displaymath}
     \begin{array}{rcl}
-      0 & = & y_3 \oplus y_1 \\
-      1 & = & y_4 \oplus y_2 \quad (\text{já sabemos que } y_4 = 0, \text{ então }) \\
-      1 & = & 0 \oplus y_2 \\
+      y_1 \oplus y_3 & = & 0 \\
+      y_2 \oplus y_4 & = & 1 \\
+      y_2 \oplus 0 & = & 1\\
       y_2 & = & 1 \\
-      0 & = & y_5 \oplus y_3 \quad (\text{já sabemos que } y_5 = 1, \text{ então }) \\
-      0 & = & 1 \oplus y_3 \\
+    \end{array}
+  \end{displaymath}
+
+  \begin{displaymath}
+    \begin{array}{rcl}
+      y_3 \oplus y_5 & = & 0 \\
+      y_3 \oplus 1 & = & 0 \\
       y_3 & = & 1 \\
     \end{array}
   \end{displaymath}
 
-  Agora substituímos $y_2$ e $y_3$ na primeira equação e obtemos $0 = y_3 \oplus y_1 = 1 \oplus y_1$ e concluimos que $y_1 = 1$.
+  \begin{displaymath}
+    \begin{array}{rcl}
+      y_1 \oplus y_3 & = & 0 \\
+      y_1 \oplus 1 & = &  0\\
+      y_1 & = & 1 \\
+    \end{array}
+  \end{displaymath}
+
   Portanto, a semente inicial é $y_1 = 1$, $y_2 = 1$ e $y_3 = 1$.
 
   Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do LFSR.

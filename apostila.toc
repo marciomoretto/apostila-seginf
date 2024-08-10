@@ -2,7 +2,7 @@
 \contentsline {chapter}{\numberline {1}Introdução}{9}{chapter.1}%
 \contentsline {chapter}{\numberline {2}Cifras Clássicas}{15}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Cifra de Deslocamento}{18}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Cifra de Substituição}{21}{section.2.2}%
+\contentsline {section}{\numberline {2.2}Cifra de Substituição}{22}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Cifra de Vigenère}{26}{section.2.3}%
 \contentsline {section}{\numberline {2.4}Máquinas de Criptografar}{28}{section.2.4}%
 \contentsline {section}{\numberline {2.5}Exercício}{30}{section.2.5}%
@@ -13,11 +13,11 @@
 \contentsline {section}{\numberline {3.4}Exercícios}{45}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Cifras de Fluxo}{47}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{50}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Modos de Operação}{54}{section.4.2}%
+\contentsline {section}{\numberline {4.2}Modos de Operação}{53}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Construções Práticas}{56}{section.4.3}%
 \contentsline {subsection}{\numberline {4.3.1}Linear-Feedback Shift Registers}{57}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}Trivium}{61}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}Exercicios}{65}{section.4.4}%
+\contentsline {section}{\numberline {4.4}Exercicios}{64}{section.4.4}%
 \contentsline {chapter}{\numberline {5}Cifras de Bloco}{67}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Modos de Operação}{70}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Construções Práticas}{75}{section.5.2}%
@@ -25,43 +25,43 @@
 \contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{79}{subsection.5.2.2}%
 \contentsline {section}{\numberline {5.3}Exercícios}{81}{section.5.3}%
 \contentsline {chapter}{\numberline {6}Integridade e Autenticidade}{83}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{84}{section.6.1}%
+\contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{85}{section.6.1}%
 \contentsline {subsection}{\numberline {6.1.1}CBC-MAC}{86}{subsection.6.1.1}%
-\contentsline {section}{\numberline {6.2}Criptografia Autenticada}{87}{section.6.2}%
-\contentsline {subsection}{\numberline {6.2.1}Comunicação Segura}{90}{subsection.6.2.1}%
-\contentsline {section}{\numberline {6.3}Exercicios}{91}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Funções de Hash}{93}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Construções}{95}{section.7.1}%
-\contentsline {subsection}{\numberline {7.1.1}SHA-1}{96}{subsection.7.1.1}%
-\contentsline {section}{\numberline {7.2}Aplicações}{97}{section.7.2}%
-\contentsline {subsection}{\numberline {7.2.1}HMAC}{97}{subsection.7.2.1}%
-\contentsline {subsection}{\numberline {7.2.2}Funções de Derivação de Chaves}{99}{subsection.7.2.2}%
-\contentsline {section}{\numberline {7.3}Exercícios}{100}{section.7.3}%
-\contentsline {chapter}{\numberline {8}Distribuição de Chaves}{103}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Centro de Distribuição de Chaves}{103}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Protocolo de Diffie-Hellman}{104}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Exercícios}{109}{section.8.3}%
-\contentsline {chapter}{\numberline {9}Criptografia Assimétrica}{111}{chapter.9}%
-\contentsline {section}{\numberline {9.1}El Gammal}{112}{section.9.1}%
-\contentsline {section}{\numberline {9.2}RSA}{113}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Sistemas Híbridos}{118}{section.9.3}%
-\contentsline {section}{\numberline {9.4}Exercícios}{119}{section.9.4}%
-\contentsline {chapter}{\numberline {10}Assinaturas Digitais e PKI}{121}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Assinatura RSA}{122}{section.10.1}%
-\contentsline {section}{\numberline {10.2}Infraestrutura de Chaves Públicas}{123}{section.10.2}%
-\contentsline {section}{\numberline {10.3}Exercícios}{125}{section.10.3}%
-\contentsline {chapter}{\numberline {A}Corpos Finitos}{127}{appendix.A}%
-\contentsline {chapter}{\numberline {B}Funções de Mão Única}{133}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Sistemas Híbridos}{139}{appendix.C}%
-\contentsline {section}{\numberline {C.1}El Gammal}{139}{section.C.1}%
-\contentsline {section}{\numberline {C.2}RSA}{140}{section.C.2}%
-\contentsline {chapter}{\numberline {D}Grupos Cíclicos}{141}{appendix.D}%
-\contentsline {section}{\numberline {D.1}Grupos de ordem prima}{141}{section.D.1}%
-\contentsline {section}{\numberline {D.2}Curvas Elípticas}{142}{section.D.2}%
-\contentsline {chapter}{\numberline {E}Algoritmo de Assinaturas Digitais}{147}{appendix.E}%
-\contentsline {section}{\numberline {E.1}Esquemas de Identificação}{147}{section.E.1}%
-\contentsline {section}{\numberline {E.2}Algoritmo de Assinatura Digital (DSA)}{148}{section.E.2}%
-\contentsline {chapter}{\numberline {F}Protocolos}{151}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Pretty Good Privacy}{151}{section.F.1}%
-\contentsline {section}{\numberline {F.2}Off The Record}{152}{section.F.2}%
-\contentsline {section}{\numberline {F.3}Signal}{154}{section.F.3}%
+\contentsline {section}{\numberline {6.2}Criptografia Autenticada}{88}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Comunicação Segura}{92}{subsection.6.2.1}%
+\contentsline {section}{\numberline {6.3}Exercicios}{94}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Funções de Hash}{95}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Construções}{98}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}SHA-1}{99}{subsection.7.1.1}%
+\contentsline {section}{\numberline {7.2}Aplicações}{102}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}HMAC}{102}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Funções de Derivação de Chaves}{104}{subsection.7.2.2}%
+\contentsline {section}{\numberline {7.3}Exercícios}{108}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Distribuição de Chaves}{111}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Centro de Distribuição de Chaves}{111}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Protocolo de Diffie-Hellman}{112}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Exercícios}{117}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Criptografia Assimétrica}{119}{chapter.9}%
+\contentsline {section}{\numberline {9.1}El Gammal}{120}{section.9.1}%
+\contentsline {section}{\numberline {9.2}RSA}{121}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Sistemas Híbridos}{126}{section.9.3}%
+\contentsline {section}{\numberline {9.4}Exercícios}{127}{section.9.4}%
+\contentsline {chapter}{\numberline {10}Assinaturas Digitais e PKI}{129}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Assinatura RSA}{130}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Infraestrutura de Chaves Públicas}{131}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Exercícios}{133}{section.10.3}%
+\contentsline {chapter}{\numberline {A}Corpos Finitos}{135}{appendix.A}%
+\contentsline {chapter}{\numberline {B}Funções de Mão Única}{141}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Sistemas Híbridos}{147}{appendix.C}%
+\contentsline {section}{\numberline {C.1}El Gammal}{147}{section.C.1}%
+\contentsline {section}{\numberline {C.2}RSA}{148}{section.C.2}%
+\contentsline {chapter}{\numberline {D}Grupos Cíclicos}{149}{appendix.D}%
+\contentsline {section}{\numberline {D.1}Grupos de ordem prima}{149}{section.D.1}%
+\contentsline {section}{\numberline {D.2}Curvas Elípticas}{150}{section.D.2}%
+\contentsline {chapter}{\numberline {E}Algoritmo de Assinaturas Digitais}{155}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Esquemas de Identificação}{155}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Algoritmo de Assinatura Digital (DSA)}{156}{section.E.2}%
+\contentsline {chapter}{\numberline {F}Protocolos}{159}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Pretty Good Privacy}{159}{section.F.1}%
+\contentsline {section}{\numberline {F.2}Off The Record}{160}{section.F.2}%
+\contentsline {section}{\numberline {F.3}Signal}{162}{section.F.3}%

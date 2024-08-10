@@ -50,28 +50,28 @@ Checksums funcionam bem para detectar erros acidentais, como pequenos ruídos qu
 \section{Código de Autenticação de Mensagem}
 \label{sec:mac}
 
-Para garantir a integridade de uma mensagem usaremos um {\em Sistema Autenticador de Mensagem} (MAC).
-O MAC é um sistema $\Pi$ formado por três algoritmos $\langle Gen, Mac, Ver \rangle$:
+Para garantir que uma mensagem não foi alterada, usamos um {\em Código de Autenticação de Mensagem} (ou MAC, da sigla em inglês).
+Um MAC consiste em três algoritmos:
+
 \begin{itemize}
-\item $Gen$ gera uma chave $k \in K$.
-\item $Mac$ recebe uma chave $k$ e uma mensagem $m$ e devolve um código ({\em tag}) $t$.
-\item $Ver$ receve uma chave $k$, uma mensagem $m$ e um código $t$ e devolve um bit que indica se a mensagem é váilda $1$ ou inválida $0$.
+\item {\em Geração de chave $Gen$}: Este algoritmo cria uma chave secreta, que é como uma senha especial que será usada para criar e verificar o código de autenticação.
+\item {\em Criação de código $Mac$}: recebe uma chave $k$ e uma mensagem $m$ e devolve um código ({\em tag}) $t$.
+\item {\em Verificação de código $Ver$}: receve uma chave $k$, uma mensagem $m$ e um código $t$ e verifica se mensagem é váilda.
 \end{itemize}
 
-Um sistema de MAC é {\em correto} se o código $t$ produzido por uma chave $k$ e uma mensagem $m$ é válido, ou seja, se:
-\begin{displaymath}
-  Ver(k, m, Mac(k,m)) = 1
-\end{displaymath}
+Um sistema de MAC é considerado {\em correto} quando, ao usar a mesma chave secreta tanto para gerar o código quanto para verificá-lo, a verificação sempre confirma que o código corresponde à mensagem original.
+Em outras palavras, se você usa a mesma chave para criar o código e depois verificar esse código com a mensagem original, o algoritmo de verificação deve sempre confirmar que a mensagem não foi alterada, garantindo assim a integridade da mensagem.
 
-Consideraremos um modelo de ameaças bem poderoso contra um sistema MAC.
-Como no modelo CPA, vamos supor que o adversário tem acesso a um oráculo que lhe dá o código de autenticação de mensagens escolhidas por ele.
-O desafio do adversário é produzir qualquer par $\langle m, t \rangle$ válido para a chave escolhida pelo sistema.
-Um sistema em que nenhum adversário polinomial é capaz de derrotar desta maneira com probabilidade considerável será chamado de {\em seguro contra falsificação} \cite{Bellare00}.
-Formalmente:
+Vamos imaginar um cenário em que um adversário tem acesso a um sistema MAC e pode pedir a esse sistema para gerar códigos de autenticação para várias mensagens à sua escolha.
+O objetivo do adversário é criar uma nova mensagem, diferente das que ele já pediu, junto com um código que seja aceito como válido pelo sistema.
+
+Um sistema MAC é considerado {\em seguro contra falsificação} se, mesmo com todo esse acesso e poder de cálculo, o adversário não conseguir criar um par de mensagem e código que seja aceito, a não ser por pura sorte.
+
+Vamos descrever como isso funciona:
 \begin{enumerate}
-\item O sistema gera uma chave $k$ usando o algoritmo $Gen$
-\item O adversário $\mathcal{A}$ recebe $1^n$ e tem acesso a um oráculo $Mac_k$ que ele pode usar para verificar o código que o sistema produziria. Seja $Q$ o conjunto das mensagens consultadas por $\mathcal{A}$.
-\item O adversário $\mathcal{A}$ produz um par $\langle m, t \rangle$ tal que $m \notin Q$.
+\item O sistema gera uma chave.
+\item O adversário pode consultar o sistema pedindo que gere códigos de autenticação para várias mensagens.
+\item O desafio do adversário é criar uma nova mensagem, que não foi consultada, e inventar um código de autenticação que o sistema aceite como válido para essa mensagem.
 \end{enumerate}
 
 \begin{center}
@@ -79,53 +79,51 @@ Formalmente:
 \tikzset{
   player/.style={draw,shape=rectangle,rounded corners,minimum width=4em,minimum height=6em}
 }
-\node[player] (system) {$\Pi$};
-\node[player] (adversary) at (10,0) {$\mathcal{A}$};
-\draw[->] (9,0.5) -> node[above]{$q_0, \dots, q_{n'-1} \in M \setminus \{m\}$} (1,0.5);
-\draw[->] (1,-0.5) -> node[above]{$Mac(k, q_0), \dots, Mac(k, q_{n'-1})$} (9,-0.5);
-\draw[->] (0,2) -> node{$Gen(1^n) = k$} (system);
-\draw[->] (adversary) -> node{$\langle m, t \rangle$} (10,-2);
+\node[player,draw=none] (adversary) {\stickfigure};
+\node[player] (system) at (10,0) {$\Pi$};
+\draw[->] (1,0.5) -> node[above]{$q_0, \dots, q_{n'-1}$} (9,0.5);
+\draw[->] (9,-0.5) -> node[above]{$Mac(k, q_0), \dots, Mac(k, q_{n'-1})$} (1,-0.5);
+\draw[->] (adversary) -> node{$m, t$} (0,-2);
 \end{tikzpicture}
 \end{center}
 
-O desafio de $\mathcal{A}$ é produzir um par válido.
-Chamamos o experimento de $MacForge_{\mathcal{A}, \Pi}$:
-\begin{displaymath}
-  MacForge_{\Pi, \mathcal{A}}(n) = Ver(k, m, t)
-\end{displaymath}
+O desafio do adversário é criar um par de mensagem e código que seja aceito como válido pelo sistema.
 
-Um sistema de autenticação de mensagem $\Pi = \langle Gen, Mac, Ver \rangle$ é {\em seguro contra falsificação} se para todo adversário eficiente $\mathcal{A}$ existe uma função desprezível $\varepsilon$ tal que:
-\begin{displaymath}
-  Pr[MacForge_{\Pi, \mathcal{A}}(n) = 1] \leq \frac{1}{2} + \varepsilon(n)
-\end{displaymath}
-
-O modelo de ataque considerado garante que um adversário não seja capaz de gerar código para uma mensagem nova, isto é, uma mensagem que não foi consultada.
-Em alguns casos espeíficos queremos garantir também que o adversário não seja capaz de produzir outros tags válidos para uma mesma mensagem.
-Este modelo de ataque é mais poderoso e chamaremos de {\em segurança forte contra falsificação}.
+Um sistema de autenticação de mensagem, é considerado {\em seguro contra falsificação} se, para qualquer adversário eficiente, a chance de ele conseguir criar um código válido para uma nova mensagem é desprezível.
 
 \subsection{CBC-MAC}
 \label{sec:cbc-mac}
 
-Agora que conhecemos o sistema de autenticação de mensagem e definimos uma noção de segurança, resta mostrar concretamente como construir tal sistema explicitando nossas suposições.
-Começaremos com uma construção básica para uma mensagem de tamanho fixo baseada no modo CBC.
-Vamos supor que $|m| = l.n$ em que $n$ é o tamanho do bloco de uma PRF $f$ e escreveremos $m = m_1 \dots m_l$ tal que $|m_i| = n$.
-Temos então que:
+Agora que entendemos o sistema de autenticação de mensagem e definimos uma noção de segurança, o próximo passo é mostrar como construir concretamente tal sistema, detalhando as suposições que faremos.
 
+Começaremos com uma construção básica, que é válida para mensagens de tamanho fixo, utilizando o modo CBC ({\em Cipher Block Chaining}).
 
-\begin{itemize}
-\item $Mac(k, m) := t_l$ em que:
-  \begin{eqnarray*}
-  t_0 & := & 0^n \\
-  t_i & := & f_k(t_{i-1} \xor m_i) \textrm{ para i } = 1, \dots, l
-  \end{eqnarray*}
- Além disso, $|m_i| = n$ e $f_k: \{0,1\}^n \to \{0,1\}^n$ é uma função pseudoaleatória.
-\item $Ver(k, m, t) :=  \left\{
-    \begin{array}{lcl}
-      1 & \textrm{se} & t = Mac(k,m)\\
-      0 & \textrm{c.c.} &\\
-    \end{array}
-    \right.$
-  \end{itemize}
+Vamos supor que o tamanho da mensagem $m$ seja um múltiplo de $n$, o tamanho do bloco de uma função pseudoaleatória (PRF) que chamaremos de $f$.
+Podemos dividir a mensagem $m$ em blocos $m_1, m_2, \dots, m_l$, onde cada bloco $m_i$ tem tamanho $n$.
+
+A construção funciona da seguinte maneira:
+
+\textbf{Mac:} Este algoritmo gera um código de autenticação $t$ para a mensagem $m$ usando a chave $k$.
+
+Primeiro, definimos $t_0$ como um bloco de zeros de tamanho $n$.
+Em seguida, para cada bloco $m_i$ da mensagem, calculamos $t_i$ usando a função $f$ e a operação XOR, que combina o resultado do bloco anterior com o bloco atual:
+\begin{displaymath}
+t_i := f_k(t_{i-1} \oplus m_i)
+\end{displaymath}
+
+O resultado final $t_l$ é o código de autenticação.
+
+\textbf{Ver:} Este algoritmo verifica se o código $t$ corresponde à mensagem $m$ quando gerado pela mesma chave $k$.
+
+\begin{displaymath}
+  Ver(k, m, t) :=  \left\{
+  \begin{array}{lcl}
+    1 & \textrm{se} & t = Mac(k,m)\\
+    0 & \textrm{c.c.} &\\
+  \end{array}
+  \right.
+\end{displaymath}
+
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -152,33 +150,57 @@ Temos então que:
 
 
 \begin{theorem}
-  O sistema de autenticação $\Pi = \langle Gen, Mac, Ver \rangle$ como definido acima é seguro contra falsificação para mensagens de tamanho fixo $l.n$.
+  O sistema de autenticação CBC é seguro contra falsificação para mensagens de tamanho fixo.
 \end{theorem}
 
-O sistema CBC-MAC é diferente do modo de operação CBC em dois aspectos essenciais: o MAC usa um bloco de $0$s onde o modo de operação usa um vetor inicial aleatório e o MAC expõe apenas o bloco final enquanto o modo de operação expõe cada um dos blocos cifrados.
-É possível mostrar que ambas as diferenças são cruciais para garantir a segurança contra falsificação.
+O CBC-MAC é uma técnica específica para gerar códigos de autenticação.
+Ele funciona de forma semelhante ao modo de operação CBC (Cipher Block Chaining), mas com duas diferenças importantes:
 
-Para extender esta construção para mensagens de tamanho arbitrários temos duas opções para as quais há demonstração de segurança contra falsificação:
 \begin{enumerate}
-\item concatenar o tamanho da mensagem $|m|$ no começo da mensagem antes de produzir $t$ (concatenar no final não é seguro!).
-\item gerar duas chaves independentes $k_1$ e $k_2$, usar a primeira no sistema apresentado acima e então computar $f_{k_2}(t)$ para gerar o código de autenticação.
+\item No CBC, usamos um vetor inicial (IV) aleatório para começar a cifrar os blocos da mensagem.
+  Já no CBC-MAC, esse vetor inicial é substituído por um bloco cheio de zeros.
+\item No CBC, cada bloco cifrado da mensagem é exposto, enquanto no CBC-MAC, apenas o último bloco cifrado (o MAC) é mostrado.
 \end{enumerate}
+
+O CBC-MAC é originalmente projetado para funcionar com mensagens de tamanho fixo, mas muitas vezes precisamos lidar com mensagens de tamanhos variados.
+Para garantir a segurança nesses casos, existem duas estratégias eficazes:
+
+\begin{enumerate}
+\item Antes de calcular o MAC, adicionamos o tamanho da mensagem no começo do conteúdo.
+  Isso impede que alguém consiga criar dois MACs iguais para mensagens diferentes (por exemplo, uma mensagem curta poderia ser estendida para enganar o sistema).
+\item Outra abordagem é usar duas chaves diferentes.
+  A primeira chave é usada normalmente para gerar o MAC, e a segunda é usada para ``ajustar'' esse MAC final, reforçando a segurança.
+\end{enumerate}
+
+Essas técnicas garantem que o CBC-MAC permaneça seguro, mesmo quando as mensagens variam em tamanho, protegendo contra tentativas de falsificação.
+
 
 \section{Criptografia Autenticada}
 \label{label}
 
-O modelo de ameaças CPA assume que o adversário tem acesso a um oráculo $E_k$ que indica como mensagens escolhidas por ele podem seria criptografadas pelo sistema.
-Com autenticação somos capaz de construir sistemas contra um modelo de ameaça ainda mais poderoso em que o adversário tem acesso a um oráculo em que ele pode consultar como determinadas cifras seriam decifradas.
-Esse modelo de ameaças supõe um enorme poder por parte do adversário e é difícil encontrar exemplos práticos em que esse tipo de situação ocorra.
-Ainda assim, é bastante interessante saber que é possível construir sistemas seguros contra este tipo de ameaça \cite{Naor90}.
+No modelo CPA (Ataque de Texto Plano Escolhido), o adversário pode acessar um oráculo que criptografa mensagens escolhidas para tentar descobrir segredos do sistema.
+Agora, vamos considerar um modelo ainda mais avançado de ameaça.
 
-Formalmente definimos um jogo da seguinte maneira:
+Além de poder enviar mensagens para serem criptografadas, o adversário também pode consultar como certas cifras seriam decifradas.
+Isso é muito mais poderoso, porque o adversário não está apenas vendo as mensagens antes de serem criptografadas, mas também pode ver como qualquer cifra seria transformada de volta em texto legível.
+
+Esse novo cenário é extremamente poderoso e raro na prática, porque na maioria das situações reais, os adversários não têm esse tipo de acesso. Entretanto, saber que é possível construir sistemas que permanecem seguros mesmo nesse cenário é fascinante. Isso mostra a robustez e a força das técnicas modernas de criptografia.
+
+Mesmo que seja difícil imaginar uma situação prática onde um adversário tenha tanto poder, explorar esses modelos nos ajuda a desenvolver sistemas de criptografia que sejam ainda mais fortes e seguros.
+Além disso, entender esses cenários extremos nos dá mais confiança de que os sistemas que usamos todos os dias são realmente protegidos contra uma ampla gama de ameaças possíveis \cite{Naor90}.
+
+Para entender se um sistema de criptografia é realmente seguro, imaginamos um "jogo" entre o sistema e um adversário, que é alguém tentando quebrá-lo.
+O jogo funciona assim:
 \begin{enumerate}
-\item O adversário $\mathcal{A}$ escolhe duas mensagens $m_0$ e $m_1$ com o mesmo tamanho ($|m_0| = |m_1|$) e envia para o sistema $\Pi$.
-\item O sistema gera uma chave $k$ usando o algoritmo $Gen$ e sorteia aleatoriamente uma das mensagens para criptografar ($\Pi$ sorteia $b \leftarrow \{0, 1\}$ e criptografa $m_b$).
-\item Durante todo o processo $\mathcal{A}$ possui acesso a um oráculo $E_k$ que ele pode usar para verificar como seria criptografadas qualquer mensagem $m$ e outro oráculo $D_k$ que ele pode usar para verificar como qualquer cifra $c$, exceto a cifra devolvida pelo sistema, seria decifrada.
-\item A cifra produzida $E(k, m_b) = c$ e enviada de volta para o adversário.
-\item O adversário $\mathcal{A}$ produz um bit $b' \in \{0,1\}$.
+\item O adversário escolhe duas mensagens, que têm exatamente o mesmo tamanho, e as envia para o sistema.
+\item O sistema gera uma chave e, em seguida, escolhe aleatoriamente uma das duas mensagens para criptografar.
+  A mensagem escolhida é criptografada, e enviada para o adversário.
+\item Durante o jogo, o adversário tem acesso a dois ``oráculos'':
+  \begin{itemize}
+  \item Um oráculo que mostra como qualquer mensagem escolhida pelo adversário seria criptografada.
+  \item Outro oráculo que revela como qualquer cifra seria decifrada, exceto a cifra que foi devolvida pelo sistema.
+  \end{itemize}
+\item Com base em todas as informações obtidas, o adversário tenta adivinhar qual das duas mensagens originais foi criptografada.
 \end{enumerate}
 
 \begin{center}
@@ -186,143 +208,158 @@ Formalmente definimos um jogo da seguinte maneira:
 \tikzset{
   player/.style={draw,shape=rectangle,rounded corners,minimum width=6em,minimum height=15em}
 }
-\node[player] (system) {$\Pi$};
-\node[player] (adversary) at (10,0) {$\mathcal{A}$};
-\draw[->] (8.8,2) -> node[above]{$m_0, m_1 \in M : |m_0| = |m_1|$} (1.2,2);
-\draw[->] (8.8,1) -> node[above]{$q_0, \dots, q_{n'-1} \in M$} (1.2,1);
-\draw[->] (1.2,0) -> node[above]{$E(k, q_0), \dots, E(k, q_{n'-1})$} (8.8,0);
-\draw[->] (8.8,-1) -> node[above]{$q_0', \dots q_{n'-1}' \in C \setminus\{c\}$} (1.2,-1);
-\draw[->] (1.2,-2) -> node[above]{$D(k,q_1'), \dots, D(k,q_{n'-1}')$} (8.8,-2);
-\draw[->] (1.2,-3) -> node[above]{$E(k,m_b) = c$} (8.8,-3);
-\draw[->] (0,4) -> node{$b \leftarrow \{0,1\}$} (system);
-\draw[->] (adversary) -> node{$b' \in \{0,1\}$} (10,-4);
+\node[player,draw=none] (adversary) {\stickfigure};
+\node[player] (system) at (10,0) {$\Pi$};
+\draw[->] (1.2,2) -> node[above]{$m_0, m_1$} (8.8,2);
+\draw[->] (1.2,1) -> node[above]{$q_0, \dots, q_{n'-1}$} (8.8,1);
+\draw[->] (8.8,0) -> node[above]{$E(k, q_0), \dots, E(k, q_{n'-1})$} (1.2,0);
+\draw[->] (1.2,-1) -> node[above]{$q_0', \dots q_{n'-1}'$} (8.8,-1);
+\draw[->] (8.8,-2) -> node[above]{$D(k,q_1'), \dots, D(k,q_{n'-1}')$} (1.2,-2);
+\draw[->] (8.8,-3) -> node[above]{$E(k,m) = c$} (1.2,-3);
+\draw[->] (10,4) -> node{$m \leftarrow \{m_0,m_1\}$} (system);
 \end{tikzpicture}
 \end{center}
 
+Dizemos que um sistema é seguro contra o {\em ataque com escolha de texto cifrado} (``chosen ciphertext'' CCA) se para qualquer adversário eficiente existe a chance do adversário vencer o jogo é desprezivelmente maior que $\frac{1}{2}$.
 
-O desafio de $\mathcal{A}$ é acertar qual das mensagens foi criptografada.
-Como nos outros casos temos:
-\begin{displaymath}
-  PrivK^{cca}_{\Pi, \mathcal{A}}(n) = \left\{
-    \begin{array}{lcl}
-      1 & \textrm{se} & b = b'\\
-      0 & \textrm{c.c.} &\\
-    \end{array}
-    \right.
-\end{displaymath}
+Sistemas de criptografia que não garantem a integridade das mensagens não são seguros contra ataques do tipo CCA.
+Um exemplo que ilustra bem essa vulnerabilidade é o modo Ctr de cifração de blocos.
 
-Dizemos que um sistema $\Pi = \langle Gen, E, D \rangle$ é seguro contra ataques do tipo {\em chosen ciphertext} (CCA) se para todo adversário eficiente $\mathcal{A}$ existe uma função desprezível $\varepsilon$ tal que:
-\begin{displaymath}
-  Pr[PrivK^{cca}_{\Pi, \mathcal{A}}(n) = 1] \leq \varepsilon(n)
-\end{displaymath}
-
-Note que os sistemas que não protegem a integridade da mensagem não são seguros contra CCA.
-Por exemplo considere uma cifra de bloco no modo Ctr.
-O adversário pode derrotar o jogo acima da seguinte forma:
+No modo Ctr, o adversário pode explorar a falta de integridade da seguinte maneira:
 \begin{enumerate}
-\item $\mathcal{A}$ envia $m_0 = 0^n$ e $m_1 = 1^n$ para o sistema.
-\item $\mathcal{A}$ recebe $c = E(k, m_b)$ e altera o primeiro bit de $c$ para produzir $c' \neq c$.
-\item $\mathcal{A}$ consulta o oráculo $D_k(c')$ e verifica o resultado.
-\item Se o resultado for $10^{n-1}$ o adversário devolve $0$, caso seja $01^{n-1}$ ele devolve $1$.
-\end{enumerate}
+\item  O adversário  envia duas mensagens distintas e simples para o sistema: 
+$m_0 = 0^n$ (um bloco de n bits todos iguais a 0) e $m_1 = 1^n$ (um bloco de n bits todos iguais a 1).
+\item O sistema escolhe uma das mensagens, criptografa e envia a cifra correspondente $c$ de volta ao adversário.
+\item O adversário altera o primeiro bit da cifra $c$ gerando uma nova cifra $c'$ que é diferente da original.
+\item O adversário então usa o oráculo de decifragem para verificar o resultado da decifragem de $c'$.
+  Se o resultado for $10^{n-1}$, ele deduz que o sistema criptografou $m_0 = 0^n$.
+  Se o resultado for $01^{n-1}$, ele deduz que o sistema criptografou $m_1 = 1^n$.
+  ​\end{enumerate}
 
-Em um {\em sistema de criptografia autenticado} $\Pi$ o sistema ao descriptografar uma cifra $c$ deve acusar se ela não é válida devolvendo uma mensagem de erro.
-Em nossa apresentação formal, $D(k,c) = \bot$ nestes casos.
-Uma noção de segurança útil neste contexto é a capacidade de um sistema impedir que um adversário produza uma cifra válida.
-Um sistema de criptografia $\Pi = \langle Gen, E, D \rangle$ é {\em seguro contra falsificação} se satisfizer essa noção de segurança.
-(Omitiremos a formalização da definição de segurança contra falsificação que é análga a definição apresentada no final da Seção \ref{sec:mac}).
-Por fim, chamaremos um sistema $\Pi$ de {\em sistema autenticado de criptografia} se $\Pi$ é seguro contra CCA e contra falsificação.
+Neste cenário, o adversário consegue descobrir qual mensagem foi criptografada apenas alterando a cifra e observando o comportamento do sistema.
+Isso evidencia a importância de proteger a integridade da mensagem para garantir a segurança contra ataques CCA.
 
-%Formalmente temos o seguinte jogo:
-%\begin{enumerate}
-%\item O sistema gera uma chave $k$ usando o algoritmo $Gen$.
-%\item Durante todo o processo $\mathcal{A}$ possui acesso a um oráculo $E_k$ que ele pode usar para verificar como seria criptografadas qualquer mensagem $m$.
-%\item O adversário $\mathcal{A}$ produz uma cifra $c$ tal que $E(k,m) \neq c$ para todos as consultas $m$ que o adversário fez ao oráculo.
-%\end{enumerate}
+Em um sistema de {\em criptografia autenticado}, a segurança vai além de simplesmente proteger o conteúdo das mensagens.
+Aqui, o sistema precisa ser capaz de detectar quando uma cifra foi alterada ou criada de forma maliciosa.
+Se uma cifra não for válida, o sistema deve acusar um erro e se recusar a tentar decifrá-la.
 
-%O desafio de $\mathcal{A}$ é produzir $c$ tal que $D(k,c) \neq \bot$:
-%\begin{displaymath}
-%  EncForge_{\Pi, \mathcal{A}}(n) = \left\{
-%    \begin{array}{lcl}
-%      1 & \textrm{se} & D(k,c) \neq \bot\\
-%      0 & \textrm{c.c.} &\\
-%    \end{array}
-%    \right.
-%\end{displaymath}
+Uma característica importante de um sistema de criptografia autenticado é sua capacidade de impedir que um adversário produza uma cifra válida de maneira fraudulenta.
+Se um sistema consegue garantir que qualquer tentativa de falsificação de uma cifra resulte em uma mensagem de erro, dizemos que ele é {\em seguro contra falsificação}.
 
-%Um sistema de criptografia $\Pi = \langle Gen, E, D \rangle$ é {\em seguro contra falsificação} se para todo adversário $\mathcal{A}$ eficiente temos que existe uma função desprezível $\varepsilon$ tal que:
-%\begin{displaymath}
-%  Pr[EncForge_{\mathcal{A},\Pi}(n) = 1] \leq \varepsilon(n)
-%\end{displaymath}
+Para que um sistema de criptografia seja considerado verdadeiramente seguro e autenticado, ele deve satisfazer duas condições:
+\begin{itemize}
+\item Ser seguro contra ataques do tipo CCA.
+\item Ser seguro contra falsificação.
+\end{itemize}
 
+Quando um sistema atende a esses dois requisitos, chamamos ele de um {\em sistema autenticado de criptografia}.
+
+Um {\em sistema autenticado de criptografia} é a junção de dois elementos essenciais:
+um esquema de criptografia para proteger o conteúdo das mensagens e um sistema de autenticação para garantir que as mensagens não foram adulteradas.
+Existem várias maneiras de combinar esses dois sistemas para alcançar segurança completa. Vamos explorar as principais:
 
 Um sistema autenticado de criptografia é uma combinação de um esquema de criptografia com um sistema de autenticação.
 Existem várias formas de combinar esses sistemas:
 \begin{itemize}
-\item {\em mac then encrypt}: produzimos um código de autenticação, juntamos esse código com a mensagem e criptografamos tudo.
-\item {\em encrypt and mac}: enviamos separadamente a cifra e um código de autenticação da mensagem.
-\item {\em encrypt then mac}: primeiro criptografamos e depois geramos o código da cifra.
+\item Autenticar e depois criptografar ({\em mac then encrypt}):
+  Primeiro, geramos um código de autenticação para a mensagem.
+  Em seguida, juntamos esse código com a mensagem original e criptografamos tudo de uma vez. 
+\item Criptografar e autenticar separadamente ({\em encrypt and mac}):
+  Neste método, primeiro criptografamos a mensagem para protegê-la.
+  Em seguida, geramos um código de autenticação para a mensagem original.
+  Ambos, a cifra e o código de autenticação, são enviados separadamente.
+\item Criptografar e depois autenticar ({\em encrypt then mac}):
+  Aqui, começamos criptografando a mensagem.
+  Depois de criptografada, geramos um código de autenticação baseado na cifra resultante. 
 \end{itemize}
 
-Se nossa esquema de criptografia $\Pi_E = \langle Gen_E, E, D\rangle$ for seguro contra CPA e nosso sistema de autenticação $\Pi_M = \langle Gen_M, Mac, Ver \rangle$ for fortemente seguro contra falsificação, podemos demonstrar que o paradigma {\em encrypt then mac} é um {\em sistema autenticado de criptografia}, ou seja, é seguro contra CCA e contra falsificação.
-Formalmente construimos o sistema $\langle Gen, E, D \rangle$ da seguinte forma:
+\begin{theorem}
+  O modelo que primeiro criptografa e depois autentica ({\em encrypt then mac}) que usa um sistema de criptografia seguro contra CPA e um sistema de autenticação seguro contra falsificação é um sistema de criptografia autenticada seguro contra ataques CCA e seguro contra falsificação. 
+\end{theorem}
+
+Para que o sistema acima seja seguro, é essencial que ele use uma chave para criptografar e outra distinta e independente para autenticar.
+
+Vamos explorar um exemplo onde o uso de uma única chave para criptografia e autenticação pode causar sérios problemas de segurança.
+
+Imagine que temos uma permutação pseudoaleatória $p$.
+Para criptografar uma mensagem $m$ (que tem metade do tamanho de um bloco), fazemos o seguinte:
 \begin{itemize}
-\item $Gen(1^n) := k = \langle k_E, k_M \rangle$ em que $Gen_E(1^n) := k_E$ e $Gen_M(1^n) := k_M$.
-\item $E(k,m) := \langle c, t \rangle$ em que $E(k_E, m) := c$ e $Mac(k_M, c) := t$.
-\item $D(k,c) := \left\{
-    \begin{array}{lcl}
-      D(k_E, c) & \textrm{se} & Ver(k_M, c, t)\\
-      \bot & \textrm{c.c.} &\\
-    \end{array}
-    \right.$
+\item Escolhemos um valor aleatório $r$ com metade dos bits de um bloco.
+\item Combinamos a mensagem $m$ e o valor $r$ e aplicamos a permutação $p$ ($E(k, m) = p_k(m || r)$).
 \end{itemize}
 
-O sistema acima gera chaves independentes $k_E$ e $k_M$ para os sistemas.
-Isso não é apenas um detalhe, o uso da mesma chave de criptografia e autenticação pode causar sérios problemas de segurança.
+Podemos provar que essa forma de criptografia é segura contra ataques CPA.
 
+Agora, vamos usar a inversa da permutação $p^{-1}$ para criar um código de autenticação (MAC).
+Ou seja, $t = p^{-1}(c)$.
 
-\begin{example}
-  Considere uma permutação pseudoaleatória $p$, escolha $r \leftarrow\{0,1\}^{n/2}$ e criptografe $m \in \{0,1\}^{n/2}$ da seguinte forma:
-  \begin{displaymath}
-    E(k,m) = p_k(m||r)
-  \end{displaymath}
-É possível mostrar que um sistema como esse é seguro contra CPA.
+Também podemos mostrar que esse MAC é seguro contra falsificação.
 
-Agora considere um MAC que usa $p^{-1}$ para produzir o código:
-\begin{displaymath}
-  Mac(k,c) = p_k^{-1}(c).
-\end{displaymath}
-Também é possível mostrar que esse MAC é seguro contra falsificação.
-Porém, quando aplicamos o pardigma {\em encrypt then mac} nesses sistemas temos que:
-\begin{eqnarray*}
-  E(k,m), Mac(k, E(k,m)) & = & p_k(m||r), p_k^{-1}(p_k(m||r))\\
-                         & = & p_k(m||r), m||r
-\end{eqnarray*}
-Neste caso o código de autenticação vaza todo o conteúdo da mensagem!
-\end{example}
+Agora, vamos ver o que acontece quando combinamos esses dois sistemas usando o paradigma \textit{Encrypt then Mac} \textbf{sem} usar chaves independentes:
+
+\begin{itemize}
+    \item Primeiro, criptografamos a mensagem: $E(k, m) = p_k(m || r)$.
+    \item Em seguida, aplicamos o MAC na cifra: $Mac(k, E(k, m)) = p_k^{-1}(p_k(m || r))$.
+\end{itemize}
+
+Quando aplicamos o MAC na cifra, o resultado é a mensagem original $m$ e o valor aleatório $r$: $p_k^{-1}(p_k(m || r)) = m || r$.
+
+Isso significa que o código de autenticação revela exatamente o conteúdo da mensagem original, que deveria estar protegido!
+Em outras palavras, o adversário consegue ver a mensagem inteira simplesmente olhando para o código de autenticação, o que quebra completamente a segurança do sistema.
+
+Esse exemplo mostra por que é importante usar chaves independentes para criptografia e autenticação.
+Quando não usamos chaves diferentes, corremos o risco de comprometer a segurança do sistema, permitindo que informações confidenciais vazem de maneiras inesperadas.
 
 \subsection{Comunicação Segura}
 \label{sec:comunicacao-segura}
 
+Um sistema autenticado de criptografia é responsável por garantir três aspectos importantes na comunicação:
+{\em confidencialidade} (apenas o destinatário deve ser capaz de ler a mensagem), {\em integridade} (a mensagem não deve ser alterada) e {\em autenticidade} (o destinatário deve ter certeza de quem enviou a mensagem).
+No entanto, mesmo com essas proteções, ainda existem outros tipos de ameaças que precisam ser considerados.
+Vamos ver três dessas ameaças e como podemos lidar com elas.
+
+
+
 Um sistema autenticado de criptografia garante a confidencialidade, a integridade e a autenticidade na comunicação.
 Existem, porém, outros tipos de ameaça que esse sistema não garante por si só:
 \begin{itemize}
-\item {\em ataque de reordenação:} um adversário pode embaralhar a ordem de mensagens seguras de forma a produzir um resultado malicioso.
-\item {\em ataque de repetição:} um adversário pode encaminhar duas vezes uma mensma mensagem segura, por exemplo exigindo duas vezes um mesmo pagamento legítimo.
-\item {\em ataque de reflexão:} um adversário pode enviar de volta para o próprio remetente uma mensagem como se fosse do destinatário.
+\item {\em Ataques de reordenação}:
+  Um adversário pode mudar a ordem das mensagens enviadas, o que pode causar problemas.
+  Imagine um cenário onde as mensagens devem ser processadas em uma ordem específica;
+  se a ordem for alterada, isso pode levar a ações incorretas ou até mesmo prejudiciais.
+
+  Para evitar isso, podemos usar um contador que mantém o registro da ordem das mensagens enviadas entre dois participantes.
+  Por exemplo, um contador $ctr_{AB}$ pode ser usado para as mensagens de $A$ para $B$, e $ctr_{BA}$ para as mensagens de $B$ para $A$.
+  Assim, se as mensagens chegarem fora de ordem, o sistema detectará e rejeitará a comunicação.
+\item {\em Ataque de repetição:}
+  Aqui, o adversário repete uma mensagem legítima.
+  Por exemplo, se alguém envia uma ordem de pagamento, o adversário pode repetir essa mensagem, tentando fazer com que o pagamento seja processado duas vezes.
+
+  Novamente, um contador pode ajudar.
+  Como cada mensagem terá um número único, o sistema saberá se uma mensagem está sendo repetida e poderá rejeitar tentativas de repetição.
+\item {\em Ataque de reflexão:}
+  Neste ataque, um adversário intercepta uma mensagem e a envia de volta ao remetente, fazendo parecer que ela veio do destinatário.
+  Isso pode confundir o remetente ou fazer com que ele realize uma ação indesejada.
+
+  Podemos adicionar um bit à mensagem que indique a direção da comunicação.
+  Se o bit $b_{AB}$ estiver definido como 1, isso significa que a mensagem foi enviada de $A$ para $B$.
+  Se estiver definido como 0, significa que a mensagem foi de $B$ para $A$.
+  Isso impede confusões sobre quem enviou a mensagem.
+
+  Outra solução é usar duas chaves independentes:
+  uma $k_{AB}$ para mensagens de $A$ para $B$ e outra $k_{BA}$ para mensagens de $B$ para $A$.
+  Dessa forma, mesmo que uma mensagem seja enviada de volta, a chave errada será usada, tornando a mensagem inválida.
 \end{itemize}
 
-Esses ataques tem soluções simples, mas que precisam ser tratadas quando produzimos um protocolo completo de comunicação segura.
-Para resolver os dois primeiros problemas podemos manter um contador do número de mensagens $ctr_{AB}$ de $A$ para $B$ e $ctr_{BA}$ de $B$ para $A$.
-O terceiro ataque pode ser resolvido inserindo um bit na mensagem que indique sua direção $b_{AB}$ é $1$ se a mensagem foi de $A$ para $B$ e $0$ caso contrário.
-Outra possível solução para o terceiro problema é manter duas chaves independentes: uma $k_{AB}$ para a comunicação de $A$ para $B$ e outra $k_{BA}$ para a comunicação de $B$ para $A$.
-Tanto o contador $ctr_{AB}$ quanto o bit de direção $b_{AB}$ devem ser concatenados a mensagem antes de criptografá-la.
-No Capítulo \ref{cha:protocolos} veremos protocolos completos de segurança e voltaremos nesses detalhes.
+Ambas as soluções — tanto o uso de contadores quanto o bit de direção — devem ser incorporadas na mensagem antes de ela ser criptografada.
+Isso garante que a integridade e a autenticidade da mensagem sejam mantidas.
 
-Aqui encerramos os sistemas de criptografias que se baseiam no modelo simétrico.
-Seguindo a abordagem moderna explicitamos as suposições necessária para provar a segurança de diversos sistemas de criptografia e autenticação.
-O apêndice \ref{cha:owf} busca encontrar a suposição mínima que precisamos fazer para conseguir construir os sistemas que vimos até aqui, a saber, a existência de {\em funções de mão única}.
-Além de servir como um bom resumo do que vimos até aqui, o apêndice procure justificar o porquê precisamos partir de determinadas suposições e não simplesmente provamos essas propriedades para cada sistema.
+Com isso, concluímos nossa exploração dos sistemas de criptografia simétrica.
+Utilizando uma abordagem moderna, explicamos as suposições necessárias para garantir a segurança em diferentes sistemas de criptografia e autenticação.
+
+No Apêndice \ref{cha:protocolos} vemos protocolos completos de segurança e voltaremos nesses detalhes.
+Já no Apêndice \ref{cha:owf}, examinamos a suposição mínima necessária para construir os sistemas que discutimos: a existência de funções de mão única.
+Esse apêndice não só servirá como um resumo do que aprendemos até agora, mas também explicará por que precisamos dessas suposições básicas para provar a segurança em criptografia.
 
 \section{Exercicios}
 \label{sec:exercicios}
@@ -339,7 +376,7 @@ Além de servir como um bom resumo do que vimos até aqui, o apêndice procure j
 \end{exercicio}
 
 \begin{exercicio}
-  Seja $f$ uma função pseudo-aleatória e considere o sistema $\Pi = \langle Gen, E, D \rangle$ uma cifra de bloco que aplica $f$ no modo contador.
+  Seja $f$ uma função pseudo-aleatória e considere o sistema $\Pi$ uma cifra de bloco que aplica $f$ no modo contador.
   Suponha que Alice e Bob compartilham uma chave secreta $k$.
   Considere os seguintes cenários:
   \begin{enumerate}
