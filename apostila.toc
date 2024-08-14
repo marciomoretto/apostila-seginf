@@ -39,29 +39,29 @@
 \contentsline {section}{\numberline {7.3}Exercícios}{108}{section.7.3}%
 \contentsline {chapter}{\numberline {8}Distribuição de Chaves}{111}{chapter.8}%
 \contentsline {section}{\numberline {8.1}Centro de Distribuição de Chaves}{111}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Protocolo de Diffie-Hellman}{112}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Exercícios}{117}{section.8.3}%
-\contentsline {chapter}{\numberline {9}Criptografia Assimétrica}{119}{chapter.9}%
-\contentsline {section}{\numberline {9.1}El Gammal}{120}{section.9.1}%
-\contentsline {section}{\numberline {9.2}RSA}{121}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Sistemas Híbridos}{126}{section.9.3}%
-\contentsline {section}{\numberline {9.4}Exercícios}{127}{section.9.4}%
-\contentsline {chapter}{\numberline {10}Assinaturas Digitais e PKI}{129}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Assinatura RSA}{130}{section.10.1}%
-\contentsline {section}{\numberline {10.2}Infraestrutura de Chaves Públicas}{131}{section.10.2}%
-\contentsline {section}{\numberline {10.3}Exercícios}{133}{section.10.3}%
-\contentsline {chapter}{\numberline {A}Corpos Finitos}{135}{appendix.A}%
-\contentsline {chapter}{\numberline {B}Funções de Mão Única}{141}{appendix.B}%
-\contentsline {chapter}{\numberline {C}Sistemas Híbridos}{147}{appendix.C}%
-\contentsline {section}{\numberline {C.1}El Gammal}{147}{section.C.1}%
-\contentsline {section}{\numberline {C.2}RSA}{148}{section.C.2}%
-\contentsline {chapter}{\numberline {D}Grupos Cíclicos}{149}{appendix.D}%
-\contentsline {section}{\numberline {D.1}Grupos de ordem prima}{149}{section.D.1}%
-\contentsline {section}{\numberline {D.2}Curvas Elípticas}{150}{section.D.2}%
-\contentsline {chapter}{\numberline {E}Algoritmo de Assinaturas Digitais}{155}{appendix.E}%
-\contentsline {section}{\numberline {E.1}Esquemas de Identificação}{155}{section.E.1}%
-\contentsline {section}{\numberline {E.2}Algoritmo de Assinatura Digital (DSA)}{156}{section.E.2}%
-\contentsline {chapter}{\numberline {F}Protocolos}{159}{appendix.F}%
-\contentsline {section}{\numberline {F.1}Pretty Good Privacy}{159}{section.F.1}%
-\contentsline {section}{\numberline {F.2}Off The Record}{160}{section.F.2}%
-\contentsline {section}{\numberline {F.3}Signal}{162}{section.F.3}%
+\contentsline {section}{\numberline {8.2}Protocolo de Diffie-Hellman}{113}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Exercícios}{120}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Criptografia Assimétrica}{123}{chapter.9}%
+\contentsline {section}{\numberline {9.1}El Gammal}{124}{section.9.1}%
+\contentsline {section}{\numberline {9.2}RSA}{125}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Sistemas Híbridos}{130}{section.9.3}%
+\contentsline {section}{\numberline {9.4}Exercícios}{131}{section.9.4}%
+\contentsline {chapter}{\numberline {10}Assinaturas Digitais e PKI}{133}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Assinatura RSA}{134}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Infraestrutura de Chaves Públicas}{135}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Exercícios}{137}{section.10.3}%
+\contentsline {chapter}{\numberline {A}Corpos Finitos}{139}{appendix.A}%
+\contentsline {chapter}{\numberline {B}Funções de Mão Única}{145}{appendix.B}%
+\contentsline {chapter}{\numberline {C}Sistemas Híbridos}{151}{appendix.C}%
+\contentsline {section}{\numberline {C.1}El Gammal}{151}{section.C.1}%
+\contentsline {section}{\numberline {C.2}RSA}{152}{section.C.2}%
+\contentsline {chapter}{\numberline {D}Grupos Cíclicos}{153}{appendix.D}%
+\contentsline {section}{\numberline {D.1}Grupos de ordem prima}{153}{section.D.1}%
+\contentsline {section}{\numberline {D.2}Curvas Elípticas}{155}{section.D.2}%
+\contentsline {chapter}{\numberline {E}Algoritmo de Assinaturas Digitais}{159}{appendix.E}%
+\contentsline {section}{\numberline {E.1}Esquemas de Identificação}{159}{section.E.1}%
+\contentsline {section}{\numberline {E.2}Algoritmo de Assinatura Digital (DSA)}{160}{section.E.2}%
+\contentsline {chapter}{\numberline {F}Protocolos}{163}{appendix.F}%
+\contentsline {section}{\numberline {F.1}Pretty Good Privacy}{163}{section.F.1}%
+\contentsline {section}{\numberline {F.2}Off The Record}{164}{section.F.2}%
+\contentsline {section}{\numberline {F.3}Signal}{166}{section.F.3}%
