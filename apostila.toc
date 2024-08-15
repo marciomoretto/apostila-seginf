@@ -4,7 +4,7 @@
 \contentsline {section}{\numberline {2.1}Cifra de Deslocamento}{18}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Cifra de Substituição}{22}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Cifra de Vigenère}{26}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Máquinas de Criptografar}{28}{section.2.4}%
+\contentsline {section}{\numberline {2.4}Máquinas de Criptografar}{29}{section.2.4}%
 \contentsline {section}{\numberline {2.5}Exercício}{30}{section.2.5}%
 \contentsline {chapter}{\numberline {3}Criptografia Moderna}{33}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Sigilo Perfeito}{33}{section.3.1}%
@@ -57,7 +57,7 @@
 \contentsline {section}{\numberline {C.2}RSA}{152}{section.C.2}%
 \contentsline {chapter}{\numberline {D}Grupos Cíclicos}{153}{appendix.D}%
 \contentsline {section}{\numberline {D.1}Grupos de ordem prima}{153}{section.D.1}%
-\contentsline {section}{\numberline {D.2}Curvas Elípticas}{155}{section.D.2}%
+\contentsline {section}{\numberline {D.2}Curvas Elípticas}{154}{section.D.2}%
 \contentsline {chapter}{\numberline {E}Algoritmo de Assinaturas Digitais}{159}{appendix.E}%
 \contentsline {section}{\numberline {E.1}Esquemas de Identificação}{159}{section.E.1}%
 \contentsline {section}{\numberline {E.2}Algoritmo de Assinatura Digital (DSA)}{160}{section.E.2}%

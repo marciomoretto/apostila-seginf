@@ -15,7 +15,8 @@ O telégrafo permitiu a instalação de grampos nas linhas de comunicação, enq
 Essa capacidade de monitoramento e interceptação persiste na era digital, onde as comunicações pela internet podem ser facilmente observadas por diversos atores, sejam governamentais ou privados.
 Portanto, a necessidade de métodos robustos de criptografia nunca foi tão crítica.
 
-Vamos adotar o seguinte modelo de comunicação. Duas partes, o remetente e o destinatário, desejam se comunicar.
+Para estudar a segurança da comunicação vamos adotar o seguinte modelo.
+Duas partes, o remetente e o destinatário, desejam se comunicar.
 Tradicionalmente, chamamos o remetente de Alice e o destinatário de Bob.
 O uso dos nomes Alice e Bob é comum em todos os livros de criptografia, provavelmente porque suas letras iniciais são as duas primeiras letras do alfabeto: A e B.
 
@@ -28,7 +29,7 @@ Para os propósitos deste curso, sempre trabalharemos com essa hipótese.
 
 A {\em criptografia} (do grego ``escrita secreta'') é a prática e o estudo de técnicas para garantir a comunicação segura na presença de terceiros, conhecidos como {\em adversários}.
 O nosso primeiro desafio neste curso é apresentar sistemas de comunicação que garantam a {\em confidencialidade}.
-Em outras palavras, qualquer mensagem enviada de Alice para Bob deve ser compreensível apenas para Alice e Bob e incompreensível para Eva.
+Em outras palavras, qualquer mensagem enviada de Alice para Bob deve ser compreensível apenas para Alice e Bob e incompreensível para Eva, o adversário.
 
 \begin{center}
   \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -76,7 +77,7 @@ Outros criptógrafos importantes reafirmaram esse princípio de maneiras diferen
 Claude Shannon, considerado o fundador da teoria da informação, dizia que devemos sempre assumir que ``o inimigo conhece o sistema''.
 Whitfield Diffie, um dos pioneiros da criptografia moderna, afirmou que ``um segredo que não pode ser rapidamente modificado deve ser interpretado como uma vulnerabilidade''.
 
-Ou seja, em uma comunicação confidencial, as partes devem compartilhar algo que possa ser ``modificado caso necessário''.
+Ou seja, em uma comunicação confidencial, as partes devem compartilhar algo que possa ser facilmente modificado caso necessário.
 Esse segredo compartilhado é chamado de {\em chave} da comunicação e assumimos que ela é a única parte sigilosa do sistema.
 
 Trazendo o debate para uma discussão mais moderna, o sigilo do código-fonte de um sistema não deve, em hipótese alguma, ser o que garante sua segurança.
@@ -119,9 +120,9 @@ Um sistema de criptografia simétrico é formado por três algoritmos:
 \item $D$: o algoritmo que descriptografa, ou seja, recupera a mensagem a partir de uma cifra.
 \end{itemize}
 
-Considere que temos um sistema $\Pi = \langle Gen, E, D \rangle$.
+Considere que temos um sistema $\Pi$ formado por três algoritmos como esses.
 Digamos que uma mensagem $m$ foi criptografada usando o algoritmo $E$ e a chave $k$, produzindo a cifra $c$ (escrevemos $E(k,m) = c$).
-O sistema é considerado {\em correto} se, ao descriptografarmos $c$ com o algoritmo $D$ usando a mesma chave $k$, recuperamos a mensagem original $m$ (ou seja, $D(k,c) = m$.
+O sistema é considerado {\em correto} se, ao descriptografarmos $c$ com o algoritmo $D$ usando a mesma chave $k$, recuperamos a mensagem original $m$ (ou seja, $D(k,c) = m$).
 
 \section{Cifra de Deslocamento}
 \label{sec:cifra-deslocamento}
@@ -130,7 +131,7 @@ O que chamamos na seção anterior de ``cifra de César'' não deve ser propriam
 No entanto, é possível e simples adaptar esse esquema para incorporar uma chave.
 
 Para fazer isso, em vez de deslocar as letras sempre três casas para frente, vamos assumir que foi sorteado previamente um número $k$ entre $0$ e $25$.
-Ou sejam, nosso algoritmo $Gen$ sorteia um número de $0$ a $25$
+Ou seja, nosso algoritmo $Gen$ sorteia um número de $0$ a $25$
 Esse número será a chave da comunicação, e assumiremos que ambas as partes a compartilham.
 
 O mecanismo para criptografar uma mensagem ($E$) será deslocar cada letra $k$ posições para a direita.
@@ -139,7 +140,7 @@ Para descriptografar ($D$), basta deslocar cada letra as mesmas $k$ posições p
 \begin{example}
   Digamos que o algoritmo $Gen$ sorteie a chave $k = 3$:
 
-  A tabela a seguir mostra a posição original de cada letra e a nova posição após o deslocamento de 3 posições.
+  A Tabela \ref{table:cesar_shift} mostra a posição original de cada letra e a nova posição após o deslocamento de 3 posições.
   Cada linha da tabela indica a letra original, sua posição no alfabeto, a nova posição após o deslocamento e a letra resultante após o deslocamento.
 
   
@@ -286,7 +287,7 @@ Cada letra do alfabeto é substituída por outra letra de acordo com esta tabela
 
 \begin{example}
 
-Vamos considerar que temos a seguinte tabela de substituição:
+Vamos considerar que temos a seguinte Tabela de substituição \ref{table:substitution_cipher}.
   
 \begin{table}[h!]
 \centering
@@ -378,14 +379,14 @@ Após investigações, foi descoberto que o rapaz usara uma cifra de substituiç
 A cifra de substituição é interessante porque seu universo de chaves é extremamente vasto.
 O universo das chaves da cifra de substituição é o conjunto de todas as permutações possíveis do alfabeto.
 Se estamos usando o alfabeto latino básico, com 23 letras, a análise combinatória nos indica que esse universo possui $23! \approx 4.10^{26} \approx 2^{88}$ combinações possíveis.
-Este número é maior do que dezenas de milhares de vezes maior do que o número de grãos de areia em todas as praias da Terra, estimado em $10^{19}$ e dez vezes maior do que o número de estrelas no universo observável, que é estimado em cerca de $10^{22}$.
+Este número é dezenas de milhares de vezes maior do que o número de grãos de areia em todas as praias da Terra, estimado em $10^{19}$ e dez vezes maior do que o número de estrelas no universo observável, que é estimado em cerca de $10^{22}$.
 
 Este número colossal torna um ataque de força bruta impraticável, pois seria necessário testar um número inimaginável de chaves para encontrar a correta.
 
 Apesar disso, como sabe qualquer pessoa que tenha jogado jogos como criptogramas, que são vendidos pelas famosas revistas Coquetel, é relativamente fácil quebrar uma cifra de substituição.
 Isso porque esse sistema é vulnerável a um outro tipo de ataque, o ataque de frequência.
 
-O ataque de frequência explora as características estatísticas do texto original.
+Um {\em ataque de frequência} explora as características estatísticas do texto original.
 Em qualquer idioma, certas letras aparecem com mais frequência do que outras.
 Por exemplo, em textos em português, as letras {\tt a}, {\tt e} e {\tt o} são muito comuns, enquanto letras como {\tt x}, {\tt z} e {\tt q} são usadas com menos frequência.
 Um criptoanalista pode analisar a frequência das letras no texto cifrado e compará-las com as frequências conhecidas do idioma para fazer suposições educadas sobre quais letras correspondem a quais.
@@ -428,7 +429,7 @@ Portanto, embora o universo de chaves de uma cifra de substituição seja vasto,
 
 A cifra de Vigenère foi criada no século XV e, ainda no começo do século XX, era considerada inquebrável.
 Em 1868, o matemático e autor de ``Alice no País das Maravilhas'', Charles Lutwidge Dodgson (mais conhecido pelo pseudônimo Lewis Carroll), descreveu a cifra como ``inquebrável''.
-Além disso, um artigo da revista Scientific American de 1917 a descrevia como ``impossível de traduzir''.
+Ainda em 1917, a cifra continuava a ser amplamente reconhecida, e um artigo da revista Scientific American a descreveu como ``impossível de decifrar''.
 
 Essa percepção de invulnerabilidade decorre da sofisticação da cifra de Vigenère, que pertence a uma classe de cifras chamadas de {\em polialfabéticas}.
 Diferente das cifras monoalfabéticas, que usam uma única substituição para todo o texto, as cifras polialfabéticas utilizam múltiplos alfabetos de substituição.
@@ -439,16 +440,69 @@ Em sua versão mais simples, a chave é uma palavra cuja primeira letra indica q
 Quando a mensagem ultrapassa o tamanho da chave, a chave é repetida e o processo continua.
 
 Para facilitar a conta na hora de criptografar e descriptografar, podemos usar uma tabela que indica para cada letra da mensagem e cada letra da chave qual é a letra correspondente na cifra.
-Essa tabela é chamada de {\em tabula recta} e está representada na Figura \ref{fig:tabula-recta}.
+Essa tabela é chamada de {\em tabula recta} e está representada na Figura \ref{tab:tabula-recta}.
 A tabula recta é uma matriz que alinha os alfabetos de forma que cada linha representa um alfabeto deslocado.
 Para cifrar, encontra-se a letra da mensagem na coluna da letra da chave correspondente, e a interseção dá a letra cifrada.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
   \centering
-  \includegraphics[width=.8\textwidth]{imagens/tabula-recta.png}
-  \caption{Tabula Recta}
-  \label{fig:tabula-recta}
-\end{figure}
+  \begin{small}
+  \setlength{\tabcolsep}{11pt} 
+\begin{tabular}{|@{}c@{}|*{23}{@{}c@{}|}}
+\hline
+\textbf{} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{E} & \textbf{F} & \textbf{G} & \textbf{H} & \textbf{I} & \textbf{J} & \textbf{L} & \textbf{M} & \textbf{N} & \textbf{O} & \textbf{P} & \textbf{Q} & \textbf{R} & \textbf{S} & \textbf{T} & \textbf{U} & \textbf{V} & \textbf{X} & \textbf{Z} \\
+\hline
+\textbf{A} & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z \\
+\hline
+\textbf{B} & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A \\
+\hline
+\textbf{C} & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B \\
+\hline
+\textbf{D} & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C \\
+\hline
+\textbf{E} & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D \\
+\hline
+\textbf{F} & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E \\
+\hline
+\textbf{G} & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F \\
+\hline
+\textbf{H} & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G \\
+\hline
+\textbf{I} & I & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H \\
+\hline
+\textbf{J} & J & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I \\
+\hline
+\textbf{L} & L & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J \\
+\hline
+\textbf{M} & M & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L \\
+\hline
+\textbf{N} & N & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M \\
+\hline
+\textbf{O} & O & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N \\
+\hline
+\textbf{P} & P & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O \\
+\hline
+\textbf{Q} & Q & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P \\
+\hline
+\textbf{R} & R & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q \\
+\hline
+\textbf{S} & S & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R \\
+\hline
+\textbf{T} & T & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S \\
+\hline
+\textbf{U} & U & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T \\
+\hline
+\textbf{V} & V & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U \\
+\hline
+\textbf{X} & X & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V \\
+\hline
+\textbf{Z} & Z & A & B & C & D & E & F & G & H & I & J & L & M & N & O & P & Q & R & S & T & U & V & X \\
+\hline
+\end{tabular}
+\end{small}
+\caption{Tabula Recta}
+\label{tab:tabula-recta}
+\end{table}
 
 
 \begin{example}
@@ -482,7 +536,8 @@ Cifra:    CSASTPKVSIQUTGQUCSASTPIUAQJB
 
 Note que o padrão {\tt CSASTP} se repete na cifra.
 Isso ocorre porque o prefixo ``crypto'' foi criptografado com a mesma chave.
-Uma vez encontrado um padrão como este, é calculada a distância entre as repetições.
+Em um texto suficientemente longo, um padrão como este fatalmente ocorrerá.
+Uma vez encontrado, é calculada a distância entre as repetições.
 Neste caso, a distância é 16, o que significa que o tamanho da chave deve ser um divisor de 16 (2, 4, 8 ou 16).
 Com esta informação, podemos aplicar um ataque de frequência nos caracteres de 2 a 2, de 4 a 4, de 8 a 8 e de 16 a 16.
 

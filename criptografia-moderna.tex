@@ -78,8 +78,8 @@ Um sistema de criptografia garante o sigilo perfeito se, ao final do jogo, o adv
 }
 \node[player] (system) at (10,0) {$\Pi$};
 \node[draw=none] (adversary) {\stickfigure};
-\draw[->] (9,.5) -> node[above]{$m_0, m_1$} (1,.5);
-\draw[->] (1,-.5) -> node[above]{$E(k,m) = c$} (9,-.5);
+\draw[->] (1,.5) -> node[above]{$m_0, m_1$} (9,.5);
+\draw[->] (9,-.5) -> node[above]{$E(k,m) = c$} (1,-.5);
 \draw[->] (10,2) -> node{$m \leftarrow \{m_0,m_1\}$} (system);
 \end{tikzpicture}
 \end{center}
