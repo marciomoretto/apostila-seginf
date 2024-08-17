@@ -44,10 +44,10 @@
 \contentsline {section}{\numberline {9.2}Protocolo de Diffie-Hellman}{119}{section.9.2}%
 \contentsline {section}{\numberline {9.3}Exercícios}{126}{section.9.3}%
 \contentsline {chapter}{\numberline {10}Criptografia Assimétrica}{129}{chapter.10}%
-\contentsline {section}{\numberline {10.1}El Gammal}{130}{section.10.1}%
-\contentsline {section}{\numberline {10.2}RSA}{131}{section.10.2}%
+\contentsline {section}{\numberline {10.1}El Gammal}{131}{section.10.1}%
+\contentsline {section}{\numberline {10.2}RSA}{132}{section.10.2}%
 \contentsline {section}{\numberline {10.3}Sistemas Híbridos}{136}{section.10.3}%
-\contentsline {section}{\numberline {10.4}Exercícios}{137}{section.10.4}%
+\contentsline {section}{\numberline {10.4}Exercícios}{138}{section.10.4}%
 \contentsline {chapter}{\numberline {11}Assinaturas Digitais e PKI}{139}{chapter.11}%
 \contentsline {section}{\numberline {11.1}Assinatura RSA}{140}{section.11.1}%
 \contentsline {section}{\numberline {11.2}Infraestrutura de Chaves Públicas}{141}{section.11.2}%
