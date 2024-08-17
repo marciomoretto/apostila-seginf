@@ -23,8 +23,6 @@ Uma {\em função de mão única} $f: \{0,1\}^n \to \{0,1\}^n$ é uma função q
 
 Em termos mais rigorosos, uma função de mão única é tal que, se um adversário eficiente recebe $y$, ele só é capaz de encontrar um $x$ que produza $y$ (ou seja, $f(x) = y$) com uma probabilidade desprezível \cite{Diffie76,Yao82}.
 
-
-
 \begin{example}
   Uma candidata a função de mão é única é a seguinte função, onde $x$ e $y$ são números primos do mesmo tamanho:
   \begin{displaymath}
@@ -39,6 +37,8 @@ Em termos mais rigorosos, uma função de mão única é tal que, se um adversá
 
 A dificuldade de inverter esta função está associada ao {\em problema do logarítmo discreto}.
 \end{example}
+
+\section{Construindo um PRG}
 
 Chamamos de {\em predicado hard-core} um pequeno pedaço de informação, como um único bit, sobre $x$ que a função de mão única mantém escondido \cite{Blum84}.
 Mesmo que o adversário conheça $y = f(x)$ ele não obtem informação adicional sobre esse bit.
@@ -102,6 +102,8 @@ Essa construção nos leva ao seguinte teorema:
 \end{tikzpicture}
 \end{center}
 
+\section{Construindo uma PRF e um PRP}
+
 Podemos criar uma função pseudoaleatória (PRF) a partir de um gerador de números pseudoaleatórios (PRG) que dobra o tamanho da entrada.
 
 Primeiro, aplicamos $G$ ao bloco $x$, o que gera uma sequência de bits com o dobro do tamanho do bloco.
@@ -157,6 +159,33 @@ Se um adversário polinomail for capaz de inverter $f$ então ele recupera $r$ e
 Mas neste caso, o sistema de criptografia não seria seguro.
 Como assumimos que o sistema é seguro, não deve ser possível inverter $f$.
 
+\section{Conclusão}
+
+Acreditamos que certas funções são de mão única, ou seja, são fáceis de calcular, mas muito difíceis de inverter.
+Essa crença é apoiada por muitos experimentos, mas ainda não temos uma prova matemática definitiva.
+
+Agora, imagine que conseguíssemos provar que uma função $f$ é realmente de mão única.
+Por definição, isso significa que podemos calcular $f(x)$ em tempo polinomial.
+Além disso, se alguém nos der um valor $y$ e disser que $f^-1(x) = y$, podemos verificar isso rapidamente, testando se $f(y)=x$.
+
+Em termos técnicos, isso significa que $f$ pode ser usada como um ``oráculo polinomial'' para verificar se uma solução está correta.
+Isso coloca o problema de inverter $f$ na classe de problemas NP, que são aqueles problemas para os quais podemos verificar uma solução em tempo polinomial.
+
+Por outro lado, a própria definição de função de mão única diz que inverter $f$ não pode ser feito de maneira polinomial.
+
+A partir disso, podemos concluir que, se uma função de mão única existe, então a classe de problemas que podem ser resolvidos em tempo polinomial (P) é diferente da classe de problemas onde as soluções podem ser verificadas em tempo polinimal (NP).
+Ou seja, provar que uma função é de mão única equivale a provar que P é diferente de NP.
+
+Essa questão -- a relação entre os problemas P e NP -- é o maior problema em aberto na ciência da computação e um dos mais importantes em toda a matemática.
+Dado que ainda não conseguimos resolver essa questão, nos contentamos em validar empiricamente que uma função é de mão única, que um gerador de números pseudoaleatórios é seguro, ou que uma permutação pseudoaleatória é segura.
+A partir dessas validações, podemos então provar a segurança de diversos sistemas de criptografia, como fizemos nos capítulos anteriores.
+
+O diagrama abaixo resume as construções que estudamos neste capítulo.
+Se existir uma função de mão única, então é possível provar que existem PRGs (Geradores de Números Pseudoaleatórios), PRFs (Funções Pseudoaleatórias) e PRPs (Permutações Pseudoaleatórias) seguras.
+Com esses elementos, poderíamos provar que cifras de fluxo e cifras de bloco podem ser usadas para criar sistemas seguros contra falsificação e todos os tipos de ataques que discutimos, incluindo ataques do tipo CCA (Chosen-Ciphertext Attack).
+No entanto, infelizmente, ainda não conseguimos provar a existência de funções de mão única.
+
+
 \begin{center}
 \begin{tikzpicture}[node distance=2cm, auto]
 
@@ -187,26 +216,6 @@ Como assumimos que o sistema é seguro, não deve ser possível inverter $f$.
 
 \end{tikzpicture}
 \end{center}
-
-Acreditamos que certas funções são de mão única, ou seja, são fáceis de calcular, mas muito difíceis de inverter.
-Essa crença é apoiada por muitos experimentos, mas ainda não temos uma prova matemática definitiva.
-
-Agora, imagine que conseguíssemos provar que uma função $f$ é realmente de mão única.
-Por definição, isso significa que podemos calcular $f(x)$ em tempo polinomial.
-Além disso, se alguém nos der um valor $y$ e disser que $f^-1(x) = y$, podemos verificar isso rapidamente, testando se $f(y)=x$.
-
-Em termos técnicos, isso significa que $f$ pode ser usada como um ``oráculo polinomial'' para verificar se uma solução está correta.
-Isso coloca o problema de inverter $f$ na classe de problemas NP, que são aqueles problemas para os quais podemos verificar uma solução em tempo polinomial.
-
-Por outro lado, a própria definição de função de mão única diz que inverter $f$ não pode ser feito de maneira polinomial.
-
-A partir disso, podemos concluir que, se uma função de mão única existe, então a classe de problemas que podem ser resolvidos em tempo polinomial (P) é diferente da classe de problemas onde as soluções podem ser verificadas em tempo polinimal (NP).
-Ou seja, provar que uma função é de mão única equivale a provar que P é diferente de NP.
-
-Essa questão -- a relação entre os problemas P e NP -- é o maior problema em aberto na ciência da computação e um dos mais importantes em toda a matemática.
-Dado que ainda não conseguimos resolver essa questão, nos contentamos em validar empiricamente que uma função é de mão única, que um gerador de números pseudoaleatórios é seguro, ou que uma permutação pseudoaleatória é segura.
-A partir dessas validações, podemos então provar a segurança de diversos sistemas de criptografia, como fizemos nos capítulos anteriores.
-
 
 \section{Exercícios}
 %\label{sec:exercicios}

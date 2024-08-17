@@ -31,7 +31,10 @@
 \contentsline {subsection}{\numberline {6.2.1}Comunicação Segura}{92}{subsection.6.2.1}%
 \contentsline {section}{\numberline {6.3}Exercicios}{94}{section.6.3}%
 \contentsline {chapter}{\numberline {7}Funções de Mão Única}{95}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Exercícios}{100}{section.7.1}%
+\contentsline {section}{\numberline {7.1}Construindo um PRG}{96}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Construindo uma PRF e um PRP}{97}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Conclusão}{99}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Exercícios}{100}{section.7.4}%
 \contentsline {chapter}{\numberline {8}Funções de Hash}{101}{chapter.8}%
 \contentsline {section}{\numberline {8.1}Construções}{104}{section.8.1}%
 \contentsline {subsection}{\numberline {8.1.1}SHA-1}{105}{subsection.8.1.1}%
