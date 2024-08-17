@@ -317,7 +317,6 @@ Um {\em mencanismo de encapsulamento de chave} (KEM) é um sistema formado por t
 
 Um sistema KEM é correto se o processo de decapsulamento sempre recuperar a mesma chave que foi criada na fase de encapsulamento.
 
-
 Um sistema KEM é {\em seguro contra CPA} se um adversário polinomial não é capaz de distinguir com probabilidade considerável a chave produzida por $Encaps$ de uma chave de mesmo tamanho escolhida aleatoriamente.
 
 Se $\Pi_K = \langle Gen_K, Encaps, Decaps \rangle$ é um KEM seguro contra CPA, e $\Pi' = \langle Gen', E', D' \rangle$ é um sistema de criptografia simétrica seguro contra ataques ``ciphertext only'', então o seguinte sistema, chamado de {\em híbrido}, é seguro contra CPA:

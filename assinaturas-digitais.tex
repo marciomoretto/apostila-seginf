@@ -1,9 +1,10 @@
 \chapter{Assinaturas Digitais e PKI}
 \label{cha:assinaturas-digitais}
 
-No capítulo anterior vimos que é possível construir um sistema de criptografia em que as partes não precisam trocar um segredo de antemão.
-Os esquemas da criptografia assimétrica pressupõe a geração de um par de chaves, uma pública e outra secreta.
-As assinaturas digitais, que veremos neste capítulo, seriam o equivalente àos códigos de autenticação de mensagem que vimos no Capítulo \ref{cha:mac} no contexto da criptografia assimétrica.
+No capítulo anterior, vimos que é possível construir um sistema de criptografia onde as partes não precisam trocar um segredo antecipadamente.
+Os esquemas de criptografia assimétrica dependem da geração de um par de chaves: uma pública e outra secreta.
+
+As assinaturas digitais, que veremos neste capítulo, são o equivalente àos códigos de autenticação de mensagem que vimos no Capítulo \ref{cha:mac}, mas no contexto da criptografia assimétrica.
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -29,20 +30,21 @@ As assinaturas digitais, que veremos neste capítulo, seriam o equivalente àos 
 
 Um {\em sistema de assinatura digital} consiste de três algoritmos:
 \begin{itemize}
-\item $Gen$ recebe o parâmetro de segurança $1^n$ e produz um par de chaves $\langle sk, pk \rangle$.
-A primeira deve ser mantida em sigilo e a segunda pode ser publicada.
+\item $Gen$ gera um par de chaves sendo um pública $pk$ e outra secreta $sk$.
 \item $Sign$ recebe a chave secreta $sk$ e uma mensagem $m$ e produz uma assinatura $t$.
 \item $Ver$ recebe a chave pública $pk$, uma mensagem $m$ e uma assinatura $t$ e verifica se essa assinatura é válida para mensagem $m$ e de fato da pessoa que possui a chave secreta.
-Em caso positivo o algritmo deve devoler $1$ e em caso negativo $0$.
 \end{itemize}
 
-Note que no meio digital, para cada mensagem direferente uma mesma pessoa produz assinaturas diferentes.
-Um sistema de assinatura digital é {\em correto} se:
-\begin{displaymath}
-  Ver(pk, m, Sign(sk, m)) = 1
-\end{displaymath}
+A ideia é garantir que qualquer pessoa possa verificar se uma determinada mensagem foi assinada pela pessoa que detém a chave secreta correspondente à chave pública.
+A assinatura digital serve como uma espécie de ``carimbo'' que autentica a mensagem, assegurando que ela não foi alterada (integridade) e que realmente veio de quem a assinou (autenticidade).
 
-Um sistema como esse é {\em seguro contra falsificação} se qualquer adversário eficiente, mesmo com acesso a um oráculo que lhe entregue assinaturas para mensagens diferentes de $m$, não é capaz de produzir uma assinatura válida para $m$ com probabilidade considerável.
+Em uma assinatura em papel, a mesma pessoa produz sempre o mesmo garrancho.
+Já no meio digital, cada mensagem diferente exige uma assinatura diferente.
+Isso é essencial porque no meio digital é trivial copiar um arquivo.
+
+Um sistema de assinatura digital é {\em correto} se, dado um par de chaves $pk, sk$, uma assinatura $t$ para uma mensagem produzida pela chave $sk$ pode ser verificada por $pk$.
+
+Um sistema de assinatura é {\em seguro contra falsificação} se qualquer adversário eficiente, mesmo com acesso a um oráculo que lhe entregue assinaturas para mensagens diferentes de $m$, não for capaz de produzir uma assinatura válida para $m$ com probabilidade considerável.
 
 Da mesma forma que os sistemas de criptografia assimétrica, produzir uma assinatura digital para uma mensagem muito grande pode ser um processo lento.
 Uma técnica usada na prática para mitigar este problema é assinar não a mensagem $m$ em si, mas um hash da mensagem $H(m)$.
@@ -50,74 +52,143 @@ Neste caso, para verificar a integridade e autenticidade da mensagem, basta gera
 Essa construção é chamada de {\em paradigma Hash-and-Sign}.
 É possível provar a segurança contra falsificação em uma construção como essa no caso em que o esquema de assinatura usado é seguro contra falsificação e o hash é resistente à colisão.
 
-
 \section{Assinatura RSA}
 \label{sec:assinatura-rsa}
-
-Um sistema de assinatura digital $\Pi = \langle Gen, Sign, Ver \rangle$ pode ser construído invertendo o esquema de criptografia assimétrica que vimos no capítulo anterior.
+Um sistema de assinatura digital pode ser construído invertendo o esquema de criptografia assimétrica que vimos no capítulo anterior.
 Ou seja, criptografamos a mensagem com a chave secreta para gerar a assinatura e descriptografamos com a chave pública para verificar.
 Esse esquema não é seguro até aplicarmos o paradigma {\em hash-and-sign}.
-O esquema todo segue:
+O esquema todo é formado por três algoritmos:
+
 \begin{itemize}
-\item $Gen(1^n) := \langle sk, pk \rangle$ em que:
-\begin{itemize}
-\item $sk := \langle N, d \rangle$ e
-\item $pk := \langle N, e \rangle$
-\end{itemize}
-\item $Sign(sk, m) := [H(m)^d\ mod\ N]$
-\item $Ver(pk, m, t) := \left\{
-    \begin{array}{lcl}
-      1 & \textrm{se} & t^e \equiv H(m)\ mod\ N\\
-      0 & \textrm{c.c.} &\\
-    \end{array}
-    \right.$
+\item $Gen$: gera um valor $N$ conhecido por ambas as partes e um par de chaves $sk = d$ e $pk = e$ como vimos no capítulo anterior.
+\item $Sign$: calcula o hash de $m$ e eleva esse valor por $d$ módulo $N$ ($t = H(m)^d\ mod\ N$).
+\item $Ver$: eleva $t$ a $e$ e verifica se o resultado é equivalente a $H(m)\ mod\ N$ 
 \end{itemize}
 
 A correção deste sistema segue os mesmos passos da correção do sistema de criptografia RSA que vimos no capítulo anterior.
-Além disso, podemos provar que se o sistema RSA é seguro e o hash $H$ usado é resistente à colisão então o sistema acima é seguro contra falsificação.
-Esse sistema é a base do sistema de assinatura do protocolo {\tt RSA PKCS \#1 v2.1}.
+Além disso, podemos provar que se o sistema RSA é seguro e se o hash $H$ usado é resistente à colisão, então o sistema acima é {\em seguro contra falsificação}.
+Esse sistema é a base do sistema de assinatura do protocolo \texttt{RSA PKCS \#1 v2.1}.
 
 \section{Infraestrutura de Chaves Públicas}
 \label{sec:pki}
 
-O protocolo de Diffie-Hellman e a criptografia assimétrica garantem a segurança da comunicação contra ataques passivos sem precisarmos supor que as partes compartilhe um segredo {\em a priori}.
-Um problema que ainda não tratamos até aqui é como garantir a segurança contra um ataque ativo, ou seja, contra um modelo de ameaça em que o adversario não só é capaz de observar a comunicação, como também é capaz de interferir nela.
-Um ataque que os sistemas que vimos até aqui estão particularmente sujeitos é o seguinte.
+O protocolo de Diffie-Hellman e a criptografia assimétrica garantem a segurança da comunicação contra ataques passivos sem precisarmos supor que as partes compartilhem um segredo {\em a priori}.
+Um problema que ainda não tratamos até aqui é como garantir a segurança contra um ataque ativo, ou seja, contra um modelo de ameaça em que o adversário não só é capaz de observar a comunicação, como também é capaz de interferir nela.
+
+Um ataque ao qual os sistemas que vimos até aqui estão particularmente sujeitos é o seguinte:
 Digamos que Alice pretende se comunicar com Bob usando um sistema de criptografia assimétrico.
 O primeiro passo para Alice é obter a chave pública de Bob.
-Neste momento Eva pode enviar a sua chave pública como se fosse a de Bob, receber as mensagens que Alice enviaria para Bob, copiá-las e re-encaminhá-las para Bob.
+Neste momento, Eva pode enviar a sua chave pública como se fosse a de Bob, receber as mensagens que Alice enviaria para Bob, copiá-las e reencaminhá-las para Bob.
 Este tipo de ataque é chamado de {\em Man In The Middle} e nada do que vimos até aqui o previne.
 
-Não há como evitar este tipo de ataque sem algum encontro físico em que algum segredo seja compartilhado de maneira segura, mas os sistemas de assinatura digitais podem facilitar bastante esse processo.
+Não há como evitar este tipo de ataque sem algum encontro físico em que algum segredo seja compartilhado de maneira segura, mas os sistemas de assinatura digitais podem facilitar esse processo.
+
 A ideia é confiar a alguma autoridade a identificação das chaves públicas.
-A autoridade $A$ teria então a responsabilidade de verificar se a entidade portadora da identidade $Id_B$ é de fato a o pessoa que possui a chave secreta correspondente à chave pública $pk_B$.
-Neste caso a autoridade $A$ pode emitir um {\em certificado} $cert_{A \to B}$ que nada mais é do que uma assinatura de $A$ conectando $Id_B$ a $pk_B$:
+A autoridade $A$ teria então a responsabilidade de verificar se a entidade portadora da identidade $Id_B$ é de fato a pessoa que possui a chave secreta correspondente à chave pública $pk_B$.
+
+Neste caso, a autoridade $A$ pode emitir um {\em certificado} $cert_{A \to B}$, que nada mais é do que um arquivo assinado por $A$ atestando que \(Id_B\) é o titular da chave $pk_B$:
+
 \begin{displaymath}
   cert_{A \to B} := Sign(sk_A, Id_B || pk_B)
 \end{displaymath}
 
+
 Existem diversos modelos de {\em infraestrutura de chaves públicas} (PKI):
+
 \begin{itemize}
-\item {\em autoridade certificadora única:} Neste cenário assumimos que todos possuem a chave pública da autoridade certificadora $A$ que foi obtida de maneira segura.
-Sempre que algum novo ator $B$ precisar publicar sua chave pública ele deve se apresentar à essa autoridade e comprovar sua identidade para obter o certificado $cert_{A \to B}$
-\item {\em múltiplas autoridades certificadoras:} Neste cenário existem várias autoridades certificadoras e assumimos que todos possuem chaves públicas de algumas ou todas elas.
-Quando um novo ator precisar publicar sua chave ele pode procurar uma ou mais autoridades para gerar o certificado que será válido para aqueles que confiarem na autoridade certificadora que o emitiu.
-Neste cenário a comunicação é tão segura quanto a menos confiável das autoridades incluídas na lista das partes.
-\item {\em delegação de autoridade:} Neste cenário as autoridades certificadoras não apenas podem certificar a autenticidade de uma chave pública como podem também produzir um certificado especial $cert^*$ que dá o poder a outro de produzir certificados.
-Assim digamos que $C$ consiga um certificado de $B$ sobra a autenticidade de sua chave $cert_{B \to C}$ e suponha que $B$ possui um certificado especial de $A$ que o autorize a produzir certificados em seu nome $cert^*_{A \to B}$.
-Assim alguém que possui a chave pública de $A$ pode verificar o certificado $cert^*_{A \to B}$ e usar a chave pública assinada de $B$ para verificar $cert_{B \to C}$.
-\item {\em rede de confiança:} Neste cenário, todas as partes atuam como autoridades certificadoras e podem assinar certificados para qualquer chave que elas verificaram.
-Cabe a cada um avaliar a confiança que tem em seus colegas quanto a edoniedade em produzir certificados.
+\item {\em Autoridade Certificadora Única:}
+  \begin{itemize}
+  \item Neste cenário, assume-se que todos possuem a chave pública da autoridade certificadora $A$, que foi obtida de maneira segura.
+  \item Sempre que algum novo ator $B$ precisar publicar sua chave pública, ele deve se apresentar a essa autoridade e comprovar sua identidade para obter o certificado $cert_{A \to B}$.
+  \end{itemize}
+    
+\item {\em Múltiplas Autoridades Certificadoras:}
+  \begin{itemize}
+  \item Neste cenário, existem várias autoridades certificadoras, e assume-se que todos possuem chaves públicas de algumas ou todas elas.
+  \item Quando um novo ator precisar publicar sua chave, ele pode procurar uma ou mais autoridades para gerar o certificado, que será válido para aqueles que confiam na autoridade certificadora que o emitiu.
+  \item Neste cenário, a comunicação é tão segura quanto a menos confiável das autoridades incluídas na lista das partes.
+  \end{itemize}
+    
+\item {\em Delegação de Autoridade:}
+  \begin{itemize}
+  \item Neste cenário, as autoridades certificadoras não apenas podem certificar a autenticidade de uma chave pública, mas também podem produzir um certificado especial $cert^*$ que dá o poder a outro de produzir certificados.
+  \item Por exemplo, se $C$ conseguir um certificado de $B$ sobre a autenticidade de sua chave $cert_{B \to C}$, e $B$ possuir um certificado especial de $A$ que o autorize a produzir certificados em seu nome $cert^*_{A \to B}$, alguém que possui a chave pública de $A$ pode verificar o certificado $cert^*_{A \to B}$ e usar a chave pública assinada de $B$ para verificar $cert_{B \to C}$.
+  \end{itemize}
+    
+\item {\em Rede de Confiança:}
+  \begin{itemize}
+  \item Neste cenário, todas as partes atuam como autoridades certificadoras e podem assinar certificados para qualquer chave que verificaram.
+  \item Cabe a cada um avaliar a confiança que tem em seus colegas quanto à idoneidade em produzir certificados.
+  \end{itemize}
 \end{itemize}
 
 Um certificado pode e deve conter uma {\em data de expiração} que limite seu tempo de validade.
-Depois dessa data o certificado não dever ser mais considerado válido e precisa ser renovado.
-Em alguns modelos o portador pode comprovar sua identidade com a autoridade que emitiu o certificado e esta pode assinar e publicar um {\em certificado de revogação} anunciando que a chave não deve mais ser considerada válida -- por exemplo no caso de ela ser perdida ou roubada.
+Depois dessa data, o certificado não deve ser mais considerado válido e precisa ser renovado.
 
-Veja o apêndice \ref{cha:dsa} para outros exemplos de assinatura digital e esquemas de identificação.
+Em alguns modelos, o portador pode comprovar sua identidade com a autoridade que emitiu o certificado, e esta pode assinar e publicar um {\em certificado de revogação} anunciando que a chave não deve mais ser considerada válida — por exemplo, no caso de ela ser perdida ou roubada.
+
+\section{Protocolos}
+\label{sec:protocolos}
+
+Para fechar este capítulo, apresentaremos brevemente uma série de protocolos que utilizam as primitivas criptográficas que vimos até aqui.
+
+Um {\em protocolo}, propriamente dito, deveria descrever os passos de comunicação em um nível de detalhes suficiente para ser implementado sem ambiguidades.
+Este não é nosso propósito.
+
+Pretendemos aqui apenas apresentar aplicações práticas de uso de criptografia forte e como as primitivas são usadas para resolver problemas de comunicação digital.
+Assim, esta seção serve mais como um resumo e uma aplicação prática do que estudamos até aqui.
+
+\subsection{Transport Layer Security (TLS/SSL)}
+
+O {\em Transport Layer Security} (TLS) é uma evolução do protocolo {\em Secure Socket Layer} (SSL), amplamente utilizado para garantir a segurança nas conexões web, especialmente em sites com o prefixo {\tt https}.
+Introduzido em 1999, o protocolo TLS é dividido em duas fases principais:
+a fase de {\em handshake}, responsável por estabelecer as chaves de criptografia simétrica entre o cliente e o servidor, e a fase {\em record-layer}, que assegura a confidencialidade, integridade e autenticidade da comunicação.
+Durante o handshake, o servidor apresenta um certificado digital, que foi emitido por uma autoridade certificadora utilizando o modelo de delegação.
+Esse certificado vincula a identidade do servidor à sua chave pública.
+O cliente verifica o certificado e, se for válido, utiliza a chave pública do servidor para encapsular uma chave secreta que será usada na comunicação.
+Ao final desse processo, cliente e servidor compartilham chaves simétricas autênticas, que são então usadas para criptografar e autenticar as mensagens trocadas.
+
+\subsection{Secure Shell (SSH)}
+
+O {\em Secure Shell} (SSH) é um protocolo utilizado para comunicação segura, especialmente para login e transferência de arquivos em servidores remotos.
+Antes da fase de troca de chaves, as partes passam por uma fase de negociação de algoritmos, onde definem o grupo criptográfico, a função de hash e os algoritmos de criptografia a serem usados.
+Durante a troca de chaves, o cliente e o servidor geram e compartilham chaves temporárias, que são autenticadas pelo servidor através de uma assinatura digital.
+O SSH permite o uso de certificados para verificar a autenticidade da chave pública do servidor, mas tipicamente adota o modelo de segurança conhecido como {\em Trust On First Use} (TOFU).
+Nesse modelo, a primeira vez que o cliente se conecta ao servidor, a identidade do servidor é salva no cliente, e futuras conexões utilizam essa informação para verificar a autenticidade da chave.
+Além disso, o SSH apresenta um ``fingerprint'' da chave pública, que nada mais é do que um hash da chave, permitindo a verificação manual de forma segura.
+Após a troca de chaves, o servidor e o cliente compartilham as chaves de criptografia e autenticação necessárias para a comunicação segura, além dos vetores iniciais para a encriptação.
+Antes de iniciar a troca de mensagens, o servidor autentica o cliente, o que pode ser feito por meio de chave pública, senha ou autenticação baseada no host.
+
+\subsection{Pretty Good Privacy (PGP)}
+
+O PGP ({\em Pretty Good Privacy}) foi desenvolvido no início dos anos 1990 por Phil Zimmermann, inicialmente como uma ferramenta para proteger a comunicação dos ativistas contra o uso de armas nucleares.
+O PGP combina criptografia híbrida, compactação de arquivos, assinaturas digitais e o modelo de {\em rede de confiança} para a certificação de chaves públicas, contrastando com o modelo de delegação de autoridade utilizado pelo protocolo TLS/SSL.
+Em vez de confiar em uma autoridade central para a validação das chaves, o PGP permite que os usuários verifiquem manualmente a autenticidade das chaves públicas e publiquem certificados em servidores de chaves.
+Originalmente, as {\em cryptoparties} eram eventos onde as pessoas se reuniam para verificar esses certificados, fortalecendo a rede de confiança do PGP
+O protocolo permite que os usuários criptografem mensagens, assinem digitalmente, ou façam ambos, utilizando algoritmos como RSA, DSA, ou El Gamal, em combinação com técnicas de compactação e modos de operação de cifra como o {\em Cipher Feedback} (CFB).
+
+\subsection{Off The Record (OTR)}
+
+Enquanto o PGP foi projetado para comunicação assíncrona, como e-mails, o {\em Off-the-Record Messaging} (OTR) foi desenvolvido para modelar uma conversa privada em comunicação síncrona, como em chats \cite{Borisov04}.
+Assim como o PGP, o OTR garante autenticidade, integridade e confidencialidade, mas também oferece {\em sigilo perfeito para o futuro} (impedindo a decifração de mensagens antigas mesmo que as chaves sejam comprometidas) e {\em negação plausível} (o destinatário não pode provar a terceiros quem foi o remetente da mensagem).
+O OTR inicia com um handshake em que as partes trocam e verificam chaves temporárias. Para criptografia, o OTR utiliza técnicas como o algoritmo AES em modo contador -- que é um modo maleável, como vimos no Capítulo \ref{cha:cifras-de-bloco} -- e aplica um processo de revezamento e esquecimento de chaves para garantir sigilo futuro.
+A negação plausível é assegurada não só pelo uso de um modo maleável de criptografia, mas também ao expor as chaves de autenticação após o uso, impossibilitando que o destinatário prove quem enviou a mensagem.
+O protocolo também permite a verificação manual de fingerprints ou a utilização de métodos mais sofisticados, como o protocolo do ``milionário socialista'', para autenticar chaves em comunicação síncrona.
+
+\subsection{Signal}
+
+O \textit{protocolo Signal}, inicialmente chamado de Axolotl, foi desenvolvido para solucionar os desafios de segurança em mensageiros modernos, que operam de maneira assíncrona, ao contrário do OTR, que foi projetado para comunicação síncrona. Assim como o OTR, o Signal opera em duas fases: handshake e troca de mensagens. No entanto, o Signal adota uma abordagem mais robusta, dispensando o uso de assinaturas digitais e fortalecendo a negação plausível.
+
+Durante o handshake, as partes geram uma {\em chave raiz} derivada de suas chaves permanentes e efêmeras, que é usada para gerar uma {\em chave da cadeia} e uma {\em chave mestra} para criptografia e autenticação.
+O protocolo introduz o conceito de \textit{ratchet}, que permite o revezamento e esquecimento de chaves de forma mais frequente.
+Como no protocolo OTR, a chave mestra é trocada sempre que um usuário responde a uma mensagem, mas, além disso, a chave da cadeia é trocada a cada nova mensagem, o que garante uma camada adicional de segurança.
+
+O Signal utiliza o modelo de certificação \textit{Trust On First Use (TOFU)}, semelhante ao SSH, e oferece a opção de verificação manual de fingerprints.
+Originalmente implementado no aplicativo open source Textsecure, o protocolo Signal foi incorporado ao WhatsApp em 2016.
+O Textsecure passou a ser chamado de Signal e, além de manter seu código aberto, possui uma política de privacidade que minimiza o armazenamento de metadados dos usuários.
 
 \section{Exercícios}
-%\label{sec:exercicios}
+
 
 \begin{exercicio}
   Explique com suas palavras o que é uma autoridade certificadora e qual sua importância para garantir a segurança na comunicação.
