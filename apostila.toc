@@ -9,7 +9,7 @@
 \contentsline {chapter}{\numberline {3}Criptografia Moderna}{33}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Sigilo Perfeito}{33}{section.3.1}%
 \contentsline {section}{\numberline {3.2}One Time Pad}{36}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Abordagem Assintótica}{44}{section.3.3}%
+\contentsline {section}{\numberline {3.3}Abordagem Assintótica}{43}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Exercícios}{45}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Cifras de Fluxo}{47}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{50}{section.4.1}%
