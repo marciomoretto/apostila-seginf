@@ -130,7 +130,7 @@ Mas isso é impossível, porque o único divisor de 1 é ele mesmo, e $b > 1$. C
 \begin{proposition}[Identidade de Bezout]
   Para quaisquer dois números inteiros $a$ e $b$ sempre existem outros dois números inteiros $x$ e $y$ tais que $Xa + Yb = mdc(a,b)$.
 \end{proposition}
-
+\begin{proof}
 Considere o conjunto formado por todos os números que podem ser escritos na forma $x'a + y'b$ para $x'$ e $y'$ inteiros.
 Seja $d = xa + yb$ o menor desses números que podem ser escritos dessa forma.
 
@@ -158,6 +158,8 @@ Nesse caso, $d'$ também dividiria $ax + by = d$.
 Portanto, $d'$ teria que ser menor ou igual a $d$.
 
 Concluímos, então, que $d$ é o maior dos divisores de $a$ e $b$, ou seja, $d = ax + by = \text{mdc}(a,b)$.
+\end{proof}
+
 
 Para encontrar os coeficientes $x$ e $y$ que satisfazem a Identidade de Bezout, ou seja, $xa + yb = \text{mdc}(a, b)$, podemos utilizar uma versão estendida do algoritmo de Euclides.
 Este algoritmo não apenas calcula o {\em máximo divisor comum} (mdc) de dois números $a$ e $b$, mas também determina os valores de $x$ e $y$ que, quando combinados com $a$ e $b$, resultam no mdc.

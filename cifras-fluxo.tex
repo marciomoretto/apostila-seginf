@@ -431,6 +431,7 @@ Eventualmente, o RDRL deve retornar a um estado anterior, iniciando assim um cic
 O tamanho do ciclo de um RDRL refere-se à quantidade de bits gerados antes que a sequência comece a se repetir.
 Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo RDRL.
 Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
+Um ciclo longo é o que garante que não repetiremos a mesma sequência de bits para criptografar duas mensagens distintas.
 
 O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
 Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
