@@ -444,10 +444,10 @@ Podemos expressar cada bit como uma combinação linear dos bits anteriores, pon
 
 \begin{displaymath}
   \begin{array}{rcl}
-    y_{n+1} & = & c_{n-1}y_n \oplus c_{n-2}y_{n-1} \oplus \cdots \oplus c_0 y_1 \\
-    y_{n+2} & = & c_{n-1}y_{n+1} \oplus c_{n-2}y_n \oplus \cdots \oplus c_0 y_2 \\
+    y_{n+1} & = & c_0y_1 \oplus c_1y_{n-1} \oplus \cdots \oplus c_{n-1} y_1 \\
+    y_{n+2} & = & c_0y_{n+1} \oplus c_1y_n \oplus \cdots \oplus c_{n-1} y_2 \\
     & \vdots & \\
-    y_{2n} & = & c_{n-1}y_{2n-1} \oplus c_{n-2}y_{2n-2} \oplus \cdots \oplus c_0 y_n \\
+    y_{2n} & = & c_0y_{2n-1} \oplus c_1y_{2n-2} \oplus \cdots \oplus c_{n-1} y_n \\
   \end{array}
 \end{displaymath}
 
@@ -456,7 +456,7 @@ Uma vez determinados os valores $y_0 \dots y_n = s_0 \dots s_n$, podemos prever 
 Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
 
 \begin{example}
-  Vamos considerar que os coeficientes de feedback são $c_2 = 1$, $c_1 = 0$, $c_0 = 1$.
+  Vamos considerar que os coeficientes de feedback são $c_0 = 1$, $c_1 = 0$, $c_2 = 1$.
 
   O adversário sabe esses valores porque isso é parte do mecanismo.
 
