@@ -394,12 +394,57 @@ Aqui está como essa função funciona:
     \item {\em Difusão}: Finalmente, esses 32 bits são embaralhados em um processo chamado \textit{difusão}, que espalha as mudanças por todo o bloco, garantindo que até mesmo pequenas alterações na entrada resultem em grandes mudanças na saída.
 \end{enumerate}
 
-
 \begin{figure}[!htp]
-  \centering
-  \includegraphics[width=.4\textwidth]{imagens/feistel-function.png}
+  \begin{tikzpicture}
+    % Caixa para meio bloco (32 bits)
+    \node[draw, minimum width=4cm, minimum height=1cm] (block32) at (0,0) {meio bloco};
+
+    \node[draw, minimum width=6cm, minimum height=1cm] (block48) at (0,-2) {meio bloco expandido};
+    
+    % Caixa para Subchave (48 bits), posicionada à direita do meio bloco
+    \node[draw, minimum width=6cm, minimum height=1cm] (subkey48) at (7,0) {subchave};
+
+     % Coordenadas para as setas e o símbolo XOR
+    \node (xor) at (4,-4) {\Huge$\xor$};
+
+    % Seta do bloco32 para o bloco48
+    \draw[->] (block32.south) -- node[midway, right] {\small 32 bits} (block48.north);
+    
+    % Setas descendentes das caixas para o símbolo XOR
+    \draw[->] (block48.south) -- node[midway, right] {\small 48 bits} ++(0,-1.5) -- (xor);
+    \draw[->] (subkey48.south) -- node[midway, right] {\small 48 bits} ++(0,-3.5) -- (xor);
+
+
+     % Caixas S1 a S8
+    \foreach \i in {0,...,7} {
+      \node[draw, minimum width=1.3cm, minimum height=1cm] (S\i) at (\i*1.5-1.5,-7) {S\i};
+    }
+
+    % Seta que sai do XOR e desce até metade do caminho
+    \draw[-] (xor.south) -- ++(0,-1) coordinate (midpoint) -- ++(-4,0);
+
+    % Setas para cada uma das caixas S1 a S8
+    \foreach \i in {0,...,7} {
+      \draw[->] (midpoint) -| (S\i.north);
+      \node (bits\i) at (1.5*\i-0.9,-6) {\small 6 bits};
+    }
+    
+    % Bloco de permutação (32 bits)
+    \node[draw, minimum width=4cm, minimum height=1cm] (permutacao) at (4,-10) {Permutação};
+
+    % Setas que saem do centro de cada S1 a S8 e convergem para o ponto
+    \foreach \i in {0,...,7} {
+      \draw[-] (S\i.south) -- (\i*1.5-1.5,-8.5) -- (4,-8.5);
+      \node (bits\i) at (1.5*\i-0.9,-8) {\small 4 bits};
+    }
+    
+    % Seta do meio do caminho entre S1 a S8 e a Permutação
+    \draw[->] (4,-8.5) -- (permutacao.north);
+
+    % Seta saindo do centro da permutação para baixo
+    \draw[->] (permutacao.south) -- node[midway, right] {\small 32 bits} ++(0,-1);
+  \end{tikzpicture}
   \caption{Função de Fiestel do DES}
-  \label{fig:feistel-function}
 \end{figure}
 
 A adoção do DES como padrão de criptografia não foi isenta de controvérsias.
