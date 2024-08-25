@@ -314,8 +314,9 @@ O funcionamento de um RDRL pode ser descrito em etapas simples:
   A cada passo, o estado é atualizado da seguinte maneira:
 
 \begin{itemize}
-    \item O novo valor de $s_2$ é calculado como $s_2 := c_2 s_2 \oplus c_1 s_1 \oplus c_0 s_0$.
-    \item O vetor de registradores é então deslocado para a direita, e o valor de $s_0$ é emitido como parte da sequência de saída.
+\item O novo valor de $s_0$ é calculado como $s_0 := c_0 s_0 \oplus c_1 s_1 \oplus c_2 s_2$.
+  De maneira equivalente, o novo valor de $s_0$ é calculado como o XOR entre os bits indicados pelo coeficiente de feedback.
+    \item O vetor de registradores é então deslocado para a direita, e o valor de $s_{n-1}$ é emitido como parte da sequência de saída.
 \end{itemize}
 
 Vamos mostrar os primeiros passos desse RDRL:
@@ -324,9 +325,9 @@ Vamos mostrar os primeiros passos desse RDRL:
   \begin{tikzpicture}[node distance=2cm, thick]
     % Nós para os números
     \node[draw = none] (s) at (0,0) {$s$};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {1};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {\tt 1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {\tt 0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {\tt 1};
     \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
 
     % Setas pequenas em cima do primeiro e do último número
@@ -340,18 +341,17 @@ Vamos mostrar os primeiros passos desse RDRL:
   \end{tikzpicture}
 \end{center}
   
-\begin{itemize}
-\item[] O novo bit a ser inserido na primeira posição é: $1 \xor 1 = 0$
-\item[] O primeiro bit produzido é $1$ que é o bit que estava na última posição.
-\end{itemize}
+O novo bit a ser inserido na primeira posição é: $1 \xor 1 = 0$
+
+O primeiro bit produzido é {\tt 1} que é o bit que estava na última posição.
 
 \begin{center}
   \begin{tikzpicture}[node distance=2cm, thick]
     % Nós para os números
     \node[draw = none] (s) at (0,0) {$s$};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {0};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {1};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {\tt 0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {\tt 1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {\tt 0};
     \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
 
     % Setas pequenas em cima do primeiro e do último número
@@ -365,18 +365,17 @@ Vamos mostrar os primeiros passos desse RDRL:
   \end{tikzpicture}
 \end{center}
 
-\begin{itemize}
-\item[] O novo bit a ser inserido na primeira posição é: $0 \xor 0 = 0$
-\item[] O segundo bit produzido é $0$ que é o bit que estava na última posição.
-\end{itemize}
+O novo bit a ser inserido na primeira posição é: $0 \xor 0 = 0$
+
+O segundo bit produzido é {\tt 0} que é o bit que estava na última posição.
 
 \begin{center}
   \begin{tikzpicture}[node distance=2cm, thick]
     % Nós para os números
     \node[draw = none] (s) at (0,0) {$s$};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {0};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {\tt 0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {\tt 0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {\tt 1};
     \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
 
     % Setas pequenas em cima do primeiro e do último número
@@ -390,18 +389,17 @@ Vamos mostrar os primeiros passos desse RDRL:
   \end{tikzpicture}
 \end{center}
 
-\begin{itemize}
-\item[] O novo bit a ser inserido na primeira posição é: $0 \xor 1 = 1$
-\item[] O terceiro bit produzido é $1$ que é o bit que estava na última posição.
-\end{itemize}
+O novo bit a ser inserido na primeira posição é: $0 \xor 1 = 1$
+
+O terceiro bit produzido é {\tt 1} que é o bit que estava na última posição.
 
 \begin{center}
   \begin{tikzpicture}[node distance=2cm, thick]
     % Nós para os números
     \node[draw = none] (s) at (0,0) {$s$};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {1};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
-    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {\tt 1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {\tt 0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {\tt 0};
     \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
 
     % Setas pequenas em cima do primeiro e do último número
@@ -415,12 +413,11 @@ Vamos mostrar os primeiros passos desse RDRL:
   \end{tikzpicture}
 \end{center}
 
-\begin{itemize}
-\item[] O novo bit a ser inserido na primeira posição é: $1 \xor 0 = 1$
-\item[] O quarto bit produzido é $0$ que é o bit que estava na última posição.
-\end{itemize}
+O novo bit a ser inserido na primeira posição é: $1 \xor 0 = 1$
 
-Portanto, os primeiros bits da sequência gerada seriam: $1$, $0$, $1$, $0$.
+O quarto bit produzido é {\tt 0} que é o bit que estava na última posição.
+
+Portanto, os primeiros bits da sequência gerada seriam: {\tt 1}, {\tt 0}, {\tt 1}, {\tt 0}.
 
 \end{example}
 
