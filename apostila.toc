@@ -12,10 +12,10 @@
 \contentsline {section}{\numberline {3.3}Abordagem Assintótica}{43}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Exercícios}{45}{section.3.4}%
 \contentsline {chapter}{\numberline {4}Cifras de Fluxo}{47}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{50}{section.4.1}%
+\contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{49}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Modos de Operação}{53}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Construções Práticas}{56}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Linear-Feedback Shift Registers}{57}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.1}Registradores de Deslocamento com Retroalimentação Linear}{57}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}Trivium}{61}{subsection.4.3.2}%
 \contentsline {section}{\numberline {4.4}Exercicios}{64}{section.4.4}%
 \contentsline {chapter}{\numberline {5}Cifras de Bloco}{67}{chapter.5}%

@@ -8,18 +8,18 @@ A ideia geral da construção é a seguinte:
 partimos de uma sequência aleatória de bits chamada de semente e, a partir dela, geramos uma sequência maior de bits para encriptar a mensagem usando a operação de OU exclusivo (XOR), assim como no OTP.
 Embora essa sequência seja gerada de maneira determinística, a segurança do sistema depende do fato de que ela se pareça aleatória.
 
-Informalmente, um {\em gerador de números pseudoaleatórios} (PRG) é uma função que recebe uma semente aleatória e a expande em uma sequência maior que aparenta ser aleatória.
-A qualidade de um PRG é medida pela sua capacidade de produzir sequências que são indistinguíveis de sequências verdadeiramente aleatórias para qualquer adversário eficiente.
+Informalmente, um {\em gerador de números pseudoaleatórios} (GNP) é uma função que recebe uma semente aleatória e a expande em uma sequência maior que aparenta ser aleatória.
+A qualidade de um GNP é medida pela sua capacidade de produzir sequências que são indistinguíveis de sequências verdadeiramente aleatórias para qualquer adversário eficiente.
 
 Sistemas de cifra de fluxo foram estudados extensamente nos anos 80 \cite{Blum84,Yao82}.
 A abordagem para verificar se o gerador de números pseudoaleatórios é suficientemente forte consistia em aplicar uma série de testes estatísticos na sequência gerada para tentar distingui-la de uma sequência aleatória.
 
-Por exemplo, um teste pode verificar se a probabilidade de o primeiro bit da sequência ser igual a $1$ é $\frac{1}{2}$.
+Por exemplo, um teste pode verificar se a probabilidade de o primeiro bit da sequência ser igual a $1$ é $1/2$.
 Isso significa que, em uma sequência verdadeiramente aleatória, a chance de o primeiro bit ser $1$ deve ser igual à chance de ser $0$, ou seja, $50\%$.
-O teste verifica se essa propriedade é mantida na sequência gerada pelo PRG.
-Se a sequência gerada tiver uma probabilidade significativamente diferente de $\frac{1}{2}$ para o primeiro bit ser $1$, isso pode indicar que a sequência não é suficientemente aleatória.
+O teste verifica se essa propriedade é mantida na sequência gerada pelo GNP.
+Se a sequência gerada tiver uma probabilidade significativamente diferente de $1/2$ para o primeiro bit ser $1$, isso pode indicar que a sequência não é suficientemente aleatória.
 
-Outro exemplo de teste é verificar se a probabilidade de ocorrência de pelo menos três $0$s em qualquer subsequência de tamanho 4 é $\frac{5}{16}$.
+Outro exemplo de teste é verificar se a probabilidade de ocorrência de pelo menos três $0$s em qualquer subsequência de tamanho 4 é $5/16$.
 Para entender por que essa é a probabilidade esperada, consideremos todas as possíveis subsequências de 4 bits:
 
 \begin{itemize}
@@ -28,90 +28,80 @@ Para entender por que essa é a probabilidade esperada, consideremos todas as po
 \end{itemize}
 
 Portanto, há 5 subsequências que atendem ao critério (1 com quatro $0$s e 4 com três $0$s) em um total de $2^4 = 16$ possíveis subsequências de 4 bits.
-Assim, a probabilidade de ocorrência de pelo menos três $0$s em uma subsequência de 4 bits é $\frac{5}{16}$.
+Assim, a probabilidade de ocorrência de pelo menos três $0$s em uma subsequência de 4 bits é $5/16$.
 
-O teste então verifica se a sequência gerada pelo PRG possui essa distribuição específica de $0$s em suas subsequências de 4 bits.
-Se a sequência gerada pelo PRG passar neste teste, isso sugere que a sequência é indistinguível de uma sequência verdadeiramente aleatória em relação a essa propriedade específica.
+O teste então verifica se a sequência gerada pelo GNP possui essa distribuição específica de $0$s em suas subsequências de 4 bits.
+Se a sequência gerada pelo GNP passar neste teste, isso sugere que a sequência é indistinguível de uma sequência verdadeiramente aleatória em relação a essa propriedade específica.
 
 Devido ao seu papel em diferenciar sequências pseudoaleatórias de sequências verdadeiramente aleatórias, esses testes são chamados de {\em distinguidores}.
-Os distinguidores são essenciais para avaliar a robustez de um PRG, pois nos ajudam a garantir que as sequências geradas são adequadamente aleatórias para serem usadas em sistemas de criptografia seguros.
+Os distinguidores são essenciais para avaliar a robustez de um GNP, pois nos ajudam a garantir que as sequências geradas são adequadamente aleatórias para serem usadas em sistemas de criptografia seguros.
 
-Uma bateria de distinguidores pode ser usada para verificar a qualidade de um PRG.
-Idealmente, nenhum teste eficiente deveria ser capaz de distinguir a sequência gerada por um PRG de uma sequência verdadeiramente aleatória, ou pelo menos, deveria ser incapaz de fazê-lo com uma probabilidade considerável\footnote{Usaremos o termo ``considerável'' para probabilidades não desprezíveis.}.
+Uma bateria de distinguidores pode ser usada para verificar a qualidade de um GNP.
+Idealmente, nenhum teste eficiente deveria ser capaz de distinguir a sequência gerada por um GNP de uma sequência verdadeiramente aleatória, ou pelo menos, deveria ser incapaz de fazê-lo com uma probabilidade considerável\footnote{Usaremos o termo ``considerável'' para probabilidades não desprezíveis.}.
 
-Definimos um gerador de números pseudo-aleatórios (PRG) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
-O fator de expansão do PRG, representado por $l$, indica quanto maior é a sequência produzida em comparação com a semente inicial.
+Definimos um gerador de números pseudo-aleatórios (GNP) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
+O fator de expansão do GNP, representado pela função $l$, indica quanto maior é a sequência produzida em comparação com a semente inicial.
 
-Para que um PRG seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória.
-Em outras palavras, não deve ser possível para nenhum algoritmo eficiente distinguir entre a sequência gerada pelo PRG e uma sequência aleatória com uma probabilidade significativa.
+Para que um GNP seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória.
+Em outras palavras, não deve ser possível para nenhum algoritmo eficiente distinguir entre a sequência gerada pelo GNP e uma sequência aleatória com uma probabilidade significativa.
 
-Isso significa que, mesmo com o melhor algoritmo possível, um adversário não deve ser capaz de dizer com confiança se uma sequência veio do PRG ou se é completamente aleatória.
-A segurança do PRG depende dessa incapacidade de distinção, garantindo que as sequências geradas sejam suficientemente aleatórias para serem usadas em contextos criptográficos.
-
-Em outras palavras, um PRG é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência ($|Pr[D(r) = 1] - Pr[D(G(s)) = 1]|$) for desprezível.
+Em outras palavras, um GNP é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência ($|Pr[D(r) = 1] - Pr[D(G(s)) = 1]|$) for desprezível.
 
 A restrição de que o distinguidor seja eficiente é estritamente necessária.
 Isso se deve ao fato de que, em teoria, sempre é possível construir um distinguidor usando uma espécie de ataque de força bruta.
 Vamos explorar como isso funciona.
 
-Imagine que temos uma sequência de bits $w$ e queremos saber se ela foi gerada por um PRG $G$  se é uma sequência verdadeiramente aleatória.
+Imagine que temos uma sequência de bits $w$ e queremos saber se ela foi gerada por um GNP $G$  se é uma sequência verdadeiramente aleatória.
 Um algoritmo $D$, nosso distinguidor, pode realizar a seguinte estratégia:
 
 \begin{enumerate}
     \item Para cada possível semente $s$, o algoritmo $D$ verifica se $G(s) = w$  . 
-    \item Se encontrar uma semente $s$ tal que $G(s) = w$, $D$ devolve $1$ (indicando que a sequência foi gerada pelo PRG).
+    \item Se encontrar uma semente $s$ tal que $G(s) = w$, $D$ devolve $1$ (indicando que a sequência foi gerada pelo GNP).
     \item Se não encontrar nenhuma semente que gere $w$, $D$ devolve $0$ (indicando que a sequência é aleatória).
 \end{enumerate}
 
-Esse método de teste é eficaz porque a probabilidade de o distinguidor $D$ devolver $1$ para uma sequência gerada pelo PRG é muito pequena (desprezível).
-Isso acontece porque $D$ verifica se uma semente específica $s$ gera a sequência $w$.
 Para uma semente de $n$ bits, existem $2^n$ possíveis combinações.
 Como apenas uma dessas combinações de $s$ gera $w$ corretamente, a chance de $D$ encontrar essa combinação é $\frac{1}{2^n}$.
 
-
-No entanto, o problema com esse teste é que ele não é eficiente.
+Além disso, esse teste é que ele não é eficiente.
 Para testar todas as possíveis sementes $s$, o tempo esperado é exponencial, mais precisamente $2^{n-1}$.
 Esse tempo de execução torna o método impraticável para valores grandes de $n$.
-Portanto, embora seja teoricamente possível distinguir sequências geradas por um PRG de sequências aleatórias usando força bruta, na prática, a restrição de que o distinguidor seja eficiente é essencial para garantir que o PRG seja útil e seguro.
-
-Em resumo, a necessidade de eficiência no distinguidor é crucial para a segurança prática dos PRGs.
-Sem essa restrição, métodos de força bruta poderiam sempre distinguir entre sequências pseudoaleatórias e verdadeiramente aleatórias, embora esses métodos sejam computacionalmente impraticáveis.
-
+Portanto, embora seja teoricamente possível distinguir sequências geradas por um GNP de sequências aleatórias usando força bruta, na prática, a restrição de que o distinguidor seja eficiente é essencial para garantir que o GNP seja útil e seguro.
 
 \section{Segurança das Cifras de Fluxo}
 \label{sec:streamcipher-sec}
 
 Como adiantamos no capítulo anterior, uma vez definida claramente a suposição que estamos fazendo, podemos tentar provar que, com essa suposição, somos capazes de construir um sistema seguro.
 A abordagem para este tipo de prova é uma redução, similar às reduções que vimos em Teoria da Computação.
-Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um gerador de números pseudo-aleatórios (PRG).
+Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um gerador de números pseudo-aleatórios (GNP).
 
 Reduções são ferramentas poderosas em teoria da computação e criptografia.
 Elas nos permitem transformar um problema desconhecido ou difícil em um problema conhecido ou mais simples.
 Se conseguirmos mostrar que resolver um problema implica resolver outro problema, estabelecemos uma relação de dependência entre eles.
-Neste contexto, se pudermos construir um PRG seguro, podemos utilizar esse PRG para construir um sistema de criptografia que seja seguro contra ataques ciphertext-only.
+Neste contexto, se pudermos construir um GNP seguro, podemos utilizar esse GNP para construir um sistema de criptografia que seja seguro contra ataques ciphertext-only.
 
 O processo de redução pode ser descrito da seguinte maneira:
 
 \begin{itemize}
-\item {\em Definir a Suposição}:
-  Primeiro, definimos claramente a suposição que estamos fazendo, no caso, a existência de um PRG seguro.
-  Um PRG seguro é um gerador que produz sequências de bits que não podem ser distinguidas de sequências verdadeiramente aleatórias por qualquer algoritmo eficiente.
+\item[] {\em Definir a Suposição}:
+  Primeiro, definimos claramente a suposição que estamos fazendo, no caso, a existência de um GNP seguro.
+  Um GNP seguro é um gerador que produz sequências de bits que não podem ser distinguidas de sequências verdadeiramente aleatórias por qualquer algoritmo eficiente.
 
-\item {\em Transformar o Problema}:
-  Em seguida, transformamos o problema de construir um sistema seguro contra ataques ciphertext-only em um problema que envolve o PRG.
-  Mostramos que, se temos um PRG seguro, podemos usar esse PRG como base para criar um sistema de criptografia que resista a ataques ciphertext-only.
+\item[] {\em Transformar o Problema}:
+  Em seguida, transformamos o problema de construir um sistema seguro contra ataques ciphertext-only em um problema que envolve o GNP.
+  Mostramos que, se temos um GNP seguro, podemos usar esse GNP como base para criar um sistema de criptografia que resista a ataques ciphertext-only.
 
-\item {\em Prova de Segurança}:
-  Finalmente, provamos que o sistema de criptografia resultante é seguro sob a suposição de que o PRG é seguro.
-  Isso geralmente envolve demonstrar que qualquer ataque bem-sucedido ao sistema de criptografia implicaria em um ataque bem-sucedido ao PRG, o que contradiria a suposição de que o PRG é seguro.
+\item[] {\em Prova de Segurança}:
+  Finalmente, provamos que o sistema de criptografia resultante é seguro sob a suposição de que o GNP é seguro.
+  Isso geralmente envolve demonstrar que qualquer ataque bem-sucedido ao sistema de criptografia implicaria em um ataque bem-sucedido ao GNP, o que contradiria a suposição de que o GNP é seguro.
 \end{itemize}
 
 Essa abordagem de redução nos permite construir sistemas de criptografia confiáveis baseando-nos em componentes cuja segurança já foi estabelecida ou assumida.
 Ela também facilita a compreensão das relações entre diferentes problemas de segurança e a reutilização de soluções existentes para resolver novos problemas.
 
-Ao estabelecer essa conexão entre PRGs e sistemas de criptografia, criamos uma base sólida para desenvolver e analisar algoritmos de criptografia modernos, garantindo que nossas construções sejam robustas e confiáveis sob as suposições corretas.
+Ao estabelecer essa conexão entre GNPs e sistemas de criptografia, criamos uma base sólida para desenvolver e analisar algoritmos de criptografia modernos, garantindo que nossas construções sejam robustas e confiáveis sob as suposições corretas.
 
-A {\em cifra de fluxo} é um método de criptografia que converte texto claro $m$ em texto cifrado $c$, utilizando um fluxo de chaves pseudoaleatórias gerado por um gerador de números pseudoaleatórios (PRG).
+A {\em cifra de fluxo} é um método de criptografia que converte texto claro $m$ em texto cifrado $c$, utilizando um fluxo de chaves pseudoaleatórias gerado por um gerador de números pseudoaleatórios (GNP).
 Este método é amplamente utilizado devido à sua eficiência e capacidade de operar em dados de tamanho variável, tornando-o ideal para aplicações como comunicação em tempo real e transmissão de dados.
 
 O processo para criptografar uma mensagem $m$ usando uma cifra de fluxo é o seguinte:
@@ -119,7 +109,7 @@ O processo para criptografar uma mensagem $m$ usando uma cifra de fluxo é o seg
 \item Primeiro, uma semente aleatória $k$ de tamanho fixo $n$ é gerada.
   Esta semente deve ser segura e conhecida apenas pelas partes autorizadas.
   Ela será a chave do sistema.
-\item A semente é fornecida ao PRG $G$, que expande a semente em um fluxo de chaves $G(k)$ de comprimento adequado para criptografar a mensagem inteira.
+\item A semente é fornecida ao GNP $G$, que expande a semente em um fluxo de chaves $G(k)$ de comprimento adequado para criptografar a mensagem inteira.
 \item A mensagem original (texto claro) é combinada bit a bit (ou byte a byte) com o fluxo de chaves usando a operação XOR.
   O resultado é o texto cifrado.
 
@@ -130,7 +120,7 @@ O processo para criptografar uma mensagem $m$ usando uma cifra de fluxo é o seg
 
 Para descriptografar o processo é similar:
 \begin{itemize}
-\item A mesma semente $k$ utilizada para criptografar a mensagem é novamente fornecida ao PRG $G$ para gerar o mesmo fluxo de chaves $G(k)$.
+\item A mesma semente $k$ utilizada para criptografar a mensagem é novamente fornecida ao GNP $G$ para gerar o mesmo fluxo de chaves $G(k)$.
 \item O texto cifrado é combinado bit a bit (ou byte a byte) com o fluxo de chaves usando a operação XOR.
   \begin{displaymath}
     c \oplus G(k)
@@ -142,32 +132,33 @@ Para descriptografar o processo é similar:
   \label{theo:stream}
   Uma cifra de fluxo para uma mensagem de tamanho fixo $n$ que utiliza um gerador de número pseudoaleatório para expandir a chave é seguro contra ataques {\em ciphertext only}.
 \end{theorem}
+\begin{proof}
+Para provar o teorema vamos mostrar que se existisse um adversário capaz de quebrar nosso sistema de criptografia, poderíamos usar esse adversário para criar um teste eficiente (distinguidor) que diferencie entre uma sequência gerada por um GNP e uma sequência aleatória.
 
-Para provar o teorema vamos mostrar que se existisse um adversário capaz de quebrar nosso sistema de criptografia, poderíamos usar esse adversário para criar um teste eficiente (distinguidor) que diferencie entre uma sequência gerada por um PRG e uma sequência aleatória.
+Vamos supor que temos um adversário que pode quebrar nosso sistema de criptografia.
+Isso significa que, dado um texto cifrado, essa adversário consegue determinar informações sobre a mensagem original com uma precisão melhor do que a pura sorte.
 
-Vamos supor que temos um adversário $\mathcal{A}$ que pode quebrar nosso sistema de criptografia.
-Isso significa que, dado um texto cifrado, $\mathcal{A}$ consegue determinar informações sobre a mensagem original com uma precisão melhor do que a pura sorte.
-
-Usamos o adversário $\mathcal{A}$ para construir um distinguidor $D$.
+Usamos o adversário para construir um distinguidor $D$.
 Este distinguidor funciona da seguinte forma:
 
 \begin{enumerate}
-  \item $D$ recebe uma sequência $w$ e precisa determinar se $w$ foi gerada por um PRG ou se é uma sequência verdadeiramente aleatória.
-  \item $D$ roda o mesmo algoritmo do adversário $\mathcal{A}$ para obter duas mensagens $m_0$ e $m_1$.
+  \item $D$ recebe uma sequência $w$ e precisa determinar se $w$ foi gerada por um GNP ou se é uma sequência verdadeiramente aleatória.
+  \item $D$ roda o mesmo algoritmo do adversário para obter duas mensagens $m_0$ e $m_1$.
   \item $D$ escolhe aleatoriamente uma das duas mensagens $m$ e calcula $c = w \oplus m$.
-  \item $D$ entrega $c$ ao adversário $\mathcal{A}$ e devolve 1 se $\mathcal{A}$ adivinhar corretamente qual das mensagens foi cifrada e 0 caso contrário.
+  \item $D$ entrega $c$ ao adversário e devolve 1 se ele adivinhar corretamente qual das mensagens foi cifrada e 0 caso contrário.
 \end{enumerate}
 
-O distinguidor $D$ que acabamos de construit devolve 1 com a mesma probabilidade com que $\mathcal{A}$ consegue quebrar o sistema.
-Se $w$ é uma sequência verdadeiramente aleatória, $\mathcal{A}$ não terá qualquer vantagem e só poderá adivinhar corretamente com uma probabilidade de $50\%$.
+O distinguidor $D$ que acabamos de construit devolve 1 com a mesma probabilidade com que o adversário consegue quebrar o sistema.
+Se $w$ é uma sequência verdadeiramente aleatória, o adversário não terá qualquer vantagem e só poderá adivinhar corretamente com uma probabilidade de $50\%$.
 
-Se o adversário $A$ pode quebrar o sistema de criptografia, o distinguidor $D$ pode usar essa capacidade para diferenciar entre uma sequência gerada por um PRG e uma sequência verdadeiramente aleatória.
-Isso mostraria que o PRG não é seguro, pois podemos construir um distinguidor eficiente que o quebra.
+Se o adversário pode quebrar o sistema de criptografia, o distinguidor $D$ pode usar essa capacidade para diferenciar entre uma sequência gerada por um GNP e uma sequência verdadeiramente aleatória.
+Isso mostraria que o GNP não é seguro, pois podemos construir um distinguidor eficiente que o quebra.
 
-Ou seja, se o PRG é seguro, então não existe adversário eficiente capaz de derrotar o sistema.
+Ou seja, se o GNP é seguro, então não existe adversário eficiente capaz de derrotar o sistema.
+\end{proof}
 
-Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (PRG) podem, portanto, ser utilizados para gerar cifras seguras, pelo menos contra ataques do tipo ciphertext-only.
-Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do PRG de uma sequência verdadeiramente aleatória.
+Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (GNP) podem, portanto, ser utilizados para gerar cifras seguras, pelo menos contra ataques do tipo ciphertext-only.
+Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do GNP de uma sequência verdadeiramente aleatória.
 
 Nos próximos capítulos, vamos explorar definições mais robustas de segurança e as suposições associadas a essas definições.
 Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto claro escolhido (chosen-plaintext) e ataques de texto cifrado escolhido (chosen-ciphertext).
@@ -178,26 +169,26 @@ Assim como no OTP, se a mesma chave for reutilizada para criptografar diferentes
 Isso ocorre porque a reutilização da chave permite que um adversário determine informações sobre as mensagens originais ao analisar as cifras resultantes.
 
 Para mitigar esse problema, é crucial garantir que cada chave utilizada seja única e nunca repetida.
-Além disso, a gestão segura das chaves e a geração de chaves verdadeiramente aleatórias ou suficientemente pseudoaleatórias são aspectos fundamentais para manter a integridade e a segurança das cifras de fluxo.
+Além disso, a gestão segura das chaves e a geração de chaves verdadeiramente aleatórias ou suficientemente pseudoaleatórias são aspectos fundamentais para manter a segurança das cifras de fluxo.
 
 \section{Modos de Operação}
 \label{sec:modos-de-operacao}
 
-O Teorema \ref{theo:strean} supõe que a mensagem a ser criptografada tem um tamanho fixo previamente conhecido.
+O Teorema \ref{theo:stream} supõe que a mensagem a ser criptografada tem um tamanho fixo previamente conhecido.
 No entanto, em muitas aplicações práticas, precisamos criptografar mensagens de tamanho arbitrário.
 Para resolver esse problema, existem dois modos de operação para cifras de fluxo: o modo síncrono e o modo assíncrono.
 
-No modo síncrono, o gerador de chaves (PRG) gera um fluxo contínuo de bits independente do texto claro.
+No modo síncrono, o gerador de chaves (GNP) gera um fluxo contínuo de bits independente do texto claro.
 Já no modo assíncrono, o fluxo de chaves depende tanto da chave inicial quanto do texto cifrado anterior, permitindo uma ressincronização automática em caso de perda de dados.
 
-Tipicamente, um gerador de números pseudo-aleatórios (PRG) é composto por dois algoritmos: 
+Tipicamente, um gerador de números pseudo-aleatórios (GNP) é composto por dois algoritmos: 
 \begin{itemize}
-\item O primeiro algoritmo, $Init$, recebe como entrada uma semente $s$ e, opcionalmente, um {\em vetor inicial} $IV$ (discutido na próxima seção).
+\item O primeiro algoritmo, $Init$, recebe como entrada uma semente $s$ e, opcionalmente, um {\em vetor inicial} $VI$.
   Ele devolve um estado inicial $st_0$.
 \item  O segundo algoritmo, $GenBits$, recebe o estado atual $st_i$ como entrada, gera um bit $y$ e atualiza o estado para $st_{i+1}$.
 \end{itemize}
 
-Assim, para cada semente $s$, o PRG produz um fluxo contínuo de bits.
+Assim, para cada semente $s$, o GNP produz um fluxo contínuo de bits.
 Os primeiros $l(n)$ bits desse fluxo formam $G(s)$, a sequência pseudo-aleatória desejada.
 
 No modo \textit{síncrono}, tratamos uma sequência de mensagens $m_0, m_1, \dots$ como uma única grande mensagem $m$, dividida em pedaços menores.
@@ -212,17 +203,18 @@ O processo funciona da seguinte maneira:
 A limitação desse modo é que ambas as partes, Alice e Bob, precisam manter seus estados sincronizados.
 Isso significa que, quando Alice atualiza o estado $st$, Bob também precisa atualizar seu estado correspondente de forma sincronizada.
 
-O outro modo é assíncrono. Nesse modo, além da semente $s$, o algoritmo $G$ recebe uma sequência de bits chamada {\em vetor inicial} (IV).
+O outro modo é {\em assíncrono}.
+Nesse modo, além da semente $s$, o algoritmo $G$ recebe uma sequência de bits chamada {\em vetor inicial} (VI).
 O vetor inicial não é sigiloso, mas deve ser alterado a cada nova mensagem criptografada.
 
 \begin{enumerate}
     \item O algoritmo $Init$ recebe a semente $s$ e o vetor inicial $VI$ para gerar estado inicial $st_0$.
-    \item Cada vez que uma nova parte da mensagem ($m_i$) é enviada, o algoritmo $GenBits$ um novo vetor inicial $IV$ é gerado.
+    \item Cada vez que uma nova parte da mensagem ($m_i$) é enviada, o algoritmo $GenBits$ um novo vetor inicial $VI$ é gerado.
       Esse vetor inicial é público e pode ser transmitido junto com o texto cifrado sem comprometer a segurança do sistema.
       O acrescimo do vetor inicial garante que o algoritmo não repita a mesma chave para criptografar pedaços diferentes da mensagem.
 \end{enumerate}
 
-Ao garantir que o vetor inicial $IV$ seja diferente para cada pedaço da mensagem, evitamos a repetição de chaves.
+Ao garantir que o vetor inicial $VI$ seja diferente para cada pedaço da mensagem, evitamos a repetição de chaves.
 Isso é crucial para impedir ataques onde um adversário poderia identificar padrões entre diferentes mensagens cifradas com a mesma chave.
 
 Diferentemente do modo síncrono, onde a perda de sincronização pode comprometer toda a comunicação, o modo assíncrono permite que cada mensagem seja tratada de forma independente.
@@ -233,20 +225,20 @@ Embora o vetor inicial não precise ser mantido em segredo, ele deve ser escolhi
 
 \begin{example}
   O Wired Equivalent Privacy (WEP) era o padrão para segurança em conexões WiFi desde 1997 e é essencialmente uma cifra de fluxo que opera de modo assíncrono.
-  Para gerar um fluxo de bits pseudo-aleatórios, o WEP utiliza o RC4 \cite{Rivest16} — um gerador de números pseudo-aleatórios (PRG) proposto por Ron Rivest em 1987.
-  O RC4 recebe como entrada uma semente de 40 ou 104 bits e um vetor inicial (IV) não sigiloso de 24 bits.
+  Para gerar um fluxo de bits pseudo-aleatórios, o WEP utiliza o RC4 \cite{Rivest16} — um gerador de números pseudo-aleatórios (GNP) proposto por Ron Rivest em 1987.
+  O RC4 recebe como entrada uma semente de 40 ou 104 bits e um vetor inicial ($VI$) não sigiloso de 24 bits.
 
-  Para cada pacote transmitido, o WEP gera um novo IV.
-  Este IV, combinado com a chave secreta, é utilizado para inicializar o PRG RC4.
+  Para cada pacote transmitido, o WEP gera um novo $VI$.
+  Este $VI$, combinado com a chave secreta, é utilizado para inicializar o GNP RC4.
 
-  O RC4 gera um fluxo de chaves a partir da combinação da chave secreta e do IV.
+  O RC4 gera um fluxo de chaves a partir da combinação da chave secreta e do $VI$.
   Este fluxo de chaves é então combinado com o conteúdo do pacote usando a operação XOR, produzindo o texto cifrado.
 
-  Embora o IV de 24 bits não precise ser mantido em segredo, seu tamanho é consideravelmente pequeno.
-  Devido ao espaço limitado de possíveis IVs, há uma alta probabilidade de repetição.
-  Especificamente, com $50\%$ de chance, o IV se repete a cada 5000 pacotes transmitidos.
+  Embora o $VI$ de 24 bits não precise ser mantido em segredo, seu tamanho é consideravelmente pequeno.
+  Devido ao espaço limitado de possíveis $VI$, há uma alta probabilidade de repetição.
+  Especificamente, com $50\%$ de chance, o $VI$ se repete a cada 5000 pacotes transmitidos.
   Essa repetição torna o WEP vulnerável a ataques de criptografia, como demonstrado por Fluhrer, Mantin e Shamir em 2001 \cite{Fluhrer01}.
-  Eles mostraram que a repetição do IV permite que um adversário possa recuperar a chave secreta após coletar uma quantidade suficiente de pacotes.
+  Eles mostraram que a repetição do $VI$ permite que um adversário possa recuperar a chave secreta após coletar uma quantidade suficiente de pacotes.
 
   Hoje em dia, scripts como o {\tt aircrack-ng}\footnote{http://www.aircrack-ng.org/} são capazes de explorar essas vulnerabilidades.
   Utilizando um computador pessoal, é possível quebrar uma senha WEP em questão de minutos.
@@ -260,65 +252,65 @@ Embora o vetor inicial não precise ser mantido em segredo, ele deve ser escolhi
 \section{Construções Práticas}
 \label{sec:construcoes-praticas}
 
-A existência de geradores de números pseudo-aleatórios (PRGs) não foi demonstrada matematicamente.
-No Apêndice \ref{cha:owf}, discutimos por que é tão desafiador encontrar um PRG que seja comprovadamente seguro.
-O ponto crucial, por enquanto, é que é extremamente difícil demonstrar matematicamente a segurança de um sistema de criptografia baseado em PRGs.
+A existência de geradores de números pseudo-aleatórios (GNPs) não foi demonstrada matematicamente.
+No Apêndice \ref{cha:owf}, discutimos por que é tão desafiador encontrar um GNP que seja comprovadamente seguro.
+O ponto crucial, por enquanto, é que é extremamente difícil demonstrar matematicamente a segurança de um sistema de criptografia baseado em GNPs.
 
-Devido a essa dificuldade, a abordagem predominante na validação de PRGs é empírica.
-Em vez de provar rigorosamente que um PRG é seguro, os candidatos a PRG são validados através de extensivos testes e tentativas de quebra.
-A segurança de um PRG é então inferida a partir da incapacidade de construir um distinguidor eficiente que possa diferenciá-lo de uma sequência verdadeiramente aleatória.
+Devido a essa dificuldade, a abordagem predominante na validação de GNPs é empírica.
+Em vez de provar rigorosamente que um GNP é seguro, os candidatos a GNP são validados através de extensivos testes e tentativas de quebra.
+A segurança de um GNP é então inferida a partir da incapacidade de construir um distinguidor eficiente que possa diferenciá-lo de uma sequência verdadeiramente aleatória.
 
 O processo de validação segue os seguintes passos:
 \begin{enumerate}
-\item \textbf{Proposição de Candidatos}:
-  Novos algoritmos PRG são propostos por criptógrafos e pesquisadores.
+\item[] {\em Proposição de Candidatos}:
+  Novos algoritmos GNP são propostos por criptógrafos e pesquisadores.
   Estes algoritmos devem passar por um rigoroso processo de avaliação.
-\item \textbf{Testes de Distinção}:
+\item[] {\em Testes de Distinção}:
   Diversos testes estatísticos e distinções são aplicados aos candidatos.
-  Esses testes tentam identificar padrões ou irregularidades que possam diferenciar a saída do PRG de uma sequência aleatória.
-\item \textbf{Tentativas de Quebra}:
-  Comunidades de criptógrafos e pesquisadores tentam construir distinguidores que possam quebrar a segurança dos PRGs propostos.
-  Cada tentativa frustrada de construir um distinguidor fortalece a confiança na segurança do PRG.
-\item \textbf{Validação Empírica}:
-  A segurança de um PRG é considerada válida empiricamente quando ele resiste a extensivos testes e tentativas de quebra ao longo do tempo.
+  Esses testes tentam identificar padrões ou irregularidades que possam diferenciar a saída do GNP de uma sequência aleatória.
+\item[] {\em Tentativas de Quebra}:
+  Comunidades de criptógrafos e pesquisadores tentam construir distinguidores que possam quebrar a segurança dos GNPs propostos.
+  Cada tentativa frustrada de construir um distinguidor fortalece a confiança na segurança do GNP.
+\item[] {\em Validação Empírica}:
+  A segurança de um GNP é considerada válida empiricamente quando ele resiste a extensivos testes e tentativas de quebra ao longo do tempo.
   Isso não prova a segurança de forma absoluta, mas fornece uma base prática sólida para sua utilização.
 \end{enumerate}
 
-A abordagem empírica para a validação de PRGs é fundamental para o avanço da criptografia moderna.
-Embora não possamos provar matematicamente que um PRG é seguro, a validação empírica oferece um método robusto para garantir a eficácia e a confiabilidade dos sistemas de criptografia na prática.
-Esse processo contínuo de avaliação e teste é essencial para identificar e utilizar PRGs que oferecem altos níveis de segurança.
+A abordagem empírica para a validação de GNPs é fundamental para o avanço da criptografia moderna.
+Embora não possamos provar matematicamente que um GNP é seguro, a validação empírica oferece um método robusto para garantir a eficácia e a confiabilidade dos sistemas de criptografia na prática.
+Esse processo contínuo de avaliação e teste é essencial para identificar e utilizar GNPs que oferecem altos níveis de segurança.
 
-\subsection{Linear-Feedback Shift Registers}
+\subsection{Registradores de Deslocamento com Retroalimentação Linear}
 \label{sec:lfsr}
 
-Os registradores de deslocamento com realimentação linear, conhecidos como \textit{Linear-Feedback Shift Registers} (LFSRs), são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
+Os registradores de deslocamento com realimentação linear, conhecidos como {\em Registradores de Deslocamento com Retroalimentação Linear} (RDRLs), são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
 
-Um LFSR é composto por duas partes principais:
+Um RDRL é composto por duas partes principais:
 \begin{enumerate}
-    \item {\em Vetor de Registradores}: Um vetor de registradores \(s_{n-1}, s_{n-2}, \dots, s_0\) que armazena exatamente um bit cada.
-    \item {\em Coeficientes de Feedback}: Uma sequência de bits \(c_{n-1}, c_{n-2}, \dots, c_0\), conhecida como coeficientes de feedback, que determina como o novo bit é calculado a cada passo.
+    \item[] {\em Vetor de Registradores}: Um vetor de registradores \(s_0, s_1, \dots, s_{n-1}\) que armazena exatamente um bit cada.
+    \item[] {\em Coeficientes de Feedback}: Uma sequência de bits \(c_0, c_1, \dots, c_{n-1}\), conhecida como coeficientes de feedback, que determina como o novo bit é calculado a cada passo.
 \end{enumerate}
 
-O funcionamento de um LFSR pode ser descrito em etapas simples:
+O funcionamento de um RDRL pode ser descrito em etapas simples:
 
 \begin{enumerate}
-    \item O LFSR começa com um {\em estado inicial} definido pelo vetor de registradores.
-    \item A cada passo, o estado do LFSR é atualizado da seguinte maneira:
+    \item O RDRL começa com um {\em estado inicial} definido pelo vetor de registradores.
+    \item A cada passo, o estado do RDRL é atualizado da seguinte maneira:
     \begin{itemize}
         \item Todos os bits no vetor de registradores são deslocados uma posição para a direita.
-        \item O bit mais à esquerda ($s_{n-1}$) é atualizado com um novo valor calculado usando uma operação XOR sobre os bits do vetor de registradores ponderados pelos coeficientes de feedback.
+        \item O bit mais à esquerda ($s_0$) é atualizado com um novo valor calculado usando uma operação XOR sobre os bits do vetor de registradores ponderados pelos coeficientes de feedback.
     \end{itemize}
-    A fórmula para calcular o novo bit $s_{n-1}$ é:
+    A fórmula para calcular o novo bit $s_0$ é:
     \begin{displaymath}
-    s_{n-1} := \bigoplus_{i=0}^{n-1} c_i s_i
+    s_0 := \bigoplus_{i=0}^{n-1} c_i s_i
     \end{displaymath}
 
-    \item A cada atualização, o bit mais à direita ($s_0$) do vetor de registradores é produzido como parte da sequência pseudo-aleatória.
+    \item A cada atualização, o bit mais à direita ($s_{n-1}$) do vetor de registradores é produzido como parte da sequência pseudo-aleatória.
 \end{enumerate}
 
 \begin{example}
-  Para ilustrar, considere um LFSR com três registradores ($n=3$) e coeficientes de feedback $c_2 = 1$, $c_1 = 0$, $c_0 = 1$.
-  Suponha que o valor inicial (semente) dos registradores seja $s_2 = 1$, $s_1 = 0$, $s_0 = 1$.
+  Para ilustrar, considere um RDRL com três registradores e coeficientes de feedback $c_0 = 1$, $c_1 = 0$, $c_2 = 1$.
+  Suponha que o valor inicial (semente) dos registradores seja $s_0 = 1$, $s_1 = 0$, $s_2 = 1$.
   A cada passo, o estado é atualizado da seguinte maneira:
 
 \begin{itemize}
@@ -326,64 +318,129 @@ O funcionamento de um LFSR pode ser descrito em etapas simples:
     \item O vetor de registradores é então deslocado para a direita, e o valor de $s_0$ é emitido como parte da sequência de saída.
 \end{itemize}
 
-Vamos demonstrar os primeiros passos desse LFSR:
+Vamos mostrar os primeiros passos desse RDRL:
 
-\begin{enumerate}
-    \item Estado inicial: $s_2 = 1$, $s_1 = 0$, $s_0 = 1$
-    \begin{itemize}
-        \item $s_2 := (1 \cdot 1) \oplus (0 \cdot 0) \oplus (1 \cdot 1) = 1 \oplus 0 \oplus 1 = 0$
-        \item $s_2 \leftarrow 0$, $s_1 \leftarrow 1$, $s_0 \leftarrow 0$
-        \item O primeiro bit produzido é 1.
-    \end{itemize}
-    
-    \item Novo estado: $s_2 = 0$, $s_1 = 1$, $s_0 = 0$
-    \begin{itemize}
-        \item $s_2 := (1 \cdot 0) \oplus (0 \cdot 1) \oplus (1 \cdot 0) = 0 \oplus 0 \oplus 0 = 0$
-        \item $s_2 \leftarrow 0$, $s_1 \leftarrow 0$, $s_0 \leftarrow 1$
-        \item O segundo bit produzido é 0.
-    \end{itemize}
-    
-    \item Novo estado: $s_2 = 0$, $s_1 = 0$, $s_0 = 1$
-    \begin{itemize}
-        \item $s_2 := (1 \cdot 0) \oplus (0 \cdot 0) \oplus (1 \cdot 1) = 0 \oplus 0 \oplus 1 = 1$
-        \item $s_2 \leftarrow 1$, $s_1 \leftarrow 0$, $s_0 \leftarrow 0$
-        \item O terceiro bit produzido é 1.
-    \end{itemize}
-    
-    \item Novo estado: $s_2 = 1$, $s_1 = 0$, $s_0 = 0$
-    \begin{itemize}
-        \item $s_2 := (1 \cdot 1) \oplus (0 \cdot 0) \oplus (1 \cdot 0) = 1 \oplus 0 \oplus 0 = 1$
-        \item $s_2 \leftarrow 1$, $s_1 \leftarrow 1$, $s_0 \leftarrow 0$
-        \item O terceiro bit produzido é 0.
-    \end{itemize}
-\end{enumerate}
+\begin{center}
+  \begin{tikzpicture}[node distance=2cm, thick]
+    % Nós para os números
+    \node[draw = none] (s) at (0,0) {$s$};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {1};
+    \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
 
-Portanto, os primeiros bits da sequência gerada seriam: 1, 0, 1, 0.
+    % Setas pequenas em cima do primeiro e do último número
+    \draw[->] ([yshift=0.3cm]s1.north) -- (s1.north);
+    \draw[->] ([yshift=0.3cm]s3.north) -- (s3.north);
+    
+    % Setas abauladas embaixo
+    \draw[->, out=-60, in=-120] (s1.south) to (s2.south);
+    \draw[->, out=-60, in=-120] (s2.south) to (s3.south);
+    \draw[->, out=-60, in=-120] (s3.south) to (s4.south);
+  \end{tikzpicture}
+\end{center}
+  
+\begin{itemize}
+\item[] O novo bit a ser inserido na primeira posição é: $1 \xor 1 = 0$
+\item[] O primeiro bit produzido é $1$ que é o bit que estava na última posição.
+\end{itemize}
+
+\begin{center}
+  \begin{tikzpicture}[node distance=2cm, thick]
+    % Nós para os números
+    \node[draw = none] (s) at (0,0) {$s$};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {0};
+    \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
+
+    % Setas pequenas em cima do primeiro e do último número
+    \draw[->] ([yshift=0.3cm]s1.north) -- (s1.north);
+    \draw[->] ([yshift=0.3cm]s3.north) -- (s3.north);
+    
+    % Setas abauladas embaixo
+    \draw[->, out=-60, in=-120] (s1.south) to (s2.south);
+    \draw[->, out=-60, in=-120] (s2.south) to (s3.south);
+    \draw[->, out=-60, in=-120] (s3.south) to (s4.south);
+  \end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+\item[] O novo bit a ser inserido na primeira posição é: $0 \xor 0 = 0$
+\item[] O segundo bit produzido é $0$ que é o bit que estava na última posição.
+\end{itemize}
+
+\begin{center}
+  \begin{tikzpicture}[node distance=2cm, thick]
+    % Nós para os números
+    \node[draw = none] (s) at (0,0) {$s$};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {1};
+    \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
+
+    % Setas pequenas em cima do primeiro e do último número
+    \draw[->] ([yshift=0.3cm]s1.north) -- (s1.north);
+    \draw[->] ([yshift=0.3cm]s3.north) -- (s3.north);
+    
+    % Setas abauladas embaixo
+    \draw[->, out=-60, in=-120] (s1.south) to (s2.south);
+    \draw[->, out=-60, in=-120] (s2.south) to (s3.south);
+    \draw[->, out=-60, in=-120] (s3.south) to (s4.south);
+  \end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+\item[] O novo bit a ser inserido na primeira posição é: $0 \xor 1 = 1$
+\item[] O terceiro bit produzido é $1$ que é o bit que estava na última posição.
+\end{itemize}
+
+\begin{center}
+  \begin{tikzpicture}[node distance=2cm, thick]
+    % Nós para os números
+    \node[draw = none] (s) at (0,0) {$s$};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s1) at (1,0) {1};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s2) at (2,0) {0};
+    \node[draw, rectangle, minimum width=1cm, minimum height=1cm] (s3) at (3,0) {0};
+    \node[draw = none, rectangle, minimum width=1cm, minimum height=1cm] (s4) at (4,0) {};
+
+    % Setas pequenas em cima do primeiro e do último número
+    \draw[->] ([yshift=0.3cm]s1.north) -- (s1.north);
+    \draw[->] ([yshift=0.3cm]s3.north) -- (s3.north);
+    
+    % Setas abauladas embaixo
+    \draw[->, out=-60, in=-120] (s1.south) to (s2.south);
+    \draw[->, out=-60, in=-120] (s2.south) to (s3.south);
+    \draw[->, out=-60, in=-120] (s3.south) to (s4.south);
+  \end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+\item[] O novo bit a ser inserido na primeira posição é: $1 \xor 0 = 1$
+\item[] O quarto bit produzido é $0$ que é o bit que estava na última posição.
+\end{itemize}
+
+Portanto, os primeiros bits da sequência gerada seriam: $1$, $0$, $1$, $0$.
 
 \end{example}
 
-Um LFSR com $n$ registradores é capaz de gerar no máximo $2^n$ bits antes de começar a repetir sua sequência.
+Um RDRL com $n$ registradores é capaz de gerar no máximo $2^n$ bits antes de começar a repetir sua sequência.
 Isso ocorre porque o número de estados possíveis de um vetor de registradores com $n$ bits é $2^n$.
-Eventualmente, o LFSR deve retornar a um estado anterior, iniciando assim um ciclo.
+Eventualmente, o RDRL deve retornar a um estado anterior, iniciando assim um ciclo.
 
-O tamanho do ciclo de um LFSR refere-se à quantidade de bits gerados antes que a sequência comece a se repetir.
-Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo LFSR.
-Um bom LFSR é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
+O tamanho do ciclo de um RDRL refere-se à quantidade de bits gerados antes que a sequência comece a se repetir.
+Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo RDRL.
+Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
 
-Em aplicações de criptografia, um ciclo longo é crucial para garantir a segurança.
-Um ciclo curto pode ser facilmente identificado e explorado por um adversário, comprometendo a segurança do sistema.
-Um LFSR com um ciclo longo geralmente oferece uma melhor qualidade de aleatoriedade, pois a repetição tardia dos padrões aumenta a imprevisibilidade da sequência gerada.
-
-
-O segredo de um LFSR, ou sua ``chave'', é a semente $s_{n-1} \dots s_0$.
+O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
 Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
 
-Um ataque relativamente simples a um LFSR envolve a observação dos $n$ primeiros bits gerados, \(y_{n+1}, \dots, y_{2n}\), e a resolução de um sistema linear.
-A ideia é que, conhecendo os primeiros bits gerados, podemos inferir os coeficientes de feedback e, portanto, prever os próximos bits gerados pelo LFSR.
+Um ataque relativamente simples a um RDRL envolve a observação dos $n$ primeiros bits gerados, \(y_{n+1}, \dots, y_{2n}\), e a resolução de um sistema linear.
+A ideia é que, conhecendo os primeiros bits gerados, podemos inferir os coeficientes de feedback e, portanto, prever os próximos bits gerados pelo RDRL.
 
-Quando observamos os $n$ primeiros bits gerados pelo LFSR, podemos configurar um sistema de equações lineares para resolver os coeficientes de feedback.
-Considere os bits $y_1, y_2, \dots, y_{2n}$ gerados pelo LFSR.
-Podemos expressar cada bit como uma combinação linear dos bits anteriores, ponderada pelos coeficientes de feedback $c_{n-1}, c_{n-2}, \dots, c_0$:
+Quando observamos os $n$ primeiros bits gerados pelo RDRL, podemos configurar um sistema de equações lineares para resolver os coeficientes de feedback.
+Considere os bits $y_1, y_2, \dots, y_{2n}$ gerados pelo RDRL.
+Podemos expressar cada bit como uma combinação linear dos bits anteriores, ponderada pelos coeficientes de feedback $c_0, c_1, \dots, c_{n-1}$:
 
 \begin{displaymath}
   \begin{array}{rcl}
@@ -433,17 +490,17 @@ Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
 
   Portanto, a semente inicial é $y_1 = 1$, $y_2 = 1$ e $y_3 = 1$.
 
-  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do LFSR.
-  Isso demonstra como um adversário pode comprometer a segurança do LFSR ao observar um número suficiente de bits gerados.
+  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do RDRL.
+  Isso demonstra como um adversário pode comprometer a segurança do RDRL ao observar um número suficiente de bits gerados.
 \end{example}
 
-Resumindo, o LFSR (Linear-Feedback Shift Register) não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
-Essa linearidade permite que o LFSR seja previsível e, portanto, vulnerável a ataques.
-Um adversário que observa um número suficiente de bits gerados pelo LFSR pode resolver um sistema de equações lineares para determinar a semente inicial e, consequentemente, prever todos os bits subsequentes.
+Resumindo, o RDRL não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
+Essa linearidade permite que o RDRL seja previsível e, portanto, vulnerável a ataques.
+Um adversário que observa um número suficiente de bits gerados pelo RDRL pode resolver um sistema de equações lineares para determinar a semente inicial e, consequentemente, prever todos os bits subsequentes.
 
-Embora os LFSRs não sejam seguros, muitos Geradores de Números Pseudo-Aleatórios (PRGs) usados na prática são versões modificadas deste esquema geral.
-A segurança dos PRGs modernos geralmente depende da introdução de não-linearidades no processo de geração de bits.
-Em vez de usar exclusivamente operações lineares como a XOR, os PRGs seguros utilizam funções não lineares.
+Embora os RDRLs não sejam seguros, muitos Geradores de Números Pseudo-Aleatórios (GNPs) usados na prática são versões modificadas deste esquema geral.
+A segurança dos GNPs modernos geralmente depende da introdução de não-linearidades no processo de geração de bits.
+Em vez de usar exclusivamente operações lineares como a XOR, os GNPs seguros utilizam funções não lineares.
 Essas funções podem incluir operações aritméticas complexas, substituições de bits baseadas em tabelas (substituições S-box) ou outras transformações matemáticas que dificultam a previsão dos bits gerados.
 
 \subsection{Trivium}
@@ -458,8 +515,8 @@ Este algoritmo é projetado para ser simples e leve, mas ao mesmo tempo, capaz d
 
 O Trivium recebe dois valores como entrada, ambos com 80 bits:
 \begin{enumerate}
-    \item \textbf{Semente (Key)}: Uma sequência de 80 bits que serve como chave secreta do algoritmo.
-    \item \textbf{Vetor Inicial (IV)}: Outra sequência de 80 bits, que é usada para garantir a unicidade da cifra gerada para diferentes mensagens, mesmo quando a mesma chave é utilizada.
+    \item {\em Semente (Key)}: Uma sequência de 80 bits que serve como chave secreta do algoritmo.
+    \item {\em Vetor Inicial (VI)}: Outra sequência de 80 bits, que é usada para garantir a unicidade da cifra gerada para diferentes mensagens, mesmo quando a mesma chave é utilizada.
 \end{enumerate}
 
 O estado interno do Trivium é representado por um vetor de 288 bits.
@@ -482,7 +539,7 @@ A inicializaćão dos registradores é feita da seguinte forma:
   \item As demais posições do registrador A são preenchidas com zeros.
   \end{itemize}
   
-\item {\em Vetor Inicial (IV)}:
+\item {\em Vetor Inicial ($VI$)}:
   \begin{itemize}
   \item O vetor inicial de 80 bits é inserido nas últimas posições do registrador B.
   \item As demais posições do registrador B são preenchidas com zeros.
@@ -516,7 +573,7 @@ Os passos seguintes do Trivium são:
     
     \item {\em Deslocamento dos Bits}:
     \begin{itemize}
-        \item Cada registrador desloca seus bits uma posição para a direita, semelhante ao LFSR (Linear-Feedback Shift Register).
+        \item Cada registrador desloca seus bits uma posição para a direita, semelhante ao RDRL (Linear-Feedback Shift Register).
     \end{itemize}
     
     \item {\em Inserção do Novo Bit}:
@@ -542,11 +599,11 @@ Resumindo, o Trivium é um algoritmo de cifra de fluxo que utiliza três registr
 Em cada passo, os registradores realizam operações lógicas e de deslocamento, trocando bits de saída entre si e inserindo novos bits com base em cálculos de feedback.
 A combinação dos bits de saída dos três registradores gera o fluxo de bits que é usado para criptografar ou descriptografar mensagens.
 
-A escolha de um bom gerador de números pseudo-aleatórios (PRG) é crucial para garantir a segurança de uma cifra de fluxo.
+A escolha de um bom gerador de números pseudo-aleatórios (GNP) é crucial para garantir a segurança de uma cifra de fluxo.
 Utilizar geradores inadequados pode comprometer seriamente a integridade do sistema criptográfico. Um erro comum é utilizar funções padrão de bibliotecas de programação, como a função \texttt{rand} da biblioteca padrão da linguagem \texttt{C}.
 Embora essas funções sejam adequadas para simulações e outras aplicações não críticas, elas não oferecem o nível de segurança necessário para aplicações criptográficas.
 
-Para garantir a segurança de sistemas criptográficos, é essencial utilizar PRGs que foram rigorosamente avaliados e validados pela comunidade criptográfica.
+Para garantir a segurança de sistemas criptográficos, é essencial utilizar GNPs que foram rigorosamente avaliados e validados pela comunidade criptográfica.
 A orientação geral é utilizar geradores selecionados pelo projeto eSTREAM, que foram submetidos a testes extensivos e demonstraram ser seguros contra uma variedade de ataques criptoanalíticos.
 Dois exemplos notáveis de geradores aprovados pelo projeto eSTREAM são o Trivium, que foi detalhado nesta seção, e o SALSA20.
 
@@ -561,11 +618,11 @@ Dois exemplos notáveis de geradores aprovados pelo projeto eSTREAM são o Trivi
 \end{exercicio}
 
 \begin{exercicio}
-Mostre que o gerador $G$ com fator de expansão $l(n) = n + 1$ que recebe $s \in \{0,1\}^n$ e devolve $s$ concatenado com $\bigoplus_{i=0}^ns_i$ não é um PRG.  
+Mostre que o gerador $G$ com fator de expansão $l(n) = n + 1$ que recebe $s \in \{0,1\}^n$ e devolve $s$ concatenado com $\bigoplus_{i=0}^ns_i$ não é um GNP.  
 \end{exercicio}
 
 \begin{exercicio}
-  Construa um dintinguidor eficiente $D$ para o LFSR simples.
+  Construa um dintinguidor eficiente $D$ para o RDRL simples.
 \end{exercicio}
 
 \begin{exercicio}
