@@ -2,7 +2,6 @@
 \label{cha:criptografia-moderna}
 
 No final dos anos 40, com o desenvolvimento dos primeiros computadores e a experiência da quebra das cifras mecanicamente produzidas por poderosas máquinas desenvolvidas pelo esforço de guerra do nazismo, alguns cientistas se voltaram para um problema central no campo da criptografia: o que torna um sistema de criptografia seguro?
-
 As cifras que vimos até agora são conhecidas como {\em cifras clássicas} exatamente porque elas precedem esse debate moderno, e não é à toa que foram todas derrotadas cedo ou tarde.
 Informalmente, poderíamos dizer que o problema dos esquemas clássicos de criptografia é que eles mantêm muita informação sobre a mensagem original, como a frequência das letras, dos dígrafos, letras duplas, entre outros.
 Esses padrões permitem que criptanalistas descubram o texto original sem conhecer a chave.
@@ -110,9 +109,18 @@ Este é um objetivo ideal para sistemas de criptografia, pois garantiria que mes
 
 Ficamos então com o desafio de encontrar algum sistema que satisfaça essa definição, caso tal sistema exista.
 Esta busca nos leva a explorar técnicas e métodos mais avançados de criptografia.
-Claude Shannon, em seus estudos, encontrou um sistema assim chamado de {\em One-Time Pad} (OTP).
 
-No que segue, apresentaremos um sistema chamado One Time Pad, também conhecido como {\em cifra de Vernam}, e mostraremos que ele garante o sigilo perfeito.
+O conceito do One-Time Pad (OTP), surgiu como uma solução inovadora no início do século XX.
+Em 1917, Gilbert Vernam, um engenheiro americano trabalhando para a AT\&T, propôs uma cifra baseada em uma fita perfurada que se combinava com o texto claro utilizando a lógica binária.
+Essa ideia inicial, conhecida como a {\em cifra de Vernam}, já trazia uma inovação ao permitir a combinação de uma chave com o texto da mensagem, mas ainda não era totalmente segura, pois a repetição das chaves poderia levar à sua quebra.
+
+A virada para a inviolabilidade da cifra veio com a contribuição de Joseph Mauborgne, um oficial do Corpo de Sinalização do Exército dos Estados Unidos.
+Mauborgne sugeriu uma modificação essencial:
+usar uma chave aleatória, tão longa quanto a própria mensagem, e garantir que essa chave nunca fosse reutilizada.
+Essa chave, composta por uma sequência de números ou caracteres verdadeiramente aleatórios, era usada uma única vez e depois descartada.
+Essa abordagem eliminava qualquer padrão no texto cifrado que pudesse ser analisado por um adversário, garantindo que, mesmo que a cifra fosse interceptada, ela não revelaria absolutamente nenhuma informação sobre o texto original.
+
+No que segue, apresentaremos um sistema chamado One Time Pad, e mostraremos que ele garante o sigilo perfeito, o que historicamente ocorreu nos anos 40 com os estudos de Shannon.
 A partir deste ponto, conforme começarmos a investigar sistemas a serem implementados computacionalmente, consideraremos que o universo das mensagens (assim como o universo das cifras) será representado não mais como sequências de letras, mas como sequências de bits.
 
 No caso específico do OTP, assumiremos que as mensagens e as cifras possuem um tamanho fixo.
@@ -256,6 +264,13 @@ Isso significa que a probabilidade das mensagens não seria independente da prob
 Ou seja, se houver mais mensagens do que chaves, haveria mensagens que não poderiam produzir certas cifras, tornando a probabilidade das mensagens dependente das cifras.
 Portanto, para garantir o sigilo perfeito, o número de chaves deve ser pelo menos tão grande quanto o número de mensagens.
 \end{proof}
+
+Durante a Guerra Fria, o One-Time Pad (OTP) foi utilizado para proteger comunicações altamente sensíveis entre as superpotências.
+Um dos exemplos mais conhecidos foi o ``telefone vermelho'', a linha direta que conectava a Casa Branca e o Kremlin, usada para evitar conflitos nucleares por meio de uma comunicação segura e rápida.
+O OTP foi escolhido para cifrar essas conversas porque sua chave aleatória e única para cada mensagem tornava impossível a interceptação e decifração por parte de espiões ou adversários.
+A complexidade e a segurança incomparável do OTP tornaram-no uma escolha ideal para momentos críticos, como a Crise dos Mísseis em Cuba, onde a confidencialidade era absolutamente vital.
+
+\section{Criptografia Moderna}
 
 A definição de segurança proposta por Claude Shannon foi a primeira tentativa séria de formalizar a segurança dos sistemas de criptografia.
 No entanto, o próprio Shannon demonstrou as limitações dessa definição.
