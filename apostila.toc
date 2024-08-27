@@ -14,7 +14,7 @@
 \contentsline {section}{\numberline {3.5}Exercícios}{45}{section.3.5}%
 \contentsline {chapter}{\numberline {4}Cifras de Fluxo}{47}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{49}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Modos de Operação}{53}{section.4.2}%
+\contentsline {section}{\numberline {4.2}Modos de Operação}{54}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Construções Práticas}{56}{section.4.3}%
 \contentsline {subsection}{\numberline {4.3.1}Registradores de Deslocamento com Retroalimentação Linear}{57}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}Trivium}{61}{subsection.4.3.2}%
@@ -23,7 +23,7 @@
 \contentsline {section}{\numberline {5.1}Modos de Operação}{70}{section.5.1}%
 \contentsline {section}{\numberline {5.2}Construções Práticas}{75}{section.5.2}%
 \contentsline {subsection}{\numberline {5.2.1}Data Encryption Standard (DES)}{76}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{79}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{80}{subsection.5.2.2}%
 \contentsline {section}{\numberline {5.3}Exercícios}{82}{section.5.3}%
 \contentsline {chapter}{\numberline {6}Integridade e Autenticidade}{85}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{87}{section.6.1}%

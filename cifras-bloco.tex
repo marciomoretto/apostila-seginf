@@ -1,7 +1,7 @@
 \chapter{Cifras de Bloco}
 \label{cha:cifras-de-bloco}
 
-No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques do tipo ``ciphertext only'' (onde o atacante só tem acesso ao texto cifrado).
+No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques apenas contra o texto cifrado (``ciphertext only'').
 Para que isso seja viável, é necessário supor a existência de um gerador de números pseudo-aleatórios, ou seja, um algoritmo capaz de gerar uma sequência de bits que, para todos os efeitos práticos, não pode ser distinguida de uma sequência realmente aleatória.
 
 Embora essa definição de segurança seja um pouco mais fraca do que a apresentada no Capítulo \ref{cha:sigilo-perfeito}, ela tem a vantagem de não exigir chaves extremamente longas.
@@ -11,18 +11,18 @@ se uma chave for reutilizada, a segurança é completamente comprometida, e se o
 O modelo das cifras de fluxo é ideal para descrever as Máquinas Enigma, utilizadas pelo exército nazista durante a década de 1940.
 A cifra empregada por essas máquinas foi quebrada não apenas pelo avanço tecnológico, que possibilitou a construção da máquina Bombe e do computador Colossus, mas também porque os aliados conseguiram obter trechos de mensagens já descriptografadas.
 
-Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque de ``known plaintext'', onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
+Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque com texto original conhecido (``known plaintext''), onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
 
 Neste capítulo, vamos explorar um modelo de ataque ainda mais poderoso:
-os ataques do tipo chosen plaintext (CPA).
+os ataques com escolha de texto plano (chosen plaintext ou CPA).
 Nesse modelo, imaginamos que o adversário tem acesso a um ``oráculo''.
 Esse oráculo é como uma caixa mágica que permite ao adversário enviar mensagens de sua escolha e receber de volta a versão criptografada dessas mensagens.
 O adversário pode usar essas informações para tentar descobrir a chave de criptografia ou outros segredos do sistema \cite{Bellare97}.
 
-É importante notar que os ataques known plaintext são um caso particular desse modelo mais geral, mas há situações em que devemos considerar que o adversário possui essa capacidade adicional, o que torna o cenário de segurança ainda mais desafiador.
+É importante notar que os ataques com texto original conhecido são um caso particular desse modelo mais geral, mas há situações em que devemos considerar que o adversário possui essa capacidade adicional, o que torna o cenário de segurança ainda mais desafiador.
 
 
-Vamos explicar a segurança contra ataques do tipo \textit{chosen plaintext} (CPA) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}).
+Vamos explicar a segurança contra ataques com escolha de texto plano (CPA) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}).
 A garantia de segurança que buscamos continua sendo a mesma que discutimos anteriormente, mas agora vamos considerar um cenário de ameaças mais poderoso.
 
 O modelo pode ser descrito da seguinte forma:
@@ -51,7 +51,7 @@ O modelo pode ser descrito da seguinte forma:
 \end{center}
 
 Um sistema é {\em seguro contra CPA} se nenhum adversário polinomial tiver uma vantagem significativa para vencer o jogo que acabamos de descrever.
-Ou seja, a probabilidade de que um adversário consiga vencer o jogo é apenas desprezivelmente maior do que $\frac{1}/{2}$
+Ou seja, a probabilidade de que um adversário consiga vencer o jogo é apenas desprezivelmente maior do que $1/2$
 
 Para construir um sistema seguro contra ataques CPA, precisamos usar o conceito de funções pseudoaleatórias.
 Em termos simples, uma função pseudoaleatória é um processo que transforma uma entrada (um conjunto de bits) em uma saída que parece aleatória.
@@ -60,7 +60,36 @@ A diferença principal é que a função pseudoaleatória não apenas estende ou
 Em outras palavras, a chave é usada para escolher a função específica dentro de um grande conjunto de funções possíveis.
 Quando aplicamos essa função a uma entrada, ela ``embaralha'' os bits de maneira que a saída pareça aleatória, mesmo sendo gerada de forma determinística.
 
-A segurança de uma função pseudoaleatória é garantida pelo fato de que não existe um algoritmo eficiente (ou seja, que funcione em tempo polinomial) capaz de distinguir entre uma função pseudoaleatória e uma função escolhida de maneira verdadeiramente aleatória.
+\begin{center}
+  \begin{tikzpicture}
+
+    % Conjunto pequeno
+    \node (small) at (0,0) {k};
+
+    % Conjunto grande
+    \node (large) at (8,0) {};
+
+    % Caixa ao redor do elemento do conjunto pequeno (menor caixa)
+    \draw[dashed] ($(small.north west) + (-0.5,0.5)$) rectangle ($(small.south east) + (0.5,-0.5)$);
+    
+    % Caixa ao redor do elemento do conjunto grande (maior caixa)
+    \draw[dashed] ($(large.north west) + (-2,2)$) rectangle ($(large.south east) + (2,-0.5)$);
+
+    % Conjunto pequeno label
+    \node[above] at ($(small.north) + (0,0.5)$) {$\{0,1\}^n$};
+
+    % Conjunto grande label
+    \node[above] at ($(large.north) + (0,2)$) {$F_n$};
+
+    % Seta abaulada representando a função de a para B usando bend left
+    \draw[->, thick, >=latex] (small.east) to[bend left=30] node[midway, above] {$f_k$} (large.west);
+    
+  \end{tikzpicture}
+\end{center}
+
+Na cifra de bloco, uma chave é escolhida aleatoriamente em $\{0,1\}^n$, e a partir dessa chave é gerada deterministicamente uma função dentro do conjunto de todas as funções $F_n$, que, dado um bloco de $n$ bits, produz um novo bloco de $n$ bits.
+Uma cifra de blocos é considerada segura se um adversário não for capaz de distinguir esse processo de uma escolha aleatória de uma função diretamente em $F_n$.
+
 Em outras palavras, para qualquer adversário que tente diferenciar entre essas duas situações, a função pseudoaleatória será tão boa quanto uma função completamente aleatória.
 
 Uma {\em cifra de bloco} é um tipo específico de função pseudoaleatória, que chamamos de {\em permutação pseudoaleatória}.
