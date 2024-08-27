@@ -157,8 +157,38 @@ Isso mostraria que o GNP não é seguro, pois podemos construir um distinguidor 
 Ou seja, se o GNP é seguro, então não existe adversário eficiente capaz de derrotar o sistema.
 \end{proof}
 
-Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (GNP) podem, portanto, ser utilizados para gerar cifras seguras, pelo menos contra ataques do tipo ciphertext-only.
+\begin{center}
+  \begin{tikzpicture}
+
+    % Conjunto pequeno
+    \node (small) at (0,0) {};
+
+    % Conjunto grande
+    \node (large) at (8,0) {};
+
+    % Caixa ao redor do elemento do conjunto pequeno (menor caixa)
+    \draw[dashed] ($(small.north west) + (-0.5,0.5)$) rectangle ($(small.south east) + (0.5,-0.5)$);
+    
+    % Caixa ao redor do elemento do conjunto grande (maior caixa)
+    \draw[dashed] ($(large.north west) + (-2,2)$) rectangle ($(large.south east) + (2,-0.5)$);
+
+    % Conjunto pequeno label
+    \node[above] at ($(small.north) + (0,0.5)$) {$\{0,1\}^n$};
+
+    % Conjunto grande label
+    \node[above] at ($(large.north) + (0,2)$) {$\{0,1\}^N$};
+
+    % Seta abaulada representando a função de a para B usando bend left
+    \draw[->, thick, >=latex] (small.east) to[bend left=30] node[midway, above] {$G$} (large.west);
+    
+  \end{tikzpicture}
+\end{center}
+
+Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (GNP) podem, portanto, ser utilizados para gerar cifras seguras, para ataques apenas contra o texto cifrado.
 Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do GNP de uma sequência verdadeiramente aleatória.
+
+Em outras palavras, um gerador de números pseudoaleatórios (GNP) é uma função $G$ que, a partir de um elemento aleatório escolhido no conjunto $\{0,1\}^n$, produz deterministicamente um elemento no conjunto maior $\{0,1\}^N$, onde $N$ é muito maior que $n$.
+O gerador é considerado seguro se um adversário não for capaz de distinguir a saída de $G$ de uma escolha verdadeiramente aleatória feita diretamente no conjunto maior $\{0,1\}^N$.
 
 Nos próximos capítulos, vamos explorar definições mais robustas de segurança e as suposições associadas a essas definições.
 Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto claro escolhido (chosen-plaintext) e ataques de texto cifrado escolhido (chosen-ciphertext).
