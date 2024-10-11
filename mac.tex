@@ -8,20 +8,21 @@ Também discutimos sistemas que são seguros contra esse tipo de ataque.
 Neste capítulo, vamos expandir nossa discussão para abordar outros dois problemas essenciais em criptografia:
 
 \begin{itemize}
-\item {\em Integridade:} Como garantir que a mensagem recebida não foi alterada durante a transmissão.
-\item {\em Autenticidade:} Como garantir que a mensagem foi realmente enviada por quem deveria enviá-la.
+\item[] {\em Integridade:} Como garantir que a mensagem recebida não foi alterada durante a transmissão.
+\item[] {\em Autenticidade:} Como garantir que a mensagem foi realmente enviada por quem deveria enviá-la.
 \end{itemize}
 
 A importância dessas garantias é clara.
 Imagine, por exemplo, uma comunicação entre um cliente e seu banco.
 O banco envia uma mensagem cobrando uma dívida de um terceiro, e o cliente autoriza um pagamento de R\$1000,00.
-É crucial que o cliente tenha a certeza de que a mensagem realmente veio do banco e não é um golpe (autenticidade).
+É essencial que o cliente tenha a certeza de que a mensagem realmente veio do banco e não é um golpe (autenticidade).
 Além disso, tanto o cliente quanto o banco precisam ter certeza de que ninguém alterou o valor autorizado (integridade).
 
 Um erro comum é pensar que os sistemas de criptografia que discutimos até agora também garantem a integridade de uma mensagem.
 Na realidade, esses sistemas não oferecem nenhuma proteção contra modificações no conteúdo da mensagem, e alguns deles são até {\em maleáveis}.
 Isso significa que a cifra pode ser facilmente alterada por um adversário para produzir um efeito desejado.
 
+\begin{example}
 Vamos considerar um exemplo para ilustrar como um adversário pode injetar uma mensagem $m'$ em uma cifra.
 Suponha que o adversário conheça a mensagem original $m$ e queira enganar o destinatário, fazendo-o acreditar que a mensagem recebida é $m'$.
 
@@ -35,8 +36,11 @@ Note que, quando o destinatário descriptografar $c'$ usando a chave $k$, ele va
 
 Embora a cifra $c$ seja perfeitamente segura do ponto de vista da confidencialidade, ela não garantiu a integridade da mensagem.
 Isso permitiu ao adversário alterar o conteúdo da mensagem mesmo sem que ele possuisse a chave.
+\end{example}
 
-Um erro comum é tentar garantir a integridade de uma mensagem cifrada usando um checksum. Um checksum é como uma ``assinatura digital'' da mensagem, gerada por uma função que produz uma sequência de bits quase única para cada mensagem.
+\begin{example}
+  Outro erro comum é tentar garantir a integridade de uma mensagem cifrada usando um checksum.
+  Um {\em checksum}\footnote{Estudaremos isso no Capítulo \ref{chap:hash}} é como uma ``assinatura digital'' da mensagem, gerada por uma função que produz uma sequência de bits quase única para cada mensagem.
 (Vamos explorar isso em mais detalhes no próximo capítulo.)
 
 A ideia seria a seguinte: você gera um checksum para a mensagem $m$, anexa esse checksum ao final da mensagem, e só então criptografa tudo.
@@ -47,25 +51,27 @@ Embora isso pareça uma boa ideia, ela não oferece proteção contra um advers�
 Se um adversário consegue alterar a mensagem $m$, ele também pode alterar o checksum correspondente, enganando o destinatário.
 Checksums funcionam bem para detectar erros acidentais, como pequenos ruídos que possam corromper a mensagem durante a transmissão, mas não são eficazes contra ataques intencionais.
 
-\section{Código de Autenticação de Mensagem}
+\end{example}
+
+\section{Código de Autenticação de Mensagem (CAM)}
 \label{sec:mac}
 
-Para garantir que uma mensagem não foi alterada, usamos um {\em Código de Autenticação de Mensagem} (ou MAC, da sigla em inglês).
-Um MAC consiste em três algoritmos:
+Para garantir que uma mensagem não foi alterada, usamos um {\em Código de Autenticação de Mensagem} (CAM).
+Um CAM consiste em três algoritmos:
 
 \begin{itemize}
-\item {\em Geração de chave $Gen$}: Este algoritmo cria uma chave secreta, que é como uma senha especial que será usada para criar e verificar o código de autenticação.
-\item {\em Criação de código $Mac$}: recebe uma chave $k$ e uma mensagem $m$ e devolve um código ({\em tag}) $t$.
-\item {\em Verificação de código $Ver$}: receve uma chave $k$, uma mensagem $m$ e um código $t$ e verifica se mensagem é váilda.
+\item[] {\em Geração de chave $Gen$}: Este algoritmo cria uma chave secreta, que é como uma senha especial que será usada para criar e verificar o código de autenticação.
+\item[] {\em Criação de código $Mac$}: recebe uma chave $k$ e uma mensagem $m$ e devolve um código ({\em tag}) $t$.
+\item[] {\em Verificação de código $Ver$}: receve uma chave $k$, uma mensagem $m$ e um código $t$ e verifica se mensagem é váilda.
 \end{itemize}
 
-Um sistema de MAC é considerado {\em correto} quando, ao usar a mesma chave secreta tanto para gerar o código quanto para verificá-lo, a verificação sempre confirma que o código corresponde à mensagem original.
-Em outras palavras, se você usa a mesma chave para criar o código e depois verificar esse código com a mensagem original, o algoritmo de verificação deve sempre confirmar que a mensagem não foi alterada, garantindo assim a integridade da mensagem.
+Um sistema de CAM é considerado {\em correto} quando, ao usar a mesma chave secreta tanto para gerar o código quanto para verificá-lo, a verificação confirma que o código corresponde à mensagem original.
+Em outras palavras, se você usa a mesma chave para criar o código e depois verificar esse código com a mensagem original, o algoritmo de verificação deve confirmar que a mensagem não foi alterada, garantindo assim a integridade da mensagem.
 
-Vamos imaginar um cenário em que um adversário tem acesso a um sistema MAC e pode pedir a esse sistema para gerar códigos de autenticação para várias mensagens à sua escolha.
+Vamos imaginar um cenário em que um adversário tem acesso a um sistema CAM e pode pedir a esse sistema para gerar códigos de autenticação para várias mensagens à sua escolha.
 O objetivo do adversário é criar uma nova mensagem, diferente das que ele já pediu, junto com um código que seja aceito como válido pelo sistema.
 
-Um sistema MAC é considerado {\em seguro contra falsificação} se, mesmo com todo esse acesso e poder de cálculo, o adversário não conseguir criar um par de mensagem e código que seja aceito, a não ser por pura sorte.
+Um sistema CAM é considerado {\em seguro contra falsificação} se, mesmo com todo esse acesso e poder de cálculo, o adversário não conseguir criar um par de mensagem e código que seja aceito, a não ser com probabilidade desprezível.
 
 Vamos descrever como isso funciona:
 \begin{enumerate}
@@ -87,23 +93,21 @@ Vamos descrever como isso funciona:
 \end{tikzpicture}
 \end{center}
 
-O desafio do adversário é criar um par de mensagem e código que seja aceito como válido pelo sistema.
-
 Um sistema de autenticação de mensagem, é considerado {\em seguro contra falsificação} se, para qualquer adversário eficiente, a chance de ele conseguir criar um código válido para uma nova mensagem é desprezível.
 
-\subsection{CBC-MAC}
+\subsection{EBC-CAM}
 \label{sec:cbc-mac}
 
 Agora que entendemos o sistema de autenticação de mensagem e definimos uma noção de segurança, o próximo passo é mostrar como construir concretamente tal sistema, detalhando as suposições que faremos.
 
-Começaremos com uma construção básica, que é válida para mensagens de tamanho fixo, utilizando o modo CBC ({\em Cipher Block Chaining}).
+Começaremos com uma construção básica, que é válida para mensagens de tamanho fixo, utilizando o modo EBC ({\em Encadeamento de Bloco Cifrado}).
 
-Vamos supor que o tamanho da mensagem $m$ seja um múltiplo de $n$, o tamanho do bloco de uma função pseudoaleatória (PRF) que chamaremos de $f$.
+Vamos supor que o tamanho da mensagem $m$ seja um múltiplo de $n$, o tamanho do bloco de uma função pseudoaleatória (FPA) que chamaremos de $f$.
 Podemos dividir a mensagem $m$ em blocos $m_1, m_2, \dots, m_l$, onde cada bloco $m_i$ tem tamanho $n$.
 
 A construção funciona da seguinte maneira:
 
-\textbf{Mac:} Este algoritmo gera um código de autenticação $t$ para a mensagem $m$ usando a chave $k$.
+{\em Mac:} Este algoritmo gera um código de autenticação $t$ para a mensagem $m$ usando a chave $k$.
 
 Primeiro, definimos $t_0$ como um bloco de zeros de tamanho $n$.
 Em seguida, para cada bloco $m_i$ da mensagem, calculamos $t_i$ usando a função $f$ e a operação XOR, que combina o resultado do bloco anterior com o bloco atual:
@@ -113,7 +117,7 @@ t_i := f_k(t_{i-1} \oplus m_i)
 
 O resultado final $t_l$ é o código de autenticação.
 
-\textbf{Ver:} Este algoritmo verifica se o código $t$ corresponde à mensagem $m$ quando gerado pela mesma chave $k$.
+{\em Ver:} Este algoritmo verifica se o código $t$ corresponde à mensagem $m$ quando gerado pela mesma chave $k$.
 
 \begin{displaymath}
   Ver(k, m, t) :=  \left\{
@@ -150,46 +154,46 @@ O resultado final $t_l$ é o código de autenticação.
 
 
 \begin{theorem}
-  O sistema de autenticação CBC é seguro contra falsificação para mensagens de tamanho fixo.
+  O sistema de autenticação EBC é seguro contra falsificação para mensagens de tamanho fixo.
 \end{theorem}
 
-O CBC-MAC é uma técnica específica para gerar códigos de autenticação.
-Ele funciona de forma semelhante ao modo de operação CBC (Cipher Block Chaining), mas com duas diferenças importantes:
+O EBC-CAM é uma técnica específica para gerar códigos de autenticação.
+Ele funciona de forma semelhante ao modo de operação EBC (Cipher Block Chaining), mas com duas diferenças importantes:
 
 \begin{enumerate}
-\item No CBC, usamos um vetor inicial (IV) aleatório para começar a cifrar os blocos da mensagem.
-  Já no CBC-MAC, esse vetor inicial é substituído por um bloco cheio de zeros.
-\item No CBC, cada bloco cifrado da mensagem é exposto, enquanto no CBC-MAC, apenas o último bloco cifrado (o MAC) é mostrado.
+\item No EBC, usamos um vetor inicial (VI) aleatório para começar a cifrar os blocos da mensagem.
+  Já no EBC-CAM, esse vetor inicial é substituído por um bloco cheio de zeros.
+\item No EBC, cada bloco cifrado da mensagem é exposto, enquanto no EBC-CAM, apenas o último bloco cifrado (o CAM) é mostrado.
 \end{enumerate}
 
-O CBC-MAC é originalmente projetado para funcionar com mensagens de tamanho fixo, mas muitas vezes precisamos lidar com mensagens de tamanhos variados.
+O EBC-CAM é originalmente projetado para funcionar com mensagens de tamanho fixo, mas muitas vezes precisamos lidar com mensagens de tamanhos variados.
 Para garantir a segurança nesses casos, existem duas estratégias eficazes:
 
 \begin{enumerate}
-\item Antes de calcular o MAC, adicionamos o tamanho da mensagem no começo do conteúdo.
-  Isso impede que alguém consiga criar dois MACs iguais para mensagens diferentes (por exemplo, uma mensagem curta poderia ser estendida para enganar o sistema).
+\item Antes de calcular o CAM, adicionamos o tamanho da mensagem no começo do conteúdo.
+  Isso impede que alguém consiga criar dois CAMs iguais para mensagens diferentes (por exemplo, uma mensagem curta poderia ser estendida para enganar o sistema).
 \item Outra abordagem é usar duas chaves diferentes.
-  A primeira chave é usada normalmente para gerar o MAC, e a segunda é usada para ``ajustar'' esse MAC final, reforçando a segurança.
+  A primeira chave é usada normalmente para gerar o CAM, e a segunda é usada para ``ajustar'' esse CAM final, reforçando a segurança.
 \end{enumerate}
 
-Essas técnicas garantem que o CBC-MAC permaneça seguro, mesmo quando as mensagens variam em tamanho, protegendo contra tentativas de falsificação.
+Essas técnicas garantem que o EBC-CAM permaneça seguro, mesmo quando as mensagens variam em tamanho, protegendo contra tentativas de falsificação.
 
 
 \section{Criptografia Autenticada}
 \label{label}
 
-No modelo CPA (Ataque de Texto Plano Escolhido), o adversário pode acessar um oráculo que criptografa mensagens escolhidas para tentar descobrir segredos do sistema.
-Agora, vamos considerar um modelo ainda mais avançado de ameaça.
+No modelo ETP (Ataque com Escolha de Texto Plano), o adversário pode acessar um oráculo que criptografa mensagens escolhidas para tentar descobrir segredos do sistema.
+Agora, vamos considerar um modelo ainda mais forte de ameaça.
 
 Além de poder enviar mensagens para serem criptografadas, o adversário também pode consultar como certas cifras seriam decifradas.
 Isso é muito mais poderoso, porque o adversário não está apenas vendo as mensagens antes de serem criptografadas, mas também pode ver como qualquer cifra seria transformada de volta em texto legível.
 
-Esse novo cenário é extremamente poderoso e raro na prática, porque na maioria das situações reais, os adversários não têm esse tipo de acesso. Entretanto, saber que é possível construir sistemas que permanecem seguros mesmo nesse cenário é fascinante. Isso mostra a robustez e a força das técnicas modernas de criptografia.
+Esse novo cenário é raro na prática, porque na maioria das situações reais, os adversários não têm esse tipo de acesso. Entretanto, saber que é possível construir sistemas que permanecem seguros mesmo nesse cenário é fascinante. Isso mostra a robustez e a força das técnicas modernas de criptografia.
 
 Mesmo que seja difícil imaginar uma situação prática onde um adversário tenha tanto poder, explorar esses modelos nos ajuda a desenvolver sistemas de criptografia que sejam ainda mais fortes e seguros.
 Além disso, entender esses cenários extremos nos dá mais confiança de que os sistemas que usamos todos os dias são realmente protegidos contra uma ampla gama de ameaças possíveis \cite{Naor90}.
 
-Para entender se um sistema de criptografia é realmente seguro, imaginamos um "jogo" entre o sistema e um adversário, que é alguém tentando quebrá-lo.
+Para entender se um sistema de criptografia é realmente seguro, imaginamos um ``jogo'' entre o sistema e um adversário, que é alguém tentando quebrá-lo.
 O jogo funciona assim:
 \begin{enumerate}
 \item O adversário escolhe duas mensagens, que têm exatamente o mesmo tamanho, e as envia para o sistema.
@@ -220,11 +224,12 @@ O jogo funciona assim:
 \end{tikzpicture}
 \end{center}
 
-Dizemos que um sistema é seguro contra o {\em ataque com escolha de texto cifrado} (``chosen ciphertext'' CCA) se para qualquer adversário eficiente existe a chance do adversário vencer o jogo é desprezivelmente maior que $\frac{1}{2}$.
+Dizemos que um sistema é seguro contra o {\em Ataque com Escolha de Texto Cifrado} (ETC) se para qualquer adversário eficiente existe a chance do adversário vencer o jogo é desprezivelmente maior que $1/2$.
 
-Sistemas de criptografia que não garantem a integridade das mensagens não são seguros contra ataques do tipo CCA.
+Sistemas de criptografia que não garantem a integridade das mensagens não são seguros contra ataques do tipo ETC.
 Um exemplo que ilustra bem essa vulnerabilidade é o modo Ctr de cifração de blocos.
 
+\begin{example}
 No modo Ctr, o adversário pode explorar a falta de integridade da seguinte maneira:
 \begin{enumerate}
 \item  O adversário  envia duas mensagens distintas e simples para o sistema: 
@@ -237,7 +242,9 @@ $m_0 = 0^n$ (um bloco de n bits todos iguais a 0) e $m_1 = 1^n$ (um bloco de n b
 \end{enumerate}
 
 Neste cenário, o adversário consegue descobrir qual mensagem foi criptografada apenas alterando a cifra e observando o comportamento do sistema.
-Isso evidencia a importância de proteger a integridade da mensagem para garantir a segurança contra ataques CCA.
+Isso evidencia a importância de proteger a integridade da mensagem para garantir a segurança contra ataques ETC.
+\end{example}
+
 
 Em um sistema de {\em criptografia autenticado}, a segurança vai além de simplesmente proteger o conteúdo das mensagens.
 Aqui, o sistema precisa ser capaz de detectar quando uma cifra foi alterada ou criada de forma maliciosa.
@@ -248,7 +255,7 @@ Se um sistema consegue garantir que qualquer tentativa de falsificação de uma 
 
 Para que um sistema de criptografia seja considerado verdadeiramente seguro e autenticado, ele deve satisfazer duas condições:
 \begin{itemize}
-\item Ser seguro contra ataques do tipo CCA.
+\item Ser seguro contra ataques do tipo ETC.
 \item Ser seguro contra falsificação.
 \end{itemize}
 
@@ -258,8 +265,6 @@ Um {\em sistema autenticado de criptografia} é a junção de dois elementos ess
 um esquema de criptografia para proteger o conteúdo das mensagens e um sistema de autenticação para garantir que as mensagens não foram adulteradas.
 Existem várias maneiras de combinar esses dois sistemas para alcançar segurança completa. Vamos explorar as principais:
 
-Um sistema autenticado de criptografia é uma combinação de um esquema de criptografia com um sistema de autenticação.
-Existem várias formas de combinar esses sistemas:
 \begin{itemize}
 \item Autenticar e depois criptografar ({\em mac then encrypt}):
   Primeiro, geramos um código de autenticação para a mensagem.
@@ -274,11 +279,12 @@ Existem várias formas de combinar esses sistemas:
 \end{itemize}
 
 \begin{theorem}
-  O modelo que primeiro criptografa e depois autentica ({\em encrypt then mac}) que usa um sistema de criptografia seguro contra CPA e um sistema de autenticação seguro contra falsificação é um sistema de criptografia autenticada seguro contra ataques CCA e seguro contra falsificação. 
+  O modelo que primeiro criptografa e depois autentica ({\em encrypt then mac}) que usa um sistema de criptografia seguro contra CPA e um sistema de autenticação seguro contra falsificação é um sistema de criptografia autenticada seguro contra ataques ETC e seguro contra falsificação. 
 \end{theorem}
 
 Para que o sistema acima seja seguro, é essencial que ele use uma chave para criptografar e outra distinta e independente para autenticar.
 
+\begin{example}
 Vamos explorar um exemplo onde o uso de uma única chave para criptografia e autenticação pode causar sérios problemas de segurança.
 
 Imagine que temos uma permutação pseudoaleatória $p$.
@@ -290,25 +296,27 @@ Para criptografar uma mensagem $m$ (que tem metade do tamanho de um bloco), faze
 
 Podemos provar que essa forma de criptografia é segura contra ataques CPA.
 
-Agora, vamos usar a inversa da permutação $p^{-1}$ para criar um código de autenticação (MAC).
+Agora, vamos usar a inversa da permutação $p^{-1}$ para criar um código de autenticação (CAM).
 Ou seja, $t = p^{-1}(c)$.
 
-Também podemos mostrar que esse MAC é seguro contra falsificação.
+Também podemos mostrar que esse CAM é seguro contra falsificação.
 
 Agora, vamos ver o que acontece quando combinamos esses dois sistemas usando o paradigma \textit{Encrypt then Mac} \textbf{sem} usar chaves independentes:
 
 \begin{itemize}
     \item Primeiro, criptografamos a mensagem: $E(k, m) = p_k(m || r)$.
-    \item Em seguida, aplicamos o MAC na cifra: $Mac(k, E(k, m)) = p_k^{-1}(p_k(m || r))$.
+    \item Em seguida, aplicamos o CAM na cifra: $Mac(k, E(k, m)) = p_k^{-1}(p_k(m || r))$.
 \end{itemize}
 
-Quando aplicamos o MAC na cifra, o resultado é a mensagem original $m$ e o valor aleatório $r$: $p_k^{-1}(p_k(m || r)) = m || r$.
+Quando aplicamos o CAM na cifra, o resultado é a mensagem original $m$ e o valor aleatório $r$: $p_k^{-1}(p_k(m || r)) = m || r$.
 
 Isso significa que o código de autenticação revela exatamente o conteúdo da mensagem original, que deveria estar protegido!
 Em outras palavras, o adversário consegue ver a mensagem inteira simplesmente olhando para o código de autenticação, o que quebra completamente a segurança do sistema.
 
 Esse exemplo mostra por que é importante usar chaves independentes para criptografia e autenticação.
 Quando não usamos chaves diferentes, corremos o risco de comprometer a segurança do sistema, permitindo que informações confidenciais vazem de maneiras inesperadas.
+
+\end{example}
 
 \subsection{Comunicação Segura}
 \label{sec:comunicacao-segura}
@@ -323,7 +331,7 @@ Vamos ver três dessas ameaças e como podemos lidar com elas.
 Um sistema autenticado de criptografia garante a confidencialidade, a integridade e a autenticidade na comunicação.
 Existem, porém, outros tipos de ameaça que esse sistema não garante por si só:
 \begin{itemize}
-\item {\em Ataques de reordenação}:
+\item[] {\em Ataques de reordenação}:
   Um adversário pode mudar a ordem das mensagens enviadas, o que pode causar problemas.
   Imagine um cenário onde as mensagens devem ser processadas em uma ordem específica;
   se a ordem for alterada, isso pode levar a ações incorretas ou até mesmo prejudiciais.
@@ -331,13 +339,13 @@ Existem, porém, outros tipos de ameaça que esse sistema não garante por si s�
   Para evitar isso, podemos usar um contador que mantém o registro da ordem das mensagens enviadas entre dois participantes.
   Por exemplo, um contador $ctr_{AB}$ pode ser usado para as mensagens de $A$ para $B$, e $ctr_{BA}$ para as mensagens de $B$ para $A$.
   Assim, se as mensagens chegarem fora de ordem, o sistema detectará e rejeitará a comunicação.
-\item {\em Ataque de repetição:}
+\item[] {\em Ataque de repetição:}
   Aqui, o adversário repete uma mensagem legítima.
   Por exemplo, se alguém envia uma ordem de pagamento, o adversário pode repetir essa mensagem, tentando fazer com que o pagamento seja processado duas vezes.
 
   Novamente, um contador pode ajudar.
   Como cada mensagem terá um número único, o sistema saberá se uma mensagem está sendo repetida e poderá rejeitar tentativas de repetição.
-\item {\em Ataque de reflexão:}
+\item[] {\em Ataque de reflexão:}
   Neste ataque, um adversário intercepta uma mensagem e a envia de volta ao remetente, fazendo parecer que ela veio do destinatário.
   Isso pode confundir o remetente ou fazer com que ele realize uma ação indesejada.
 
@@ -349,19 +357,18 @@ Existem, porém, outros tipos de ameaça que esse sistema não garante por si s�
   Outra solução é usar duas chaves independentes:
   uma $k_{AB}$ para mensagens de $A$ para $B$ e outra $k_{BA}$ para mensagens de $B$ para $A$.
   Dessa forma, mesmo que uma mensagem seja enviada de volta, a chave errada será usada, tornando a mensagem inválida.
-\end{itemize}
 
-Ambas as soluções — tanto o uso de contadores quanto o bit de direção — devem ser incorporadas na mensagem antes de ela ser criptografada.
+Ambas as soluções -- tanto o uso de contadores quanto o bit de direção -- devem ser incorporadas na mensagem antes de ela ser criptografada.
 Isso garante que a integridade e a autenticidade da mensagem sejam mantidas.
+\end{itemize}
 
 Com isso, concluímos nossa exploração dos sistemas de criptografia simétrica.
 Utilizando uma abordagem moderna, explicamos as suposições necessárias para garantir a segurança em diferentes sistemas de criptografia e autenticação.
 
-No Apêndice \ref{cha:protocolos} vemos protocolos completos de segurança e voltaremos nesses detalhes.
-Já no Apêndice \ref{cha:owf}, examinamos a suposição mínima necessária para construir os sistemas que discutimos: a existência de funções de mão única.
-Esse apêndice não só servirá como um resumo do que aprendemos até agora, mas também explicará por que precisamos dessas suposições básicas para provar a segurança em criptografia.
+No Capítulo \ref{cha:owf}, examinamos a suposição mínima necessária para construir os sistemas que discutimos: a existência de funções de mão única.
+Esse capítulo não só servirá como um resumo do que aprendemos até agora, mas também explicará por que precisamos dessas suposições básicas para provar a segurança em criptografia.
 
-\section{Exercicios}
+\section{Exercícios}
 \label{sec:exercicios}
 
 
