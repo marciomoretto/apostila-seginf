@@ -415,7 +415,7 @@ Aqui está como essa função funciona:
 
 \begin{enumerate}
     \item {\em Expansão}: Primeiro, os 32 bits do bloco são expandidos para 48 bits,
-    \item {\em XOR}: Esses 48 bits são combinados com a subchave utilizando a operação XOR (ou \textit{ou exclusivo}),
+    \item {\em XOR}: Esses 48 bits são combinados com a subchave utilizando a operação XOR (ou exclusivo),
     \item {\em Divisão}: O resultado é então dividido em 8 partes, cada uma com 6 bits,
     \item {\em S-Boxes}: Cada uma dessas partes de 6 bits passa por uma substituição através de uma tabela especial chamada \textit{SBox}, que reduz os 6 bits para 4 bits.
       Essa é a fase de \textit{confusão}.
@@ -496,7 +496,7 @@ Com essas revelações e avanços, o DES, que antes era o padrão de segurança,
 
 Embora o DES não seja mais considerado seguro devido ao tamanho reduzido de sua chave (56 bits), uma variante conhecida como Triple DES (3DES) ainda é utilizada em algumas aplicações.
 O 3DES realiza três aplicações consecutivas do DES, sendo a segunda com a inversa da permutação, e utilizando três chaves independentes, resultando efetivamente em uma chave de 168 bits, o que aumenta significativamente a segurança.
-Vale ressaltar que a versão com apenas duas aplicações do DES não é segura, pois está sujeita ao ataque Meet in the Middle, cuja explicação não será abordada neste livro​​.
+Vale ressaltar que a versão com apenas duas aplicações do DES não é segura, pois está sujeita ao ataque Meet in the Middle, cuja explicação não será abordada neste livro.
 
 \subsection{Advanced Encryption Standard (AES)}
 \label{sec:aes}
