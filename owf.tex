@@ -13,15 +13,15 @@ Além disso, explicaremos que provar a existência dessas funções seria o mesm
 
 Este capítulo passará por vários dos principais resultados que já vimos e, assim, serve também como uma revisão do que foi apresentado até agora no livro.
 
-Uma {\em função de mão única} $f: \{0,1\}^n \to \{0,1\}^n$ é uma função que tem duas características principais:
+Uma {\em Função de Mão Única} (FMU) $f: \{0,1\}^n \to \{0,1\}^n$ é uma função que tem duas características principais:
 
 \begin{itemize}
-\item {\em Fácil de computar}:
+\item[] {\em Fácil de computar}:
   Dado um valor $x$, calcular $f(x)$ é rápido (pode ser feito em tempo polinomial).
-    \item {\em Difícil de inverter}: Dado um resultado $y$, é muito difícil achar um $x$ que produza $y$ (encontrar uma pré-imagem não é algo que possa ser feito em tempo polinomial).
+\item[] {\em Difícil de inverter}: Dado um resultado $y$, é muito difícil achar um $x$ que produza $y$ (encontrar uma pré-imagem não é algo que possa ser feito em tempo polinomial).
 \end{itemize}
 
-Em termos mais rigorosos, uma função de mão única é tal que, se um adversário eficiente recebe $y$, ele só é capaz de encontrar um $x$ que produza $y$ (ou seja, $f(x) = y$) com uma probabilidade desprezível \cite{Diffie76,Yao82}.
+Em termos mais rigorosos, uma FMU é tal que, se um adversário eficiente recebe $y$, ele só é capaz de encontrar um $x$ que produza $y$ (ou seja, $f(x) = y$) com uma probabilidade desprezível \cite{Diffie76,Yao82}.
 
 \begin{example}
   Uma candidata a função de mão é única é a seguinte função, onde $x$ e $y$ são números primos do mesmo tamanho:
@@ -38,25 +38,25 @@ Em termos mais rigorosos, uma função de mão única é tal que, se um adversá
 A dificuldade de inverter esta função está associada ao {\em problema do logarítmo discreto}.
 \end{example}
 
-\section{Construindo um PRG}
+\section{Construindo um GNP}
 
-Chamamos de {\em predicado hard-core} um pequeno pedaço de informação, como um único bit, sobre $x$ que a função de mão única mantém escondido \cite{Blum84}.
+Chamamos de {\em predicado de núcleo duro} um pequeno pedaço de informação, como um único bit, sobre $x$ que a função de mão única mantém escondido \cite{Blum84}.
 Mesmo que o adversário conheça $y = f(x)$ ele não obtem informação adicional sobre esse bit.
 Em outras palavras, a chance de o adversário adivinhar o bit é desprezivelmente maior do que meio.
 
 \begin{theorem}[Goldreich-Levin]
-  Assuma que uma função de mão única existe.
-  Então existe uma função de mão única que possui um predicado hard-core \cite{Goldreich89}.
+  Assuma que uma função de mão única existe $f$.
+  Então a função $g(x,r) = \langle f(x), r \rangle$ também é uma função de mão única e o predicado $x \xor r$ é um predicado de núcleo duro para $g$ \cite{Goldreich89}.
 \end{theorem}
 
-Uma vez que conseguimos extrair um bit ``seguro'' de uma função de mão única, podemos usá-lo para criar um gerador de números pseudoaleatórios (PRG) que aumenta o tamanho da entrada em 1 bit.
+Uma vez que conseguimos extrair um bit ``seguro'' de uma função de mão única, podemos usá-lo para criar um gerador de números pseudoaleatórios (GNP) que aumenta o tamanho da entrada em 1 bit.
 
 \begin{theorem}
-  Se $f$ uma função de mão única com um predicado hard-crore $hc$, então a função $f(s)$ concatenada com $hc(s)$ ($G(s) := f(s)||hc(s)$) é um PRG que expande em 1 bit o tamanho original de $s$.
+  Se $f$ uma função de mão única com um predicado de núcleo duro $nd$, então a função $f(s)$ concatenada com $nd(s)$ ($G(s) := f(s)||nd(s)$) é um GNP que expande em 1 bit o tamanho original de $s$.
 \end{theorem}
 
-Agora que podemos gerar um PRG que expande a entrada em 1 bit, podemos usá-lo para criar um PRG que expande a entrada em $p(n)$ bits, onde $p$ é qualquer polinômio e $n$ é o tamanho da entrada $s$.
-Seja $G$ um PRG que expande a entrada em 1 bit, e construímos $G'$ da seguinte maneira:
+Agora que podemos gerar um GNP que expande a entrada em 1 bit, podemos usá-lo para criar um GNP que expande a entrada em $p(n)$ bits, onde $p$ é qualquer polinômio e $n$ é o tamanho da entrada $s$.
+Seja $G$ um GNP que expande a entrada em 1 bit, e construímos $G'$ da seguinte maneira:
 
 Usamos $G$ para gerar $n+1$ bits.
 O último bit gerado é usado como o primeiro bit da saída de $G'$, e os outros bits são usados como uma nova semente para $G$.
@@ -65,7 +65,7 @@ Repetimos esse processo até que $G'$ tenha gerado $p(n)$ bits.
 Essa construção nos leva ao seguinte teorema:
 
 \begin{theorem}
-  Se existe um PRG que expande a entrada de tamanho $n$ em 1 bit, então, para qualquer polinômio $p$, existe um PRG que expande a entrada em $p(n)$ bits.
+  Se existe um GNP que expande a entrada de tamanho $n$ em 1 bit, então, para qualquer polinômio $p$, existe um GNP que expande a entrada em $p(n)$ bits.
 \end{theorem}
 
 \begin{center}
@@ -102,19 +102,19 @@ Essa construção nos leva ao seguinte teorema:
 \end{tikzpicture}
 \end{center}
 
-\section{Construindo uma PRF e um PRP}
+\section{Construindo uma FPA e um PPA}
 
-Podemos criar uma função pseudoaleatória (PRF) a partir de um gerador de números pseudoaleatórios (PRG) que dobra o tamanho da entrada.
+Podemos criar uma Função Pseudoaleatória (FPA) a partir de um Gerador de Números Pseudoaleatórios (GNP) que dobra o tamanho da entrada.
 
 Primeiro, aplicamos $G$ ao bloco $x$, o que gera uma sequência de bits com o dobro do tamanho do bloco.
 Se o primeiro bit da chave $k$ for 0, pegamos a primeira metade dos bits gerados; se for 1, pegamos a segunda metade.
 Em seguida, aplicamos $G$ ao bloco escolhido e repetimos o processo para o próximo bit de $k$, continuando assim até processar todos os bits de $k$.
 
 \begin{theorem}[Yao]
-  Se $G$ é um PRG que dobra o tamanho da entrada, então a construção acima gera uma PRF.
+  Se $G$ é um GNP que dobra o tamanho da entrada, então a construção acima gera uma FPA.
 \end{theorem}
 
-Para completar, a partir de uma PRF é possível construir uma PRP usando uma rede de Feistel com três passos em que cada passo usa uma chave distinta.
+Para completar, a partir de uma FPA é possível construir uma PRP usando uma rede de Feistel com três passos em que cada passo usa uma chave distinta.
 \begin{displaymath}
   f_{k_1,k_2,k_3}^{(3)}(x) := Feistel_{f_{k_1},f_{k_2},f_{k_3}}(x)
 \end{displaymath}
@@ -131,19 +131,17 @@ Lembrando que:
   Se $f$ é uma PRF então $f^{(3)}$ é uma permutação pseudoaleatória.
 \end{theorem}
 
-% DIAGRAMA DA CONSTRUÇÃO DE F3
-
-Resumindo, a existência de uma função de mão única é um ponto de partida na criptografia, pois ela nos permite construir geradores de números pseudoaleatórios (PRG), funções pseudoaleatórias (PRF) e permutações pseudoaleatórias (PRP).
+Resumindo, a existência de uma função de mão única é um ponto de partida na criptografia, pois ela nos permite construir Geradores de Números Pseudoaleatórios (GNP), Funções Pseudoaleatórias (FPA) e Permutações Pseudoaleatórias (PPA).
 \begin{itemize}
-\item No Capítulos \ref{cha:cifras-de-fluxo} vimos que a existência de um PRG é condição suficiente para construir um sistema seguro contra ataques {\em ciphertext only}.
-\item Nos Capítulos \ref{cha:cifras-de-bloco} e \ref{cha:mac} aprendemos que, se temos uma PRF, podemos construir sistemas de criptografia ainda mais robustos. Esses sistemas são seguros contra ataques mais avançados, como os ataques onde o atacante pode escolher textos para cifrar (CPA) ou até mesmo descriptografar (CCA).
-  Além disso, a existência de uma PRF é suficiente para criar sistemas que garantem a autenticidade das mensagens.
+\item No Capítulos \ref{cha:cifras-de-fluxo} vimos que a existência de um GNP é condição suficiente para construir um sistema seguro contra ataques {\em ciphertext only}.
+\item Nos Capítulos \ref{cha:cifras-de-bloco} e \ref{cha:mac} aprendemos que, se temos uma FPA, podemos construir sistemas de criptografia ainda mais robustos. Esses sistemas são seguros contra ataques mais avançados, como os ataques onde o atacante pode escolher textos para cifrar (ETP) ou até mesmo descriptografar (ETC).
+  Além disso, a existência de uma FPA é suficiente para criar sistemas que garantem a autenticidade das mensagens.
 \end{itemize}
 
-O teorema a seguir aborda a condição reversa, mostrando que a existência de uma função de mão única não só permite a criação de PRG, PRF e PRP, mas também que essa função de mão única é necessária para que essas construções existam:
+O teorema a seguir aborda a condição reversa, mostrando que a existência de uma função de mão única não só permite a criação de GNP, FPA e PPA, mas também que essa função de mão única é necessária para que essas construções existam:
 
 \begin{theorem}
-  Se existe um sistema seguro contra ataques {\em ciphertext only} que protega uma mensagem duas vezes maior do que sua chave então existe uma função de mão única.
+  Se existe um sistema seguro contra ataques {\em apenas contra o texto cifrado} (ATC) que protega uma mensagem duas vezes maior do que sua chave então existe uma função de mão única.
 \end{theorem}
 
 Para provar o teorema imagine que temos um sistema de criptografia que é seguro contra ataques cyphertext only que consegue cifrar uma mensagem duas vezes maior do que a chave.
@@ -166,7 +164,7 @@ Essa crença é apoiada por muitos experimentos, mas ainda não temos uma prova 
 
 Agora, imagine que conseguíssemos provar que uma função $f$ é realmente de mão única.
 Por definição, isso significa que podemos calcular $f(x)$ em tempo polinomial.
-Além disso, se alguém nos der um valor $y$ e disser que $f^-1(x) = y$, podemos verificar isso rapidamente, testando se $f(y)=x$.
+Além disso, se alguém nos der um valor $y$ e disser que $f^{-1}(x) = y$, podemos verificar isso rapidamente, testando se $f(y)=x$.
 
 Em termos técnicos, isso significa que $f$ pode ser usada como um ``oráculo polinomial'' para verificar se uma solução está correta.
 Isso coloca o problema de inverter $f$ na classe de problemas NP, que são aqueles problemas para os quais podemos verificar uma solução em tempo polinomial.
@@ -181,8 +179,8 @@ Dado que ainda não conseguimos resolver essa questão, nos contentamos em valid
 A partir dessas validações, podemos então provar a segurança de diversos sistemas de criptografia, como fizemos nos capítulos anteriores.
 
 O diagrama abaixo resume as construções que estudamos neste capítulo.
-Se existir uma função de mão única, então é possível provar que existem PRGs (Geradores de Números Pseudoaleatórios), PRFs (Funções Pseudoaleatórias) e PRPs (Permutações Pseudoaleatórias) seguras.
-Com esses elementos, poderíamos provar que cifras de fluxo e cifras de bloco podem ser usadas para criar sistemas seguros contra falsificação e todos os tipos de ataques que discutimos, incluindo ataques do tipo CCA (Chosen-Ciphertext Attack).
+Se existir uma função de mão única, então é possível provar que existem GNPs (Geradores de Números Pseudoaleatórios), FPAs (Funções Pseudoaleatórias) e PPAs (Permutações Pseudoaleatórias) seguras.
+Com esses elementos, poderíamos provar que cifras de fluxo e cifras de bloco podem ser usadas para criar sistemas seguros contra falsificação e todos os tipos de ataques que discutimos, incluindo ataques do tipo ETC.
 No entanto, infelizmente, ainda não conseguimos provar a existência de funções de mão única.
 
 
@@ -190,16 +188,16 @@ No entanto, infelizmente, ainda não conseguimos provar a existência de funçõ
 \begin{tikzpicture}[node distance=2cm, auto]
 
     % Nodos principais
-    \node (owf) at (0,0) {OWF};
-    \node (prg) at (3,0) {PRG};
-    \node (prf) at (6,0) {PRF};
-    \node (prp) at (9,0) {PRP};
+    \node (owf) at (0,0) {FMU};
+    \node (prg) at (3,0) {GNP};
+    \node (prf) at (6,0) {FPA};
+    \node (prp) at (9,0) {PPA};
 
     % Nodos de segurança
-    \node (co) at (3,-2) {CO};
-    \node (cpa) at (6,-2) {CPA};
+    \node (co) at (3,-2) {ATC};
+    \node (cpa) at (6,-2) {ETP};
     \node (falsificacao) at (6,-4) {Falsificação};
-    \node (cca) at (9,-2) {CCA};
+    \node (cca) at (9,-2) {ETC};
 
     % Setas principais
     \path[-latex, draw] (owf) -- (prg);
@@ -208,7 +206,7 @@ No entanto, infelizmente, ainda não conseguimos provar a existência de funçõ
 
     % Setas pontilhadas
     \path[-latex, dashed, draw] (prg) -- (co);
-    \path[-latex, dashed, draw] (prp) -- node[midway,right]{\tiny CBC} (cpa);
+    \path[-latex, dashed, draw] (prp) -- node[midway,right]{\tiny EBC} (cpa);
     \path[-latex, dashed, draw] (prf) -- node[midway,right]{\tiny Ctr} (cpa);
     \path[-latex, dashed, bend right=45, draw] (prf) to (falsificacao);
     \path[-latex, dashed, draw] (cpa) -- (cca);
