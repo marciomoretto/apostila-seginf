@@ -2,7 +2,7 @@
 \label{cha:hash}
 
 Uma função de hash é uma ferramenta que pega uma sequência de dados de qualquer tamanho e a transforma em uma sequência curta e de tamanho fixo.
-Essa sequência curta é conhecida como {\em digest} ou {\em checksum}.
+Essa sequência curta que chamaremos de {\em resumo}, mas que em inglê é conhecida como {\em digest} ou {\em checksum}.
 
 Quando estudamos funções de hash em Estrutura de Dados, o objetivo é geralmente otimizar o acesso a uma lista, permitindo que encontremos elementos de maneira muito rápida, em tempoconstante.
 Para conseguir isso, tentamos minimizar as colisões, ou seja, tentamos garantir que diferentes entradas não acabem no mesmo local da lista. Isso faz com que a busca seja mais eficiente.
@@ -13,14 +13,13 @@ Se duas entradas diferentes resultarem no mesmo digest, isso pode criar vulnerab
 Uma função de hash criptográfica é uma função $H$ que pega qualquer sequência de bits como entrada e a transforma em uma sequência de bits de tamanho fixo.
 
 Um aspecto fundamental de uma função de hash criptográfica é sua {\em resistência a colisões}.
-Isso significa que é extremamente difícil encontrar duas entradas diferentes que resultem na mesma saída.
+Isso significa que deve ser extremamente difícil encontrar duas entradas diferentes que resultem na mesma saída.
 Para explicar esse conceito, podemos imaginar um jogo onde o objetivo do adversário é encontrar essas duas entradas diferentes.
 
 Aqui está como podemos imaginar esse jogo:
 \begin{enumerate}
 \item Primeiro, o sistema gera uma semente $s$ usando um algoritmo.
-  Essa semente não precisa ser secreta;
-  ela é usada apenas para tornar o processo mais robusto.
+  Essa semente não precisa ser secreta.
     
 \item Em seguida, o adversário recebe essa semente $s$.
   A semente serve como um ponto de partida para tentar encontrar duas mensagens que, ao serem processadas pela função de hash, resultem no mesmo digest.
@@ -43,32 +42,34 @@ O sistema é considerado {\em seguro contra colisões} se nenhum adversário efi
 \end{center}
 
 
-Quando falamos de funções de hash na criptografia, muitas vezes introduzimos uma semente para estudar sua segurança, essa semente tem um propósito estritamente técnico específico.
+A semente usada na definição da segurança para funções de hash tem um propósito estritamente técnico.
 Sem uma semente, um adversário poderia pré-calcular colisões.
 
 Na prática, normalmente usamos funções de hash sem uma semente e as consideramos seguras contra colisões quando isso é validado empiricamente, ou seja, por meio de testes extensivos e análises práticas.
 
 A resistência à colisão é uma das propriedades mais importantes de uma função de hash, e é uma das mais difíceis de alcançar.
-Ela garante que é extremamente difícil encontrar duas entradas diferentes que resultem na mesma saída.
+Ela garante que seja extremamente difícil encontrar duas entradas diferentes que resultem na mesma saída.
 Essa propriedade é mais forte do que outras propriedades que também desejamos em funções de hash, como:
 \begin{itemize}
-\item {\em Resistência contra colisões em alvos específicos}:
+\item[] {\em Resistência contra colisões em alvos específicos}:
   Dado um valor $s$ e uma entrada $m$, nenhum adversário eficiente deve ser capaz de encontrar outra entrada $m'$  tal que $H_s(m) = H_s(m')$ com uma probabilidade significativa.
   Isso significa que, mesmo se alguém souber a saída $H_s(m)$, ele não deve ser capaz de encontrar outro valor que produza o mesmo resultado.
-\item {\em Resistência contra preimagem}:
+\item[] {\em Resistência contra preimagem}:
   Dado um valor $s$ e uma saída $y$, nenhum adversário eficiente deve ser capaz de encontrar uma entrada $m$ tal que $H_s(m)=y$ com uma probabilidade considerável.
   Isso significa que, mesmo se alguém souber o resultado de uma função de hash, ele não deve ser capaz de descobrir qual entrada gerou aquele resultado.
 \end{itemize}
 
 
 Toda função de hash está vulnerável a ataques do tipo força bruta. Suponha que temos uma função $H_s$, que mapeia qualquer sequência de bits em uma saída de $n$ bits.
-Se calcularmos $H(m)$ para uma sequência grande de diferentes entradas, eventualmente encontraremos uma colisão.
+Se calcularmos $H_s(m)$ para uma sequência grande de diferentes entradas, eventualmente encontraremos uma colisão.
 Isso é garantido pelo princípio da casa dos pombos:
 se temos mais itens do que ``caixas'' para colocá-los, pelo menos duas entradas diferentes acabarão na mesma caixa (ou seja, produzirão o mesmo digest).
 
+
 Na verdade, se assumirmos que a função de hash se comporta como uma função aleatória, podemos mostrar que a probabilidade de encontrar uma colisão é maior que $50\%$ se testarmos cerca de $\sqrt{n}$ entradas diferentes.
 Esse resultado é conhecido como o {\em paradoxo do aniversário}.
-Ele é chamado assim porque, por exemplo, em um grupo de 23 pessoas, a chance de duas delas terem o mesmo aniversário é maior que $50\%$.
+Ele é chamado assim porque, por exemplo, em um grupo de 23 pessoas (pense um time de futebol, com titulares, reservas e o técnico), a chance de duas delas terem o mesmo aniversário é maior que $50\%.
+Embora 23 pessoas pareça um número pequeno para essa coincidência, a matemática por trás do paradoxo explica essa alta probabilidade de colisão.
 
 Portanto, se quisermos um sistema de hash que ofereça segurança equivalente a uma função aleatória com uma chave de 128 bits, precisamos usar uma função de hash que produza uma saída de pelo menos 256 bits.
 
@@ -80,26 +81,22 @@ Aqui, $n$ é o número de possíveis valores de hash.
 O ponto crucial é que essas mensagens não precisam ser aleatórias.
 Podemos gerar mensagens de forma inteligente, utilizando variações controladas, para aumentar nossas chances de sucesso no ataque.
 
+
 Vamos ilustrar isso com um exemplo.
-Suponha que queremos criar um grande número de variações de uma mensagem que sejam suficientemente diferentes para explorar o ataque do aniversariante, mas que ainda mantenham o mesmo significado geral.
+Suponha que um grupo de alunos estejam tentando forjar uma grande quantidade de variações de uma avaliação de um professor, de forma que todas pareçam legítimas, mas tenham pequenas diferenças, permitindo explorar o ataque do aniversariante.
 
 Considere as seguintes frases:
 
 \begin{quote}
-  É {\em difícil/impossível/desafiador/complicado} {\em imaginar/acreditar} que {\em encontraremos/localizaremos/contrataremos} outra {\em pessoa/empregada} com a mesma {\em capacidade/versatilidade/destreza} que Eva.
-Ela fez um trabalho {\em incrível/excelente}.
+  O projeto foi {\em executado/realizado/concluído} com {\em sucesso/eficiência/precisão}, e os {\em resultados/objetivos} foram {\em atingidos/superados} dentro do {\em prazo/tempo/cronograma} previsto.
+  O grupo demonstrou {\em dedicação/comprometimento/esforço} durante todo as aulas.
 \end{quote}
 
-As palavras em itálico podem ser substituídas umas pelas outras sem mudar significativamente o significado da mensagem.
-Com essa abordagem, podemos gerar 288 versões diferentes dessa frase (4 substituições possíveis para a primeira palavra, 2 para a segunda, 3 para a terceira, e assim por diante).
+As palavras em itálico podem ser trocadas entre si sem alterar o sentido geral da mensagem.
+Com essa abordagem, podemos gerar 324 variações diferentes da frase (3 opções para a primeira substituição, 3 para a segunda, 2 para a terceira, e assim por diante).
 
-Se precisássemos de um conjunto de $2^{32}$ mensagens diferentes, poderíamos criar um texto com pelo menos 32 palavras, onde cada palavra tem pelo menos um sinônimo.
-Isso nos permite gerar um número muito grande de variações da mensagem, todas equivalentes em significado.
+Se precisássemos gerar um conjunto de $2^{32}$ mensagens, poderíamos elaborar um texto com pelo menos 32 palavras onde cada uma tem pelo menos um sinônimo, o que nos permitiria criar um número imenso de versões da mesma mensagem, todas com significado equivalente.
 
-Esse exemplo mostra como o ataque do aniversariante pode ser aplicado de forma prática: criando muitas variações de uma mesma mensagem, conseguimos aumentar drasticamente as chances de encontrar uma colisão em uma função de hash. Isso destaca a importância de usar funções de hash com saídas suficientemente longas (como 256 bits), para garantir que a probabilidade de colisão seja minimizada, mesmo diante de um ataque tão elaborado.
-
-
-% mudar esse exemplo que está identico ao do livro
 \section{Construções}
 \label{sec:construcoes}
 
@@ -108,8 +105,7 @@ A maioria das funções de hash que usamos hoje seguem uma estrutura conhecida c
 
 Vamos explorar como essa construção funciona, passo a passo.
 
-Imagine que temos uma função de hash $h$ que pode processar apenas blocos de dados de tamanho fixo — digamos, ela pega uma entrada de $2n$ bits (um pedaço de dados) e a comprime para
-$n$ bits (um digest ou resumo).
+Imagine que temos uma função de hash $h$ que pode processar apenas blocos de dados de tamanho fixo -- digamos, ela pega uma entrada de $2n$ bits e a comprime para um resumo de $n$ bits.
 Esse tipo de função é chamada de {\em função de compressão}.
 
 Vamos agora entender como construímos uma função de hash completa usando essa ideia:
@@ -159,8 +155,8 @@ Ele é projetado para pegar uma entrada de tamanho arbitrário (desde que seja m
 Antes que o SHA-1 possa processar a mensagem, ele precisa prepará-la de uma forma específica. Esse processo envolve algumas etapas importantes:
 
 \begin{itemize}
-\item {\em Adição de padding}:
-  Primeiro, a mensagem original é ``preenchida'' (ou padded) para que seu tamanho final seja um múltiplo de 512 bits.
+\item[] {\em Preenchimento (``padding'')}:
+  Primeiro, a mensagem original é ``preenchida'' para que seu tamanho final seja um múltiplo de 512 bits.
   Esse preenchimento é feito adicionando uma sequência especial de bits ao final da mensagem.
 
   A sequência de padding começa com um $1$ seguido por uma série de $0$s e, no final, o tamanho original da mensagem em bits.
@@ -195,9 +191,9 @@ Esses valores serão alterados em cada uma das 80 rodadas para ajudar a processa
 Durante as 80 rodadas, os valores $A, B, C, D, E$ são atualizados usando a seguinte fórmula:
 
 \begin{itemize}
-\item {\em Atualiza $A$:}
+\item[] {\em Atualiza $A$:}
   O novo valor de $A$ é calculado somando o valor de $E$, uma função específica $f_t(B,C,D)$ que depende dos valores de $B, C, D$, uma versão rotacionada de $A$, a string $W_j$ correspondente à rodada, e uma constante $K_t$.
-\item {\em Desloca os Valores:}
+\item[] {\em Desloca os Valores:}
   Os valores de $B, C, D, E$ são então ajustados para a próxima rodada, com $B$ sendo rotacionado 30 bits para a esquerda.
 \end{itemize}
 
@@ -228,8 +224,7 @@ Para adicionar uma camada extra de complexidade e segurança, as constantes $K_t
 
 Essas mudanças ajudam a garantir que a função de hash seja resistente a colisões e outras formas de ataque, tornando-a segura para uso em criptografia.
 
-Em fevereiro de 2017, um grupo de pesquisadores da Google, em parceria com uma universidade holandesa, anunciou um feito marcante na área da criptografia:
-eles conseguiram realizar um ataque prático ao algoritmo de hash SHA-1, demonstrando que é possível encontrar colisões — ou seja, duas entradas diferentes que produzem o mesmo hash.
+Em fevereiro de 2017, um grupo de pesquisadores da Google, em parceria com uma universidade holandesa, anunciou ter conseguido realizar um ataque prático ao algoritmo de hash SHA-1, demonstrando que é possível encontrar colisões -- ou seja, duas entradas diferentes que produzem o mesmo hash.
 
 Os pesquisadores estimaram que, em um ataque de força bruta, levaria cerca de um ano utilizando aproximadamente 12 milhões de processadores gráficos (GPUs) para encontrar uma colisão no SHA-1.
 No entanto, ao explorar vulnerabilidades específicas do SHA-1, eles conseguiram reduzir drasticamente esse número, realizando o ataque com apenas 110 processadores\footnote{https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html}.
@@ -248,15 +243,15 @@ As funções de hash são ferramentas essenciais em protocolos de segurança, co
 Nesta seção, vamos explorar quatro aplicações distintas dessas funções:
 
 \begin{itemize}
-\item {\em Hash-based Message Authentication Code (HMAC)}:
+\item[] {\em Código de Autenticação de Mensagem baseado em Hash (HMAC)}:
   Um sistema de autenticação amplamente utilizado, que usa funções de hash para assegurar que uma mensagem não foi alterada e que sua origem é autêntica.
   HMAC é especialmente popular em protocolos de comunicação segura, como SSL/TLS.
 
-\item {\em Derivação de Subchaves a Partir de Outras Chaves}:
+\item[] {\em Derivação de Subchaves a Partir de Outras Chaves}:
   Funções de hash podem ser usadas para gerar subchaves seguras a partir de uma chave principal.
   Isso é útil em sistemas onde uma única chave mestre precisa ser subdividida em várias chaves menores para diferentes finalidades, mantendo a segurança geral do sistema.
 
-\item {\em Derivação de Chaves a Partir de Senhas}:
+\item[] {\em Derivação de Chaves a Partir de Senhas}:
   Em muitos sistemas, é necessário converter uma senha em uma chave criptográfica.
   As funções de hash desempenham um papel crucial nesse processo, transformando a senha em uma chave segura que pode ser usada para criptografia, garantindo proteção contra ataques como força bruta.
 \end{itemize}
@@ -270,7 +265,7 @@ Vamos examinar cada uma delas em mais detalhes.
 No capítulo anterior, discutimos como criar um sistema de autenticação para mensagens de tamanho arbitrário usando um esquema semelhante ao modo CBC.
 Agora, vamos explorar uma abordagem alternativa chamada {\em Hash-and-MAC}.
 
-Em vez de autenticar diretamente a mensagem de tamanho arbitrário, a ideia por trás do Hash-and-MAC é primeiro comprimir a mensagem em um valor de tamanho fixo, chamado {\em digest}, usando uma função de hash.
+Em vez de autenticar diretamente a mensagem de tamanho arbitrário, a ideia por trás do Hash-and-MAC é primeiro comprimir a mensagem em um valor de tamanho fixo, o resumo, usando uma função de hash.
 Em seguida, aplicamos um sistema de autenticação para esse digest, como se fosse uma mensagem de tamanho fixo.
 Esse método é muito eficaz e é amplamente utilizado em protocolos de segurança.
 
@@ -279,14 +274,14 @@ Considere que temos um sistema de autenticação para mensagens de tamanho fixo 
 O sistema \textit{Hash-and-MAC} $\Pi$ para mensagens de tamanho arbitrário é construído da seguinte maneira:
 
 \begin{itemize}
-\item {\em Geração de Chaves}:
+\item[] {\em Geração de Chaves}:
   Gera uma chave composta por duas partes: $k_M$, a chave usada pelo sistema de autenticação, e $s$, a chave usada pela função de hash. 
   
-\item {\em Geração do MAC}:
+\item[] {\em Geração do CAM}:
   Para autenticar uma mensagem $m$ de tamanho arbitrário, primeiro calculamos o \textit{digest} $H_s(m)$ usando a função de hash.
-  Em seguida, aplicamos o sistema de autenticação de tamanho fixo $Mac_M$ ao \textit{digest} para gerar o código de autenticação ($Mac(k, m) := Mac_M(k_M, H_s(m))$).
+  Em seguida, aplicamos o sistema de autenticação de tamanho fixo $Mac_M$ ao \textit{resumo} para gerar o código de autenticação ($Mac(k, m) := Mac_M(k_M, H_s(m))$).
   
-\item {\em Verificação}:
+\item[] {\em Verificação}:
   Verificamos a mensagem exatamente da mesma forma como nos modos que já apresentamos.
 \end{itemize}
 
@@ -294,9 +289,9 @@ O sistema \textit{Hash-and-MAC} $\Pi$ para mensagens de tamanho arbitrário é c
 \begin{theorem}
   Se $\Pi_M$ é um sistema de autenticação seguro contra falsificação e $H$ é um hash resistente a colisão então a construção acima é segura contra falsificação.
 \end{theorem}
-
-A ideia central da prova é a seguinte: imagine que temos um adversário.
-Imagina um adversário que tenta quebrar a segurança do sistema, consultando os códigos de autenticação (tags) de uma série de mensagens $Q$.
+\begin{proof}
+A ideia central da prova é a seguinte: 
+Imagine um adversário que tenta quebrar a segurança do sistema, consultando os códigos de autenticação (tags) de uma série de mensagens $Q$.
 Agora, vamos supor que, de alguma forma, o adversário consiga gerar um código válido para uma nova mensagem $m$ que não estava na lista $Q$.
 
 Se isso fosse possível, teríamos dois cenários:
@@ -307,14 +302,16 @@ Se isso fosse possível, teríamos dois cenários:
   Isso contradiria a hipótese de que o sistema de autenticação $\Pi_M$  é seguro contra falsificação.
 \end{enumerate}
 
-O HMAC ({\em Hash-based Message Authentication Code}) é um dos sistemas de autenticação mais populares, amplamente utilizado em protocolos de segurança.
-Ele se baseia em um esquema semelhante ao apresentado anteriormente, mas adiciona uma camada extra de segurança ao usar duas vezes uma função de hash, combinada com duas constantes distintas, chamadas {\tt ipad} e {\tt opad}.
+\end{proof}
+
+O HMAC é um dos sistemas de autenticação mais amplamente utilizados em protocolos de segurança.
+Ele funciona aplicando uma função de hash duas vezes sobre a combinação de uma chave secreta com os dados, utilizando duas constantes diferentes, chamadas {\tt ipad} e {\tt opad}.
+Exemplos de sua aplicação incluem os protocolos TLS/SSL, que garantem a integridade e autenticidade de dados transmitidos em conexões seguras, como o HTTPS, o IPsec, que autentica e protege pacotes de dados em redes IP, como em VPNs, e o SSH, que assegura a integridade dos dados durante transferências seguras.
 
 Vamos entender como o HMAC funciona:
 
 \begin{itemize}
-\item
-Primeiro, combinamos a chave $k$ com a constante {\tt ipad} usando a operação XOR.
+\item Primeiro, combinamos a chave $k$ com a constante {\tt ipad} usando a operação XOR.
 \item Em seguida, aplicamos a função de hash $H_s$ ao resultado dessa combinação junto com a mensagem $m$.
 \item Depois disso, combinamos a chave $k$ com a constante {\tt opad} (também usando XOR).
 \item Finalmente, aplicamos a função de hash $H_s$ a essa nova combinação junto com o resultado do primeiro hash.
@@ -329,34 +326,34 @@ O processo de verificação é identico aos demais que vimos anteriormente.
 \subsection{Funções de Derivação de Chaves}
 \label{sec:kdf}
 
-Uma {\em função de derivação de chaves} (KDF - Key Derivation Function) é uma ferramenta essencial em criptografia, projetada para gerar uma chave segura a partir de um material que contém uma quantidade significativa de entropia, chamado de {\em key material}.
+Uma {\em função de derivação de chaves} (FDC) é uma ferramenta essencial em criptografia, projetada para gerar uma chave segura a partir de um material que contém uma quantidade significativa de entropia, chamado de {\em key material}.
 
-Existem duas situações comuns em que uma KDF é útil:
+Existem duas situações comuns em que uma FDC é útil:
 
 \begin{itemize}
-\item {\em Preparação de Material Criptográfico}:
+\item[] {\em Preparação de Material Criptográfico}:
   Às vezes, o material que você tem (como uma senha) não está suficientemente seguro ou preparado para ser usado diretamente como uma chave criptográfica.
-  Nesse caso, a KDF ajuda a transformar esse material em uma chave segura.
+  Nesse caso, a FDC ajuda a transformar esse material em uma chave segura.
 
-\item {\em Derivação de Subchaves}:
-  Quando você tem uma chave inicial e precisa gerar várias subchaves diferentes a partir dela, a KDF pode ser usada para criar essas subchaves de forma segura.
+\item[] {\em Derivação de Subchaves}:
+  Quando você tem uma chave inicial e precisa gerar várias subchaves diferentes a partir dela, a FDC pode ser usada para criar essas subchaves de forma segura.
 \end{itemize}
 
-Formalmente, uma KDF recebe como entrada:
+Formalmente, uma FDC recebe como entrada:
 
 \begin{itemize}
-\item O key material $\delta$, que é o material base para derivar a chave.
+\item O material da chave $\delta$, que é o material base para derivar a chave.
 \item O tamanho $l$ da chave que queremos produzir.
 \item Opcionalmente, um valor chamado salt ($r$), que é uma chave pública adicional usada para garantir que a saída seja única, mesmo se o mesmo key material for usado novamente.
 \item Um valor contextual $c$, que pode ser utilizado para fornecer informações adicionais sobre o contexto em que a chave será usada.
 \end{itemize}
 
-A KDF segura deve usar esses valores para produzir uma sequência {\em pseudoaleatória} de bits do tamanho desejado $l$.
+Uma FDC segura deve usar esses valores para produzir uma sequência {\em pseudoaleatória} de bits do tamanho desejado $l$.
 
-Uma KDF típica funciona em duas etapas:
+Uma FDC típica funciona em duas etapas:
 \begin{itemize}
-\item {\em Extração}:
-  Nesta etapa, a KDF recebe o key material $\delta$ e, opcionalmente, um valor público conhecido como salt.
+\item[] {\em Extração}:
+  Nesta etapa, a FDC recebe o $\delta$ e, opcionalmente, um valor público conhecido como salt.
   O objetivo é processar esses valores para produzir uma sequência de bits pseudoaleatória de tamanho fixo.
 \item {\em Expansão}:
   Na segunda etapa, a sequência de bits produzida na fase de extração é expandida para o tamanho final desejado $l$.
@@ -365,8 +362,8 @@ Uma KDF típica funciona em duas etapas:
 
 Essas duas etapas juntas garantem que a chave derivada seja segura e adequada para criptografia, seja para substituir uma senha insegura por uma chave robusta ou para gerar subchaves seguras a partir de uma chave inicial.
 
-Uma implementação popular do modelo de função de derivação de chaves (KDF) é o {\em HMAC-based Key Derivation Function} (HKDF) \cite{Krawczyk10}.
-O HKDF é baseado inteiramente no HMAC, que é uma construção de hash segura e amplamente utilizada. Vamos ver como ele funciona:
+Uma implementação popular do modelo de função de derivação de chaves (FDC) é o {\em FDC baseada no HMAC} (HKDF) \cite{Krawczyk10}.
+Vamos ver como ele funciona:
 
 {\em Passo 1: Extração}
 
@@ -421,10 +418,10 @@ Um tipo popular de função de derivação de chaves baseada em senha é o {\em 
 
 O PBKDF2 recebe como parâmetros:
 \begin{itemize}
-    \item {\em Salt $r$}: Um valor aleatório que é adicionado à senha para garantir que senhas iguais resultem em chaves diferentes.
-    \item {\em Tamanho $l$}: O tamanho da chave final que queremos gerar.
-    \item {\em Senha $\delta$}: A senha fornecida pelo usuário.
-    \item {\em Número de ciclos $n$}: Um valor que especifica quantas vezes a função de hash será aplicada, tornando o processo mais lento e seguro.
+    \item[] {\em Salt $r$}: Um valor aleatório que é adicionado à senha para garantir que senhas iguais resultem em chaves diferentes.
+    \item[] {\em Tamanho $l$}: O tamanho da chave final que queremos gerar.
+    \item[] {\em Senha $\delta$}: A senha fornecida pelo usuário.
+    \item[] {\em Número de ciclos $n$}: Um valor que especifica quantas vezes a função de hash será aplicada, tornando o processo mais lento e seguro.
 \end{itemize}
 
 O PBKDF2 gera a chave final em várias etapas:
@@ -436,20 +433,20 @@ O PBKDF2 gera a chave final em várias etapas:
 Aqui está como cada bloco $K(i)$ é calculado:
 
 \begin{itemize}
-    \item {\em Cálculo do Bloco $K(i)$}:
+    \item[] {\em Cálculo do Bloco $K(i)$}:
     \begin{displaymath}
     K(i) := U_0^i \oplus U_1^i \oplus \dots \oplus U_n^i
     \end{displaymath}
     
     Onde cada $U_j^i$ é uma sequência de bits gerada em várias iterações.
 
-    \item {\em Primeira Iteração}:
+    \item[] {\em Primeira Iteração}:
     \begin{displaymath}
     U_0^i := H(\delta || r || i)
     \end{displaymath}
     Nesta etapa, a função de hash $H$ é aplicada à combinação da senha $\delta$, do salt $r$, e do número do bloco $i$.
 
-    \item {\em Iterações Subsequentes}:
+    \item[] {\em Iterações Subsequentes}:
     \begin{displaymath}
     U_j^i := H(\delta || U_{j-1}^i)
     \end{displaymath}
