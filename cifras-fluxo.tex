@@ -310,7 +310,7 @@ A abordagem empírica para a validação de GNPs é fundamental para o avanço d
 Embora não possamos provar matematicamente que um GNP é seguro, a validação empírica oferece um método robusto para garantir a eficácia e a confiabilidade dos sistemas de criptografia na prática.
 Esse processo contínuo de avaliação e teste é essencial para identificar e utilizar GNPs que oferecem altos níveis de segurança.
 
-\subsection{Registradores de Deslocamento com Retroalimentação Linear}
+\subsection{RDRL}
 \label{sec:lfsr}
 
 Os registradores de deslocamento com realimentação linear, conhecidos como {\em Registradores de Deslocamento com Retroalimentação Linear} (RDRLs), são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
@@ -460,69 +460,69 @@ Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo
 Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
 Um ciclo longo é o que garante que não repetiremos a mesma sequência de bits para criptografar duas mensagens distintas.
 
-O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
-Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
+%O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
+%Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
 
-Um ataque relativamente simples a um RDRL envolve a observação dos $n$ primeiros bits gerados, \(y_{n+1}, \dots, y_{2n}\), e a resolução de um sistema linear.
-A ideia é que, conhecendo os primeiros bits gerados, podemos inferir os coeficientes de feedback e, portanto, prever os próximos bits gerados pelo RDRL.
+%Um ataque relativamente simples a um RDRL envolve a observação dos $n$ primeiros bits gerados, \(y_{n+1}, \dots, y_{2n}\), e a resolução de um sistema linear.
+%A ideia é que, conhecendo os primeiros bits gerados, podemos inferir os coeficientes de feedback e, portanto, prever os próximos bits gerados pelo RDRL.
 
-Quando observamos os $n$ primeiros bits gerados pelo RDRL, podemos configurar um sistema de equações lineares para resolver os coeficientes de feedback.
-Considere os bits $y_1, y_2, \dots, y_{2n}$ gerados pelo RDRL.
-Podemos expressar cada bit como uma combinação linear dos bits anteriores, ponderada pelos coeficientes de feedback $c_0, c_1, \dots, c_{n-1}$:
+%Quando observamos os $n$ primeiros bits gerados pelo RDRL, podemos configurar um sistema de equações lineares para resolver os coeficientes de feedback.
+%Considere os bits $y_1, y_2, \dots, y_{2n}$ gerados pelo RDRL.
+%Podemos expressar cada bit como uma combinação linear dos bits anteriores, ponderada pelos coeficientes de feedback $c_0, c_1, \dots, c_{n-1}$:
 
-\begin{displaymath}
-  \begin{array}{rcl}
-    y_{n+1} & = & c_0y_1 \oplus c_1y_{n-1} \oplus \cdots \oplus c_{n-1} y_1 \\
-    y_{n+2} & = & c_0y_{n+1} \oplus c_1y_n \oplus \cdots \oplus c_{n-1} y_2 \\
-    & \vdots & \\
-    y_{2n} & = & c_0y_{2n-1} \oplus c_1y_{2n-2} \oplus \cdots \oplus c_{n-1} y_n \\
-  \end{array}
-\end{displaymath}
+%\begin{displaymath}
+%  \begin{array}{rcl}
+%    y_{n+1} & = & c_0y_1 \oplus c_1y_{n-1} \oplus \cdots \oplus c_{n-1} y_1 \\
+%    y_{n+2} & = & c_0y_{n+1} \oplus c_1y_n \oplus \cdots \oplus c_{n-1} y_2 \\
+%    & \vdots & \\
+%    y_{2n} & = & c_0y_{2n-1} \oplus c_1y_{2n-2} \oplus \cdots \oplus c_{n-1} y_n \\
+%  \end{array}
+%\end{displaymath}
 
-É possível mostrar que essas equações são linearmente independentes e, portanto, elas determinam unicamente os coefientes.
-Uma vez determinados os valores $y_0 \dots y_n = s_0 \dots s_n$, podemos prever cada novo bit da sequência.
-Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
+%É possível mostrar que essas equações são linearmente independentes e, portanto, elas determinam unicamente os coefientes.
+%Uma vez determinados os valores $y_0 \dots y_n = s_0 \dots s_n$, podemos prever cada novo bit da sequência.
+%Com isso torna-se simples a tarefa de construir um distinguidor para o gerador.
 
-\begin{example}
-  Vamos considerar que os coeficientes de feedback são $c_0 = 1$, $c_1 = 0$, $c_2 = 1$.
+%\begin{example}
+%  Vamos considerar que os coeficientes de feedback são $c_0 = 1$, $c_1 = 0$, $c_2 = 1$.
 
-  O adversário sabe esses valores porque isso é parte do mecanismo.
+%  O adversário sabe esses valores porque isso é parte do mecanismo.
 
-  Imagine que observamos os três primeiros valores: $y_4 = 0$, $y_5 = 1$ e $y_6 = 0$.
-  Temos então que:
+%  Imagine que observamos os três primeiros valores: $y_4 = 0$, $y_5 = 1$ e $y_6 = 0$.
+%  Temos então que:
 
-  \begin{displaymath}
-    \begin{array}{rcl}
-      y_1 \oplus y_3 & = & 0 \\
-      y_2 \oplus y_4 & = & 1 \\
-      y_2 \oplus 0 & = & 1\\
-      y_2 & = & 1 \\
-    \end{array}
-  \end{displaymath}
+%  \begin{displaymath}
+%    \begin{array}{rcl}
+%      y_1 \oplus y_3 & = & 0 \\
+%      y_2 \oplus y_4 & = & 1 \\
+%      y_2 \oplus 0 & = & 1\\
+%      y_2 & = & 1 \\
+%    \end{array}
+%  \end{displaymath}
 
-  \begin{displaymath}
-    \begin{array}{rcl}
-      y_3 \oplus y_5 & = & 0 \\
-      y_3 \oplus 1 & = & 0 \\
-      y_3 & = & 1 \\
-    \end{array}
-  \end{displaymath}
+%  \begin{displaymath}
+%    \begin{array}{rcl}
+%      y_3 \oplus y_5 & = & 0 \\
+%      y_3 \oplus 1 & = & 0 \\
+%      y_3 & = & 1 \\
+%    \end{array}
+%  \end{displaymath}
 
-  \begin{displaymath}
-    \begin{array}{rcl}
-      y_1 \oplus y_3 & = & 0 \\
-      y_1 \oplus 1 & = &  0\\
-      y_1 & = & 1 \\
-    \end{array}
-  \end{displaymath}
+%  \begin{displaymath}
+%    \begin{array}{rcl}
+%      y_1 \oplus y_3 & = & 0 \\
+%      y_1 \oplus 1 & = &  0\\
+%      y_1 & = & 1 \\
+%    \end{array}
+%  \end{displaymath}
 
-  Portanto, a semente inicial é $y_1 = 1$, $y_2 = 1$ e $y_3 = 1$.
+%  Portanto, a semente inicial é $y_1 = 1$, $y_2 = 1$ e $y_3 = 1$.
 
-  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do RDRL.
-  Isso demonstra como um adversário pode comprometer a segurança do RDRL ao observar um número suficiente de bits gerados.
-\end{example}
+%  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do RDRL.
+%  Isso demonstra como um adversário pode comprometer a segurança do RDRL ao observar um número suficiente de bits gerados.
+%\end{example}
 
-Resumindo, o RDRL não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
+O RDRL não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
 Essa linearidade permite que o RDRL seja previsível e, portanto, vulnerável a ataques.
 Um adversário que observa um número suficiente de bits gerados pelo RDRL pode resolver um sistema de equações lineares para determinar a semente inicial e, consequentemente, prever todos os bits subsequentes.
 

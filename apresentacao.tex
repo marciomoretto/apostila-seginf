@@ -1,18 +1,49 @@
 ﻿\chapter*{Apresentação}
 
-Estas são notas de aula da disciplina Segurança da Informação ministrada no segundo semestre de 2017 para as turmas do período diurno e noturno do curso de Sistemas de Informação da Escola de Artes Ciências e Humanidades (EACH) da USP.
-A primeira versão desta apostila foi escrita para o curso de verão ministrado entre os dias 2 e 6 de fevereiro de 2015, também no campus leste da Universidade de São Paulo.
-O curso de verão foi oferecido como parte das atividades do projeto de Privacidade e Vigilância do Grupo de Políticas Públicas em Acesso à Informação (GPoPAI) e foi inspirado pelo curso online oferecido gratuitamente pela plataforma Coursera e ministrado pelo professor D. Boneh.
+Esta obra nasceu como uma apostila de notas de aula para a disciplina de Segurança da Informação, ministrada no segundo semestre de 2017 para as turmas diurnas e noturnas do curso de Sistemas de Informação da Escola de Artes, Ciências e Humanidades (EACH) da USP.
+A primeira versão foi preparada para o curso de verão oferecido entre 2 e 6 de fevereiro de 2015, no campus leste da USP, como parte das atividades do projeto de Privacidade e Vigilância do Grupo de Políticas Públicas em Acesso à Informação (GPoPAI).
+Este curso foi inspirado pelo conteúdo do curso online gratuito do professor Dan Boneh, disponível na plataforma Coursera, que por sua vez se baseia no livro de Jonathan Katz e Yehuda Lindell, Introduction to Modern Cryptography.
 
-Aos alunos que pretendem se aprofundar no tema, sugerimos as seguintes referências bibliográficas:
+Ao longo dos anos, a apostila evoluiu e foi continuamente revisada.
+Ministrei regularmente a disciplina de graduação em Segurança da Informação desde 2016 até o momento em que escrevo estas linhas no segundo semestre de 2023.
+As primeiras versões do material foram fortemente influenciadas pelo livro de Katz e Lindell.
+Com o tempo, outras referências tornaram-se essenciais, como o curso no YouTube de Christof Paar e o livro Understanding Cryptography, escrito por ele e Jan Pelzl.
+Em especial, o capítulo sobre Funções de Mão Única foi fortemente inspirado pelo livro Foundations of Cryptography, de Oded Goldreich.
+As referências históricas desta obra foram retiradas de fontes como o livro de divulgação científica, O Código, de Simon Singh e a obra The Codebreakers de David Kahn, essa, mais acadêmica, traz uma análise aprofundada sobre a história da criptografia.
 
-\begin{itemize}
-\item J. Katz e Y. Lindell - {\em Introduction to Modern Cryptography}
-\item W. Stallings - {\em Criptografia e Segurança da Informação}
-\item C. Paar e J. Pelzl - {\em Understanding Cryptography}
-\end{itemize}
+Ao longo dos anos, tive a oportunidade de revisar as notas com base no feedback dos alunos e na leitura gradual dos artigos originais.
+Essas referências estão citadas ao longo do livro.
 
-Agradecemos aos alunos que participaram do curso de verão em 2015 e dos cursos de graduação oferecidos de 2016 a 2023. Suas contribuições serviram de importante feedback para a escrita dessas notas.
+O projeto de Privacidade e Vigilância do GPoPAI se desenvolveu no contexto da crise de vigilância em massa revelada por Edward Snowden em 2013.
+Esta crise desencadeou uma série de eventos globais, e em São Paulo deu origem às criptorraves, um evento anual que acontece desde então, promovendo discussões sobre privacidade e segurança digital.
+Como participante ativo de praticamente todas as edições, essas experiências também influenciaram profundamente a minha formação na área.
+
+Agradeço aos alunos que participaram do curso de verão e das disciplinas de graduação oferecidas de 2016 a 2023.
+Suas contribuições, dúvidas e sugestões foram valiosas para o aprimoramento contínuo destas notas, que agora organizo em formato de livro.
+
+A introdução deste livro explora a motivação por trás do projeto de Privacidade e Vigilância e das criptorraves, focando no problema da vigilância em massa realizada pela NSA e revelada por Edward Snowden em 2013, sugerimos que essa crise foi mitigada pela adoção massiva de aplicativos de comunicação com criptografia ponta a ponta, como o Signal.
+Posteriormente, o mesmo protocolo de segurança foi implementado em aplicativos de larga escala, como o WhatsApp, tornando essa proteção acessível a milhões de usuários.
+
+Após essa introdução, que o livro está dividido em duas partes.
+A primeira parte aborda a criptografia simétrica, começando pelas cifras clássicas, como a cifra de deslocamento, cifra de substituição e a cifra de Vigenère, além de discutir técnicas de criptoanálise.
+São discutidas as limitações dessas cifras clássicas e, como uma primeira aproximação ao paradigma moderno, introduzimos o conceito de sigilo perfeito.
+Contudo, um dos resultados mais importantes da criptografia mostra que é impossível atingir o sigilo perfeito em uma cifra prática.
+A partir desse desafio surgem as principais ideias da criptografia moderna.
+Dentro desse contexto, o livro explora cifras de fluxo e cifras de bloco, como o Data Encryption Standard (DES) e o Advanced Encryption Standard (AES).
+Também diferenciamos os problemas de integridade e autenticidade do problema da confidencialidade, levando à introdução de conceitos como códigos de autenticação e criptografia autenticada.
+
+A primeira parte se encerra com um capítulo mais teórico sobre funções de mão única, que resume os principais resultados da primeira parte.
+As funções de mão única representam a condição mínima -- nunca demonstrada formalmente -- para garantir a segurança dos sistemas de criptografia.
+
+A segunda parte do livro se dedica à criptografia assimétrica.
+Antes de explorarmos esse tema, estudamos as funções de hash, com foco em construções como o SHA-1 e em aplicações como o HMAC e funções de derivação de chaves.
+Em seguida, cobrimos a distribuição de chaves, incluindo o protocolo de Diffie-Hellman e sistemas assimétricos como ElGamal e RSA.
+O livro se conclui com capítulos sobre assinaturas digitais, infraestrutura de chaves públicas e uma breve introdução a protocolos populares.
+
+O trajeto deste livro é didático e não histórico, pois a criptografia moderna tem suas raízes na necessidade de demonstrar a segurança dos sistemas assimétricos no final dos anos 1970, com os trabalhos seminais de Diffie, Hellman, e do trio Rivest, Shamir e Adleman.
+Embora as definições e demonstrações formais de segurança para sistemas simétricos tenham sido desenvolvidas posteriormente, nos anos 1980, por autores como Blum, Micali, Yao e Goldreich, as cifras simétricas já eram conhecidas e usadas há muito mais tempo.
+Por serem mais familiares aos estudantes, começamos o livro pelos sistemas simétricos, como cifras de fluxo e cifras de bloco, antes de abordar os sistemas assimétricos.
+
 
 %Alguns direitos sobre o conteúdo desta apostila são protegidos pelo autor sob licença Creative Commons
 %Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Ou seja, você  é livre para distribuir cópias e adaptar este trabalho desde que mantenha a mesma licença, dê o devido crédito ao autor e não faça uso comercial.

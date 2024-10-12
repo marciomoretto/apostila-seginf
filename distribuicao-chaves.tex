@@ -12,13 +12,13 @@ Essa abordagem é direta, mas depende fortemente da confiança na autoridade cen
 
 O segundo método nos introduz a um novo paradigma chamado {\em criptografia assimétrica}.
 Ao contrário da criptografia simétrica, onde a mesma chave é usada para criptografar e descriptografar, na criptografia assimétrica cada parte tem um par de chaves:
-uma pública e outra privada.
+uma pública (usada para criptografar mensagens) e outra privada (usada para descriptografar mensagens).
 Esse conceito será explorado mais detalhadamente nos próximos dois capítulos, onde veremos como a criptografia assimétrica resolve o problema de distribuição de chaves de forma elegante e segura.
 
 \section{Centro de Distribuição de Chaves}
 \label{sec:kdc}
 
-No modelo de {\em Centro de Distribuição de Chaves} (KDC), a segurança das comunicações entre os usuários é centralizada em uma autoridade confiável, chamada de administrador.
+No modelo de {\em Centro de Distribuição de Chaves} (CDC), a segurança das comunicações entre os usuários é centralizada em uma autoridade confiável, chamada de administrador.
 Para garantir a segurança, cada usuário possui uma chave permanente única, que é mantida em segredo e gerenciada pelo administrador.
 
 O processo funciona da seguinte forma:
@@ -46,7 +46,7 @@ O processo funciona da seguinte forma:
   \item $E(k_B,k)$, que ela envia para o Bob.
   \end{itemize}
 \item {\em Transmissão para o destinatário}:
-  Alice então encaminha $E(K_B,k)$ para Bob que pode decifrá-la com sua chave permanente.
+  Alice então encaminha $E(k_B,k)$ para Bob que pode decifrá-la com sua chave permanente.
 \end{enumerate}
 
 Agora, tanto Alice quanto Bob têm a chave $k$, que podem usar para se comunicar de forma segura durante aquela sessão.
@@ -71,15 +71,20 @@ Depois que a comunicação entre Alice e Bob é concluída, ambos devem {\em des
 Isso é importante porque essa chave é válida apenas para aquela sessão específica de comunicação.
 Se Alice precisar se comunicar novamente com Bob no futuro, ela deverá solicitar ao administrador uma nova chave efêmera.
 
-Uma implementação bastante conhecida desse modelo de Centro de Distribuição de Chaves (KDC) é o {\em protocolo Kerberos}.
-Kerberos é amplamente utilizado em ambientes corporativos para gerenciar a autenticação e a segurança de comunicações, seguindo os princípios do KDC.
 
-No entanto, o modelo KDC tem algumas limitações importantes.
+Uma implementação bastante conhecida desse modelo de Centro de Distribuição de Chaves é o {\em protocolo Kerberos}.
+O Kerberos é amplamente utilizado em ambientes corporativos para gerenciar a autenticação e a segurança de comunicações, seguindo os princípios do CDC.
+No processo de autenticação, o servidor recebe as credenciais do usuário e, após verificá-las, emite um Ticket de Concessão de Tickets (TGT).
+O TGT, criptografado com a chave do CDC, contém informações como o ID do usuário, endereço de rede e uma chave de sessão.
+O usuário então utiliza esse TGT para solicitar um ticket de serviço ao CDC, enviando junto um authenticator, que inclui o ID do cliente e uma marca temporal para prevenir ataques de repetição.
+Após verificar essas informações, o CDC emite o ticket de serviço, que é criptografado com a chave secreta do servidor e inclui uma nova chave efêmera.
+
+O modelo CDC, no entanto, tem limitações importantes.
 Ele pressupõe a existência de um administrador confiável que gerencia todas as chaves permanentes dos usuários.
 Além disso, esse modelo possui um problema significativo conhecido como ponto único de falha.
 Isso significa que se o servidor do administrador falhar, todas as comunicações seguras entre os usuários ficarão interrompidas.
 
-Portanto, embora o modelo KDC possa funcionar bem em ambientes fechados com uma hierarquia bem definida, ele não é ideal.
+Portanto, embora o modelo CDC possa funcionar bem em ambientes fechados com uma hierarquia bem definida, ele não é ideal.
 Em ambientes abertos e distribuídos, onde não há uma autoridade central confiável ou onde a disponibilidade contínua do servidor não pode ser garantida, esse modelo é inadequado e pode levar a falhas significativas na segurança e na comunicação.
 
 \section{Protocolo de Diffie-Hellman}
@@ -90,13 +95,13 @@ Em um ambiente aberto, onde as partes não têm a possibilidade de encontrar um 
 No entanto, existe uma solução surpreendente:
 é possível que as partes troquem chaves diretamente entre si, mesmo utilizando um canal de comunicação inseguro.
 
-O método que apresentaremos nesta seção é conhecido como {\em protocolo de Diffie-Hellman}, que marca o início do paradigma revolucionário da {\em criptografia assimétrica}.
-Nos próximos capítulos, exploraremos esse conceito em mais detalhes \cite{Diffie76}.
+O método que apresentaremos nesta seção é conhecido como {\em protocolo de Diffie-Hellman}, que marca o início do paradigma revolucionário da {\em criptografia assimétrica} \cite{Diffie76}.
+Nos próximos capítulos, exploraremos esse conceito em mais detalhes.
 
 Informalmente, o protocolo de Diffie-Hellman funciona da seguinte maneira:
 Alice e Bob trocam entre si alguns dados públicos.
-A partir desses dados, ambos conseguem calcular um valor comum, que pode ser usado como entrada em uma função de derivação de chaves (KDF - Key Derivation Function) para gerar uma chave secreta compartilhada.
-O interessante é que, para um observador externo (que chamaremos de Eva), que só teve acesso aos dados públicos trocados, é impossível calcular esse valor comum e, consequentemente, a chave secreta.
+A partir desses dados, ambos conseguem calcular um valor comum, que pode ser usado como entrada em uma Função de Derivação de Chaves para gerar uma chave secreta compartilhada.
+O interessante é que, para um observador externo (a Eva), que só teve acesso aos dados públicos trocados, é impossível calcular esse valor comum e, consequentemente, a chave secreta.
 
 Para explicar o protocolo precisamos definir o que são grupos, geradores e grupos cíclicos e precisamos apresentar o {\em problema do logaritmo discreto} cuja dificuldade é condição necessária -- apesar de insuficiente -- para a segurança do protocolo.
 
@@ -112,19 +117,20 @@ Para que essa estrutura seja considerada um grupo, a operação deve seguir algu
 \item[] {\bf (fecho)} Se você pegar dois elementos de $G$ e usar a operação entre eles, o resultado também deve ser um elemento de $G$.
   Por exemplo, se $G$ for o conjunto dos números inteiros e a operação for a adição, então somar dois números inteiros sempre dará outro número inteiro.
 \item[] {\bf (identidade)} Dentro do conjunto $G$, deve existir um elemento especial que não muda o valor de outros elementos quando usado na operação.
-  Esse elemento é chamado de {\em identidade}.
+  Esse elemento é chamado de {\em identidade} ou {\em elemento neutro}.
   No caso da adição dos números inteiros, esse elemento é o zero, porque somar zero a qualquer número não altera o número.
   No caso da multiplicação o elemento neutro é o um.
 \item[] {\bf (inverso)} Para cada elemento em $G$, deve existir outro elemento em $G$ que, quando combinado com ele usando a operação, resulta na identidade.
   Por exemplo, para a adição, o inverso de um número é o seu oposto (como $3$ e $-3$), porque somá-los dá zero.
 \item[] {\bf (associatividade)} A forma como os elementos são agrupados na operação não deve alterar o resultado. Isso significa que, ao combinar três ou mais elementos, não importa se você combina os dois primeiros ou os dois últimos primeiro – o resultado será o mesmo.
-  Ou seja, $(a + b) + c = a + (b + c)$.
+  Ou seja, $(a \circ b) \circ c = a \circ (b \circ c)$.
 \end{itemize}
 
-Um grupo pode ser finito ou infinite dependendo se o conjunto $G$ tiver um número limitado de elementos ou não.
+Um grupo pode ser finito ou infinito dependendo se o conjunto $G$ tiver um número limitado de elementos ou não.
 Quando ele é finito, o número total de elementos em $G$ é chamado de {\em ordem} do grupo.
 
 Além disso, se a operação der o mesmo resultado independentemente da ordem em que você combina os elementos, o grupo é chamado de {\em abeliano} ou {\em comutativo}.
+Ou seja, $a \circ b = b \circ a$.
 
 O conjunto dos número inteiros com a operação de adição é um grupo abeliano.
 Já o conjunto dos números naturais não é porque nenhum número natural tem inverso aditivo.
@@ -157,7 +163,7 @@ Vamos apenas apresentar um grupo finito:
 \end{example}
 
 Para nossos propósitos, será útil definir como funciona a operação de exponenciação dentro de um grupo.
-Se temos um elemento $g$ em um grupo $G$, e um número inteiro positivo $m$, podemos definir a exponenciação de $g$ pelo número $m$ como a operação de combinar $g$ consigo mesmo $m$ vezes (vamos usar o símbolo $circ$ para representar uma operação genérica):
+Se temos um elemento $g$ em um grupo $G$, e um número inteiro positivo $m$, podemos definir a exponenciação de $g$ pelo número $m$ como a operação de combinar $g$ consigo mesmo $m$ vezes (vamos usar o símbolo $\circ$ para representar uma operação genérica):
 
 \begin{displaymath}
   g^m := \underbrace{g \circ \dots \circ g}_m
@@ -188,12 +194,12 @@ Se pegarmos um elemento específico $g$ de um grupo e começarmos a combiná-lo 
 Por exemplo, começamos com o próprio elemento, depois combinamos ele com ele mesmo, depois combinamos o resultado com ele novamente, e assim por diante.
 O conjunto de todos os elementos que conseguimos gerar dessa forma é o que chamamos de conjunto dos elementos gerados por aquele elemento específico.
 
-Escrevemos assim o conjunto gerado pelo elemnto $g$:
+Escrevemos assim o conjunto gerado pelo elemento $g$:
 \begin{displaymath}
   \langle g \rangle := \{g^0, g^1, \dots \}
 \end{displaymath}
 
-A {\em ordem} de um elemento é o número de vezes que precisamos combiná-lo consigo mesmo até que ele ``volte'' ao ponto de partida, ou seja, até que o resultado seja o elemento especial do grupo que não muda nada quando combinado com outros (como o 0 na adição ou 1 na multiplicação).
+A {\em ordem de um elemento} é o número de vezes que precisamos combiná-lo consigo mesmo até que ele ``volte'' ao ponto de partida, ou seja, até que o resultado seja o elemento especial do grupo que não muda nada quando combinado com outros (como o 0 na adição ou 1 na multiplicação).
 
 O teorema anterior nos diz que esse número (a ordem) é sempre menor ou igual ao número total de elementos do grupo.
 Isso significa que, em um grupo finito, o conjunto dos elementos gerados por qualquer elemento específico também será finito.
@@ -209,10 +215,10 @@ Ou seja, $log_g(h)$ é o número de vezes precisamos combinar o gerador $g$ cons
 \begin{example}
 Considere o grupo $\mathbb{Z}_7^\star$ com a operação de multiplicação:
 \begin{itemize}
-\item $\langle 2 \rangle = \{1, 2, 4\}$.
+\item[] $\langle 2 \rangle = \{1, 2, 4\}$.
   A ordem de $2$ é $3$ e, portanto, $2$ não é um gerador de $\mathbb{Z}_7^\star$.
   Além disso, neste grupo $log_2(1) = 0$, $log_2(2) = 1$ e $log_2(4) = 2$.
-\item $\langle 3 \rangle = \{1, 3, 2, 6, 4, 5\}$.
+\item[] $\langle 3 \rangle = \{1, 3, 2, 6, 4, 5\}$.
   A ordem de $3$ é $6$, portanto $3$ é um gerador de $\mathbb{Z}_7^\star$ e o grupo é cíclico.
 Além disso, neste grupo $log_3(1) = 0$, $log_3(2) = 2$ e $log_3(3) = 1$, $log_3(4)= 4$, $log_3(5) = 5$ e $log_3(6) = 3$.
 \end{itemize}
@@ -221,7 +227,7 @@ Além disso, neste grupo $log_3(1) = 0$, $log_3(2) = 2$ e $log_3(3) = 1$, $log_3
 O {\em protocolo de Diffie-Hellman} permite que duas pessoas, Alice e Bob, compartilhem uma chave secreta para comunicação, mesmo que estejam usando um canal público.
 Funciona assim:
 \begin{enumerate}
-\item  Alice começa criando um grupo cíclico e escolhendo um gerador desse grupo.
+\item  Alice começa criando um grupo cíclico e escolhendo um gerador $g$ desse grupo.
   Esse gerador é usado para criar outros elementos no grupo.
 \item Alice então escolhe um número secreto, que chamamos de $x$, e usa esse número para calcular um valor $h_A$, combinando o gerador consigo mesmo $x$ vezes.
   Ou seja, $h_A = g^x$.
@@ -233,7 +239,7 @@ Funciona assim:
   (As vezes $h_B$ é chamado de chave pública de bob e $y$ sua chave privada).
 \item Agora, Alice e Bob podem calcular uma chave secreta que ambos compartilham.
   Alice usa o valor $h_B$ que recebeu de Bob, e eleva-o a $x$ que ela escolheu, para obter a chave $h_B^x = (g^y)^x = g^{xy}$.
-  Bob faz a mesma coisa, eleva $h_A$ que recebeu de Alice, e elevá-o ao seu número secreto $y$ para obter $h_A^y = (g^x)^y = g^{xy}$
+  Bob faz a mesma coisa, pega $h_A$, que recebeu de Alice, e elevá-o ao seu número secreto $y$ para obter $h_A^y = (g^x)^y = g^{xy}$
 \end{enumerate}
 
 No final do processo, tanto Alice quanto Bob conseguem calcular o valor $g^{xy}$ que pode ser usado para gerar uma chave (usado como material para a chave).
@@ -272,8 +278,8 @@ Em vez de calcular $g^m$ multiplicando $g$ repetidamente, podemos dividir o prob
 \begin{displaymath}
   g^m = \left\{
     \begin{array}{lcl}
-      \text{Se } m \text{ é par:} & g^{m/2} \circ g^{m/2} \\
-      \text{Se } m \text{ é ímpar:} & g^{\lfloor m/2 \rfloor} \circ g^{\lfloor m/2 \rfloor} \circ g \\
+      g^{m/2} \circ g^{m/2} & \text{se } m \text{ é par} \\
+      g^{\lfloor m/2 \rfloor} \circ g^{\lfloor m/2 \rfloor} \circ g & \text{se } m \text{ é ímpar}\\
     \end{array}
   \right.
 \end{displaymath}
@@ -281,29 +287,15 @@ Em vez de calcular $g^m$ multiplicando $g$ repetidamente, podemos dividir o prob
 Em vez de precisar de $x$ passos, agora precisamos de apenas $\log_2(x)$ passos, o que é muito menor.
 Assim, o tempo necessário para calcular $g^m$ cresce linearmente com o tamanho do número $m$, o que torna esse método extremamente eficiente, mesmo para números grandes.
 
-Por exemplo, se quisermos calcular $2^{10}$ usando a exponenciação rápida, o processo seria o seguinte:
-
-\begin{displaymath}
-  \begin{array}{ll}
-    \text{FastExp}(2, 10) = x \cdot x = 2^{10} & x = \text{FastExp}(2, 5) = 2^5 \\
-    \text{FastExp}(2, 5)  = x \cdot x \cdot 2 = 2^5 & x = \text{FastExp}(2, 2) = 2^2\\
-    \text{FastExp}(2, 2)  = x \cdot x = 2^2 & x = \text{FastExp}(2, 1) = 2\\
-    \text{FastExp}(2, 1)  = x \cdot x \cdot 2 = 2 & x = \text{FastExp}(2, 0) = 1\\
-    \text{FastExp}(2, 0)  = 1 \\
-  \end{array}
-\end{displaymath}
-
-Com esse método, calculamos $2^{10}$ em muito menos passos do que se usássemos a abordagem ingênua.
-
 A dificuldade em resolver o problema do logaritmo discreto é uma condição necessária, mas não suficiente por si só, para garantir a segurança do protocolo de Diffie-Hellman.
 Existem certas estruturas matemáticas que são bem adequadas para criar grupos cíclicos onde o problema do logaritmo discreto é considerado difícil de resolver.
-Duas das mais utilizadas na prática são os {\em resíduos quadráticos em grupos de tamanho primo} e as {\em curvas elípticas} (discutidas no Apêndice \ref{cha:ciclicos}).
+Duas das mais utilizadas na prática são os {\em resíduos quadráticos em grupos de tamanho primo} e as {\em curvas elípticas}.
 
 Se o problema do logaritmo discreto fosse fácil, uma espiã como Eva poderia encontrar os valores secretos $x$ e $y$ a partir de $g^x$ e $g^y$, descobrindo assim o valor de $g^{xy}$.
 No entanto, em um sistema seguro, o melhor que Eva poderia fazer seria tentar todos os possíveis valores de $x$ ou $y$ até encontrar o correto, o que é impraticável se o grupo for grande o suficiente.
 Portanto, ao escolher grupos de ordem suficientemente grande, essa tarefa se torna computacionalmente inviável.
 
-Uma vez que Alice e Bob possuem o mesmo valor secreto $g^{xy}$, eles podem usá-lo para alimentar uma função de derivação de chave (KDF), gerando assim as chaves necessárias para um sistema de criptografia simétrico.
+Uma vez que Alice e Bob possuem o mesmo valor secreto $g^{xy}$, eles podem usá-lo para alimentar uma Função de Derivação de Chave, gerando assim as chaves necessárias para um sistema de criptografia simétrico.
 
 Na teoria, assumimos que o grupo e o gerador são criados cada vez que Alice e Bob decidem se comunicar.
 Na prática, porém, é mais comum que esses parâmetros sejam definidos pelo protocolo e reutilizados em todas as comunicações.
@@ -314,12 +306,8 @@ Se o sistema for seguro, porém, o melhor que Eva pode fazer é tentar todos os 
 Escolhendo grupos de ordem suficientemente grande, essa tarefa é computacionalmente inviável.
 Uma vez que as partes possuem o mesmo valor secreto, elas podem utilizá-lo para alimentar um KDF e gerar chaves para um sistema de criptografia simétrico.
 
-No modelo, assumimos que o grupo e o gerador são criados sempre que as partes decidem se comunicar.
-Na prática o mais comum é que esses parâmetros sejam definidos pelo protocolo e reutilizados em todas as comunicações.
-Isso não deve afetar de nenhuma forma na segurança do sistema.
-
-Embora o Diffie-Hellman permita a criação de uma chave secreta sem a necessidade de uma reunião física ou uma autoridade central confiável, ele não garante a autenticidade das partes envolvidas na comunicação.
-Isso significa que o protocolo é vulnerável a um tipo de ataque conhecido como ``Man in the Middle'' (MitM).
+Embora o protocolo de Diffie-Hellman permita a criação de uma chave secreta sem a necessidade de uma reunião física ou uma autoridade central confiável, ele não garante a autenticidade das partes envolvidas na comunicação.
+Isso significa que o protocolo é vulnerável a um tipo de ataque conhecido como ``Man in the Middle''.
 Voltaremos a isso no Capítlo \ref{cha:assinaturas-digitais}.
 
 \section{Exercícios}
