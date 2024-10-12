@@ -538,7 +538,7 @@ As transformações em cada rodada são as seguintes (conforme ilustrado na Figu
 
 \item {\em SubBytes:}
   No segundo passo, cada byte do estado é substituído por um novo byte utilizando uma tabela de substituição chamada {\em SBox}, que é bijetora, garantindo que cada entrada tenha uma saída única e distinta.
-  Diferente do DES, onde as SBoxes não possuem uma explicação teórica conhecida, a SBox do AES é baseada em operações sobre corpos finitos de Galois.
+  Diferente do DES, onde as SBoxes não possuem uma explicação teórica conhecida, a SBox do AES é baseada em operações sobre corpos finitos de Galois\footnote{Um exemplo de como computar o SBox bem como a tabela précomputada em hexadecimal estão no Apêndice \ref{cha:corpos-finitos}}.
   Isso assegura que a tabela seja inversível, ou seja, a transformação pode ser revertida.
   Embora essa tabela possa ser gerada dinamicamente, ela é tipicamente preprocessada para otimizar a eficiência durante as operações de criptografia.
   Este passo corresponde a fase de confusão.
@@ -550,7 +550,7 @@ As transformações em cada rodada são as seguintes (conforme ilustrado na Figu
 
 \item {\em MixColumns:}
   Por fim, a etapa {\em MixColumns} trata as quatro colunas do estado como vetores e as multiplica por uma matriz fixa específica.
-  Essa matriz também é construída a partir de operações sobre corpos de Galois, o que garante as propriedades matemáticas necessárias para a segurança e inversibilidade da operação.
+  Essa matriz também é construída a partir de operações sobre corpos de Galois, o que garante as propriedades matemáticas necessárias para a segurança e inversibilidade da operação\footnote{Ver Apêndice \ref{cha:corpos-finitos}.}.
   Essa multiplicação assegura que qualquer alteração em um byte de entrada afete vários bytes de saída, promovendo o efeito de difusão, onde pequenas mudanças nos dados de entrada se propagam amplamente pelo bloco criptografado.
   
 \end{enumerate}
