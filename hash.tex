@@ -368,15 +368,15 @@ Vamos ver como ele funciona:
 {\em Passo 1: Extração}
 
 Na fase de extração, o HKDF usa o HMAC para processar o material de entrada (key material $\delta$) junto com um valor opcional chamado {\em salt} ($r$).
-O resultado dessa operação é uma chave pseudoaleatória, chamada de {\em Pseudo-Random Key} (PRK):
+O resultado dessa operação é uma chave pseudoaleatória (CPA):
 
 \begin{displaymath}
-\text{PRK} := \text{HMAC}(r, \delta)
+\text{CPA} := \text{HMAC}(r, \delta)
 \end{displaymath}
 
 {\em Passo 2: Expansão}
 
-Na fase de expansão, o HKDF usa a PRK gerada na fase de extração para produzir a chave final de tamanho $l$ desejado.
+Na fase de expansão, o HKDF usa a CPA gerada na fase de extração para produzir a chave final de tamanho $l$ desejado.
 Isso é feito em várias etapas, concatenando blocos de saída $K(1), K(2), \dots$ até que o tamanho total $l$ seja atingido:
 
 \begin{displaymath}
@@ -403,11 +403,11 @@ Aqui está como cada bloco $K(i)$ é gerado:
 
 A concatenação de todos os blocos $K(1), K(2), \dots$ forma a chave final gerada pelo HKDF.
 
-O HKDF garante que a chave derivada seja segura, mesmo quando o \textit{key material} original não é ideal, e é altamente flexível, permitindo a derivação de chaves de qualquer tamanho desejado.
+O HKDF garante que a chave derivada seja segura, mesmo quando o \textit{material da chave} original não é ideal, e é altamente flexível, permitindo a derivação de chaves de qualquer tamanho desejado.
 Além disso, o uso do HMAC como base garante que o HKDF herde as propriedades de segurança bem estabelecidas dessa construção.
 
 
-Quando o \textit{key material} $\delta$ é uma senha fornecida por um usuário, enfrentamos um desafio adicional.
+Quando o \textit{material da chave} $\delta$ é uma senha fornecida por um usuário, enfrentamos um desafio adicional.
 Normalmente, as senhas têm uma {\em entropia baixa}, ou seja, elas não são suficientemente aleatórias.
 Isso as torna vulneráveis a ataques conhecidos como {\em ataques de dicionário}, onde um adversário tenta adivinhar a senha testando várias combinações comuns.
 
