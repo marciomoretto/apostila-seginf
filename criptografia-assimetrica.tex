@@ -6,7 +6,7 @@ Essa ideia inovadora foi apresentada pela primeira vez em um artigo importante e
 
 Nesse mesmo artigo, os autores sugeriram um conceito revolucionário: a {\em criptografia assimétrica}.
 Para entender como isso funciona, imagine um cadeado.
-Qualquer pessoa pode fechar o cadeado, mas que só o dono da chave consegue abri-lo.
+Qualquer pessoa pode fechar o cadeado, mas só o dono da chave consegue abri-lo.
 A criptografia assimétrica é semelhante.
 Cada pessoa tem duas chaves: uma chave pública, que é como o cadeado, e uma chave secreta, que é a única capaz de abri-lo.
 
@@ -44,13 +44,13 @@ O processo é ilustrado no diagrama a seguir:
 Um \textit{sistema de criptografia assimétrico} é composto por três algoritmos: $Gen$, $E$ e $D$.
 
 \begin{itemize}
-\item $Gen$ é o algoritmo responsável por gerar as chaves.
+\item[] $Gen$ é o algoritmo responsável por gerar as chaves.
   Ele cria um par de chaves: uma chave secreta, que chamamos de $sk$, e uma chave pública, que chamamos de $pk$.
-\item $E$ é o algoritmo de criptografia, que usa a chave pública $pk$ para transformar uma mensagem, $m$, em uma mensagem cifrada.
-\item $D$ é o algoritmo de descriptografia, que usa a chave secreta $sk$ para transformar a mensagem cifrada de volta na mensagem original.
+\item[] $E$ é o algoritmo de criptografia, que usa a chave pública $pk$ para transformar uma mensagem, $m$, em uma mensagem cifrada.
+\item[] $D$ é o algoritmo de descriptografia, que usa a chave secreta $sk$ para transformar a mensagem cifrada de volta na mensagem original.
 \end{itemize}
 
-Para garantir que o sistema seja {\em correto}, é preciso que, ao descriptografar com a chave secreta uma mensagem que foi criptografada com a chave pública, o resultado seja exatamente a mensagem original:
+Para garantir que o sistema seja {\em correto}, é preciso que, ao descriptografar com a chave secreta uma mensagem que foi criptografada com a chave pública correspondente, o resultado seja exatamente a mensagem original:
 
 \begin{displaymath}
   D(sk, E(pk, m)) = m
@@ -58,11 +58,11 @@ Para garantir que o sistema seja {\em correto}, é preciso que, ao descriptograf
 
 Isso significa que, se você criptografar uma mensagem com a chave pública de alguém e depois descriptografá-la com a chave secreta dessa pessoa, você recupera a mensagem original.
 
-Um sistema de criptografia assimétrico é considerado \textit{seguro} se for inviável para um adversário, que tenha acesso à chave pública, descobrir qualquer informação útil sobre duas mensagens diferentes a partir da versão criptografada de uma delas.
-Ou seja, mesmo que a chave pública esteja disponível para todos, ela não deve permitir que alguém decifre ou entenda a mensagem sem a chave secreta correspondente.
+Um sistema de criptografia assimétrico é considerado \textit{seguro} se for inviável para um adversário, que tenha acesso à chave pública, descobrir qualquer informação útil que ajude a distinguir qual entre duas mensagens diferentes foi criptografada.
+Isso deve ser verdade mesmo que a chave pública esteja disponível para todos.
 
-Em termos técnicos, ter a chave pública é semelhante a ter acesso a um oráculo, um recurso que ajuda a criptografar mensagens, mas não ajuda a decifrá-las.
-Em outras palavras, a posse da chave pública dá ao adversário uma capacidade equivalente ao que assumimos em um ataque do tipo CPA.
+Ou seja, possuir a chave pública é semelhante a ter acesso a um oráculo, um recurso que ajuda a criptografar mensagens.
+Em outras palavras, a posse da chave pública dá ao adversário uma capacidade equivalente ao que assumimos em um ataque do tipo ETP.
 
 
 
@@ -70,21 +70,21 @@ Em outras palavras, a posse da chave pública dá ao adversário uma capacidade 
 \label{sec:el-gammal}
 
 O primeiro sistema de criptografia assimétrica foi descoberto por Rivest, Shamir e Adleman, um ano após o trabalho de Diffie e Hellman.
-Antes de introduzirmos essa solução, vamos apresentar um esquema que tem muitas semelhanças com o protocolo discutido no capítulo anterior.
-Apesar de tantas semelhanças, este sistema só foi formalizado em 1985 por Taher El Gamal \cite{ElGamal85}.
+Antes de introduzirmos essa solução, vamos apresentar um esquema que possui muitas semelhanças com o protocolo discutido no capítulo anterior.
+Apesar dessas semelhanças, esse sistema só foi formalizado em 1985 por Taher ElGamal, durante seu doutorado, sob a orientação do próprio Martin Hellman \cite{ElGamal85}.
 
 Esse sistema de criptografia segue o modelo de criptografia assimétrica, que utiliza dois tipos de chaves: uma pública e uma privada.
 Ele é composto por três algoritmos:
 
 \begin{itemize}
-\item $Gen$ cria um grupo cíclico de tamanho $n$ com um gerador $g$.
-  A chave secreta $sk$ é um número $x$ menor do que $n$.
+\item[] $Gen$ cria um grupo cíclico com um gerador $g$.
+  A chave secreta $sk$ é um número $x$.
   A chave pública é $h = g^x$.
-\item $E$ sorteia um número $y$ menor do que $n$ e multiplica a mensagem $m$ por $h^y$ e junta o valor $g^y$.
+\item[] $E$ sorteia um número $y$ e multiplica a mensagem $m$ por $h^y$ e junta o valor $g^y$.
   \begin{displaymath}
     E(pk, m) = h^y \cdot m, g^y
   \end{displaymath}
-\item $D$ pega a primeira parte da cifra ($h^y \cdot m$) e divide pela segunda parte ($g^y$) elevado a $x$.
+\item[] $D$ pega a primeira parte da cifra ($h^y \cdot m$) e divide pela segunda parte ($g^y$) elevado a $x$.
   \begin{displaymath}
     (h^y \cdot m) \cdot (g^{xy})^{-1}
   \end{displaymath}
@@ -94,11 +94,11 @@ Não é difícil verficar que este sistema é correto.
 Basta lembrar que $h = g^x$, substituir e desenvolver:
 
 \begin{eqnarray*}
-  (h^y \cdot m) \cdot (g^{xy})^{-1}) & = & (g^{xy} \cdot m) \cdot (g^{xy})^{-1})\\
-                                   & = & m
+  (h^y \cdot m) \cdot (g^{xy})^{-1} & = & (g^{xy} \cdot m) \cdot (g^{xy})^{-1}\\
+                                  & = & m
 \end{eqnarray*}
-  
-O sistema de El Gamal é seguro se, no grupo escolhido, o problema do logaritmo discreto for difícil de resolver.
+
+Assim como no protocolo de Diffie-Hellman, a segurança do sistema de El Gammal depende da dificuldade do problema do logaritmo discreto para o grupo escolhido.
 
 \section{RSA}
 \label{sec:rsa}
@@ -116,7 +116,7 @@ Isso garante que toda operação permanece dentro de $\mathbb{Z}_n$.
 \label{prop:inverso}
 Um número $a$ possui inverso multiplicativo em $\mathbb{Z}_n$ se e somente se $a$ e $n$ são primos entre si, ou seja $mdc(a,n) = 1$.
 \end{proposition}
-
+\begin{proof}
 
 Se $a$ e $n$ são primos entre si, então é possível mostrar que existem números inteiros $x$ e $y$ tais que $ax + ny = 1$ (isso é conhecido como a identidade de Bezout).
 Nesse caso, $x \times a = 1$ no sistema módulo $n$, ou seja, $x$ é o inverso de $a$.
@@ -126,9 +126,11 @@ Agora, imagine que $a$ tivesse um inverso, ou seja, um valor $x$ tal que $ax$ é
 Isso implicaria que poderíamos escrever 1 como $ax + ny$ para algum inteiro $y$.
 No entanto, como $b$ divide tanto $a$ quanto $n$, $b$ também teria que dividir 1.
 Mas isso é impossível, porque o único divisor de 1 é ele mesmo, e $b > 1$. Concluímos, então, que esse $x$ não pode existir e, portanto, $a$ não tem inverso em $\mathbb{Z}_n$.
+\end{proof}
+
 
 \begin{proposition}[Identidade de Bezout]
-  Para quaisquer dois números inteiros $a$ e $b$ sempre existem outros dois números inteiros $x$ e $y$ tais que $Xa + Yb = mdc(a,b)$.
+  Para quaisquer dois números inteiros $a$ e $b$ sempre existem outros dois números inteiros $x$ e $y$ tais que $xa + yb = mdc(a,b)$.
 \end{proposition}
 \begin{proof}
 Considere o conjunto formado por todos os números que podem ser escritos na forma $x'a + y'b$ para $x'$ e $y'$ inteiros.
@@ -162,7 +164,11 @@ Concluímos, então, que $d$ é o maior dos divisores de $a$ e $b$, ou seja, $d 
 
 
 Para encontrar os coeficientes $x$ e $y$ que satisfazem a Identidade de Bezout, ou seja, $xa + yb = \text{mdc}(a, b)$, podemos utilizar uma versão estendida do algoritmo de Euclides.
-Este algoritmo não apenas calcula o {\em máximo divisor comum} (mdc) de dois números $a$ e $b$, mas também determina os valores de $x$ e $y$ que, quando combinados com $a$ e $b$, resultam no mdc.
+O Algoritmo de Euclides é um dos algoritmos mais antigos e conhecidos da matemática, descrito pelo matemático grego Euclides por volta de 300 a.C. no seu livro ``Elementos''.
+Sua principal função é calcular o máximo divisor comum (mdc) entre dois números inteiros $a$ e $b$.
+Euclides notou que o mdc de dois números pode ser encontrado repetindo divisões sucessivas, substituindo o número maior pelo menor e o menor pelo resto da divisão, até que o resto seja zero.
+Quando isso ocorre, o divisor no passo anterior será o mdc.
+A versão extendida deste algoritmo não apenas calcula o mdc de dois números $a$ e $b$, mas também determina os valores de $x$ e $y$ tais que $xa + yb = mdc(a,b)$.
 
 \begin{codebox}
 \Procname{$\proc{AEE}(a, b)$}
@@ -203,7 +209,7 @@ Sejam $p$ e $q$ números primos:
   \phi(pq) = (p - 1)(q - 1)
 \end{displaymath}
 \end{proposition}
-
+\begin{proof}
 Para entender por que essa fórmula funciona, vamos considerar o seguinte:
 
 Se pegarmos um número $a$ dentro do conjunto $\mathbb{Z}_n$, e $a$ não tem $p$ ou $q$ como divisor, então $a$ será ``primo'' em relação a $n$.
@@ -212,10 +218,11 @@ Mas, se $a$ for divisível por $p$ ou $q$, então $a$ não será ``primo'' em re
 Os números em $\mathbb{Z}_n$ que são divisíveis por $p$ são: $p, 2p, \dots, (q-1) \cdot p$.
 Os números que são divisíveis por $q$ são: $q, 2q, \dots, (p-1) \cdot q$.
 
-Para encontrar $\phi(n)$, subtraímos do total $(n-1)$ os números divisíveis por $p$ e os divisíveis por $q$.
+Para encontrar $\phi(n)$, subtraímos do total dos elementos de $\mathbb{Z}_n$ o $0$, e os números divisíveis por $p$ e os divisíveis por $q$.
 O resultado nos dá a quantidade de números em $\mathbb{Z}_n$ que não são divisíveis por $p$ ou $q$, que é exatamente $(p-1)(q-1)$.
 
 Portanto, a fórmula $\phi(pq) = (p-1)(q-1)$ nos dá o número de elementos em $\mathbb{Z}_n$ que possuem um inverso multiplicativo, ou seja, que são ``primos'' em relação a $n$.
+\end{proof}
 
 A geração de chaves $Gen$ no sistema RSA segue os seguintes passos:
 
@@ -223,12 +230,12 @@ A geração de chaves $Gen$ no sistema RSA segue os seguintes passos:
 \item Escolhemos aleatoriamente dois números primos, $p$ e $q$, ambos com o número de bits predeterminado e suficientemente grande.
     
 \item Em seguida, calculamos $N$, que é o produto dos dois primos $p \times q$.
-\item Calculamos $\phi(N) = (p - 1) \times (q - 1)$. 
+\item Calculamos $\phi(N) = (p - 1)(q - 1)$. 
     
 \item Agora, escolhemos um número $e$ que seja maior que 1 e que não tenha divisores comuns com $\phi(N)$, exceto o número 1.
   Isso garante que $e$ e $\phi(N)$ sejam ``primos entre si''.
     
-\item Depois, calculamos $d$, que é o inverso de $e$ em relação a $\phi(N)$.
+\item Depois, calculamos $d$, que é o inverso de $e$ em relação a $\phi(N)$ usando o AEE.
 \item $N$ é a chave pública e $d$ é a chave privada.
 \end{enumerate}
 
@@ -243,8 +250,9 @@ Como vimos, o cálculo de $d$ é feito usando o Algoritmo Estendido de Euclides.
 Em sua versão crua, o sistema de RSA é definido pela seguinte tripla de algoritmos:
 
 \begin{itemize}
-\item Para criptografar uma mensagem $m$ elevamos a $e$ e calculamos o móulo po $N$. 
-\item Para descriptografar elevamos a cifra $c$ por $d$ e calculamos o módulo por $N$.
+\item $Gen$ gera o par de chaves $\langle e, N \rangle$ e $\langle d, N \rangle$ como já discutimos.
+\item $E$ criptografa uma mensagem $m$ elevando-a a $e$ e calculando o móulo po $N$. 
+\item $D$ descriptografa a cifra $c$ elevando-a a $d$ e calculando o módulo por $N$.
 \end{itemize}
 
 Como $\mathbb{Z}_n^\star$ com a operação de multiplicação forma um grupo, segue do Teorema \ref{theo:gen-euler} que para qualquer $a$ temos que:
@@ -308,36 +316,36 @@ Os sistemas de criptografia assimétricos que vimos até agora são, pelo menos,
 Além disso, é difícil garantir a segurança desses sistemas para mensagens com qualquer distribuição de probabilidades.
 
 Por esses motivos, o modelo mais popular de criptografia assimétrica segue uma abordagem híbrida, dividida em duas fases:
-uma fase de encapsulamento de chave (KEM) e, em seguida, uma fase de encapsulamento dos dados (DEM).
+uma fase de encapsulamento de chave e, em seguida, uma fase de encapsulamento dos dados.
 
-Um {\em mencanismo de encapsulamento de chave} (KEM) é um sistema formado por três algoritmos:
+Um {\em mencanismo de encapsulamento de chave} (MEC) é um sistema formado por três algoritmos:
 \begin{itemize}
-\item $Gen$ gera um par de chaves $pk$ é uma chave pública e $sk$ uma chave secreta
-\item $Encaps$ utiliza chave pública $pk$ para produzir uma cifra $c$ e uma chave $k$
-\item $Decaps$ utiliza chave secreta $sk$ e a cifra $c$ para recupera a chave $k$.
+\item[] $Gen$ gera um par de chaves $pk$ é uma chave pública e $sk$ uma chave secreta
+\item[] $Encaps$ utiliza chave pública $pk$ para produzir uma cifra $c$ e uma chave $k$
+\item[] $Decaps$ utiliza chave secreta $sk$ e a cifra $c$ para recupera a chave $k$.
 \end{itemize}
 
-Um sistema KEM é correto se o processo de decapsulamento sempre recuperar a mesma chave que foi criada na fase de encapsulamento.
+Um sistema MEC é correto se o processo de decapsulamento sempre recuperar a mesma chave que foi criada na fase de encapsulamento.
 
-Um sistema KEM é {\em seguro contra CPA} se um adversário polinomial não é capaz de distinguir com probabilidade considerável a chave produzida por $Encaps$ de uma chave de mesmo tamanho escolhida aleatoriamente.
+Um sistema MEC é {\em seguro contra ETP} se um adversário polinomial não é capaz de distinguir com probabilidade considerável a chave produzida por $Encaps$ de uma chave de mesmo tamanho escolhida aleatoriamente.
 
-Se $\Pi_K = \langle Gen_K, Encaps, Decaps \rangle$ é um KEM seguro contra CPA, e $\Pi' = \langle Gen', E', D' \rangle$ é um sistema de criptografia simétrica seguro contra ataques ``ciphertext only'', então o seguinte sistema, chamado de {\em híbrido}, é seguro contra CPA:
+Se $\Pi_K = \langle Gen_K, Encaps, Decaps \rangle$ é um MEC seguro contra ETP, e $\Pi' = \langle Gen', E', D' \rangle$ é um sistema de criptografia simétrica seguro contra ataques ``ciphertext only'', então o seguinte sistema, chamado de {\em híbrido}, é seguro contra ETP:
 
 \begin{itemize}
-\item $Gen$ gera um par de chaves $sk$ e $pk$
-\item $E$ utiliza $pk$ para gerar duas cifras $c_k$ e $c$ da seguinte forma:
+\item[] $Gen$ gera um par de chaves $sk$ e $pk$
+\item[] $E$ utiliza $pk$ para gerar duas cifras $c_k$ e $c$ da seguinte forma:
   \begin{itemize}
   \item $Encaps$ utiliza $pk$ para gerar a cifra $c_k$ e a chave $k$
   \item $E'$ utiliza $k$ para criptografar a mensagem $m$ e gerar a cifra $c$
   \end{itemize}
-\item $D$ utliza $sk$ para recuperar a mensagem da seguinte forma:
+\item[] $D$ utliza $sk$ para recuperar a mensagem da seguinte forma:
   \begin{itemize}
   \item $Decaps$ utiliza a chave secreta $sk$ para descriptografar $c_k$ e recuperar a chave $k$
   \item $D'$ utiliza a chave $k$ para descriptografar a cifra $c$ e recuperar a mensagem $m$
   \end{itemize}
 \end{itemize}
 
-Uma forma natural de produzir um KEM é produzir uma chave $k$ e usar um sistema de criptografia assimétrica para criptografar a chave.
+Uma forma natural de produzir um MEC é produzir uma chave $k$ e usar um sistema de criptografia assimétrica para criptografar a chave.
 Esse esquema é seguro desde que o sistema de ciptografia assimestrica seja seguro, mas existem sistemas mais eficientes em determinados casos.
 Não trataremos desses sistemas neste livro, porém.
 
