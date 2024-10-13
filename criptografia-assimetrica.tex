@@ -250,9 +250,15 @@ Como vimos, o cálculo de $d$ é feito usando o Algoritmo Estendido de Euclides.
 Em sua versão crua, o sistema de RSA é definido pela seguinte tripla de algoritmos:
 
 \begin{itemize}
-\item $Gen$ gera o par de chaves $\langle e, N \rangle$ e $\langle d, N \rangle$ como já discutimos.
-\item $E$ criptografa uma mensagem $m$ elevando-a a $e$ e calculando o móulo po $N$. 
+\item $Gen$ gera um par de chaves, pública ($e, N$) e privada ($d$).
+\item $E$ criptografa uma mensagem $m$ elevando-a a $e$ e calculando o móulo po $N$.
+  \begin{displaymath}
+    m^e\ mod\ N
+  \end{displaymath}
 \item $D$ descriptografa a cifra $c$ elevando-a a $d$ e calculando o módulo por $N$.
+  \begin{displaymath}
+    c^d\ mod\ N
+  \end{displaymath}
 \end{itemize}
 
 Como $\mathbb{Z}_n^\star$ com a operação de multiplicação forma um grupo, segue do Teorema \ref{theo:gen-euler} que para qualquer $a$ temos que:

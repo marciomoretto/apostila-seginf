@@ -1,4 +1,4 @@
-\chapter{Assinaturas Digitais e PKI}
+\chapter{Assinaturas Digitais e Protocolos}
 \label{cha:assinaturas-digitais}
 
 No capítulo anterior, vimos que é possível construir um sistema de criptografia onde as partes não precisam trocar um segredo antecipadamente.
@@ -44,7 +44,7 @@ Isso é essencial porque no meio digital é trivial copiar um arquivo.
 
 Um sistema de assinatura digital é {\em correto} se, dado um par de chaves $pk, sk$, uma assinatura $t$ para uma mensagem produzida pela chave $sk$ pode ser verificada por $pk$.
 
-Um sistema de assinatura é {\em seguro contra falsificação} se qualquer adversário eficiente, mesmo com acesso a um oráculo que lhe entregue assinaturas para mensagens diferentes de $m$, não for capaz de produzir uma assinatura válida para $m$ com probabilidade considerável.
+Um sistema de assinatura é {\em seguro contra falsificação} se qualquer adversário eficiente, mesmo com acesso a um oráculo que lhe entregue assinaturas para mensagens diferentes de $m$, não for capaz de produzir uma assinatura válida para uma nova mensagem $m$ com probabilidade considerável.
 
 Da mesma forma que os sistemas de criptografia assimétrica, produzir uma assinatura digital para uma mensagem muito grande pode ser um processo lento.
 Uma técnica usada na prática para mitigar este problema é assinar não a mensagem $m$ em si, mas um hash da mensagem $H(m)$.
@@ -60,7 +60,7 @@ Esse esquema não é seguro até aplicarmos o paradigma {\em hash-and-sign}.
 O esquema todo é formado por três algoritmos:
 
 \begin{itemize}
-\item $Gen$: gera um valor $N$ conhecido por ambas as partes e um par de chaves $sk = d$ e $pk = e$ como vimos no capítulo anterior.
+\item $Gen$: gera um par de chaves $sk = d$ e $pk = e, N$ como vimos no capítulo anterior.
 \item $Sign$: calcula o hash de $m$ e eleva esse valor por $d$ módulo $N$ ($t = H(m)^d\ mod\ N$).
 \item $Ver$: eleva $t$ a $e$ e verifica se o resultado é equivalente a $H(m)\ mod\ N$ 
 \end{itemize}

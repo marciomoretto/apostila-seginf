@@ -451,14 +451,29 @@ Portanto, os primeiros bits da sequência gerada seriam: {\tt 1}, {\tt 0}, {\tt 
 
 \end{example}
 
-Um RDRL com $n$ registradores é capaz de gerar no máximo $2^n$ bits antes de começar a repetir sua sequência.
-Isso ocorre porque o número de estados possíveis de um vetor de registradores com $n$ bits é $2^n$.
-Eventualmente, o RDRL deve retornar a um estado anterior, iniciando assim um ciclo.
 
-O tamanho do ciclo de um RDRL refere-se à quantidade de bits gerados antes que a sequência comece a se repetir.
+Um RDRL com $n$ registradores é capaz de gerar no máximo $2^n - 1$ bits antes de começar a repetir sua sequência.
+Isso ocorre porque o número de estados possíveis para um vetor de registradores com $n$ bits é $2^n$, e o estado em que todos os bits são 0 não é válido-- se ele ocorresse, o RDRL continuaria gerando apenas 0s indefinidamente.
+Assim, depois de no máximo $2^n - 1$ passos, o RDRL retornará a um estado anterior, iniciando assim um ciclo.
+
+O tamanho do ciclo de um RDRL refere-se ao número de bits gerados antes que a sequência comece a se repetir.
 Em outras palavras, é o período da sequência pseudo-aleatória produzida pelo RDRL.
-Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
-Um ciclo longo é o que garante que não repetiremos a mesma sequência de bits para criptografar duas mensagens distintas.
+Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n - 1$, o que significa que ele pode gerar uma longa sequência de bits únicos antes de repetir.
+
+Como discutido anteriormente, o comportamento de um RDRL é definido por um vetor de bits que determina o coeficiente de realimentação.
+Dado um RDRL com $n$ registradores, certos vetores de feedback produzem ciclos ideais, enquanto outros não.
+Os vetores que geram um ciclo ideal representam polinômios irredutíveis de grau $n$.
+Um polinômio irredutível é aquele que não pode ser fatorado em polinômios de grau menor -- eles funcionam como números primos no universo dos polinômios.
+
+Por exemplo, o polinômio $x^3 + x^2 + x + 1$ (representado pelo vetor binário $1111_2$) pode ser fatorado como $(x^2 + 1)(x + 1)$ no caso de coeficientes binários, que é o nosso contexto.
+Por outro lado, o polinômio $x^3 + x + 1$ (representado pelo vetor binário \(1011_2\)) é irredutível.
+Portanto, para um registrador de 4 bits, o vetor binário $1011_2$ gera um ciclo ideal de tamanho $2^4 - 1 = 15$, enquanto o vetor $1111_2$ não produz um ciclo ideal.
+Contudo, não demonstraremos formalmente este resultado. 
+
+A linearidade dos RDRLs é um problema, pois torna previsível antecipar os próximos bits gerados com base nos anteriores.
+Essa previsibilidade compromete a segurança de sistemas de cifra de fluxo.
+
+Na próxima seção, veremos como combinar múltiplos RDRLs de forma a quebrar essa linearidade, produzindo assim um GNP mais robusto e seguro, adequado para aplicações criptográficas.
 
 %O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
 %Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
@@ -617,12 +632,132 @@ Os passos seguintes do Trivium são:
     \end{itemize}
 \end{enumerate}
 
-% quero substituir essa imagem por um diagrama com o o do livro do Paar
-\begin{figure}
-  \centering
-  \includegraphics[width=.5\textwidth]{imagens/trivium.png}
-  \caption{Estrutura circular do Trivium}
-\end{figure}
+\usetikzlibrary{shapes.gates.logic.US, positioning}
+
+\begin{tikzpicture}
+    % Registrador 1 (93 bits)
+    \draw (0,0) rectangle (9.3,1) node[pos=.5] {A (93 bits)};
+    
+    % Espaço entre os registradores
+    \draw (0,-3) rectangle (8.4,-2) node[pos=.5] {B (84 bits)};
+    
+    % Registrador 3 (111 bits)
+    \draw (0,-6) rectangle (11.1,-5) node[pos=.5] {C (111 bits)};
+
+    % Saída do bit 69 do Registrador 1
+    \node at (6.9, 0.5) (bit69) {};
+    \node at (-1, 0.5) (xorBeforeA) {\Large $\xor$}; % Símbolo de XOR
+    \node at (0, 0.5) (inicioR1) {};
+
+    % Desenha a seta do bit 69 subindo, voltando e descendo até o XOR
+    \draw[->] (6.9, 1) -- (6.9, 1.5) -- (-1, 1.5) -- (xorBeforeA);
+
+    % Desenha a seta do XOR para o início do registrador 1
+    \draw[->] (xorBeforeA) -- (inicioR1);
+
+    \node at (7.8, -2.5) (bit78) {};
+    \node at (-1, -2.5) (xorBeforeB) {\Large $\xor$}; % Símbolo de XOR
+    \node at (0, -2.5) (inicioR2) {};
+
+    \draw[->] (7.8, -2) -- (7.8, -1.5) -- (-1, -1.5) -- (xorBeforeB);
+
+    \draw[->] (xorBeforeB) -- (inicioR2);
+
+    \node at (8.7, -5.5) (bit87) {};
+    \node at (-1, -5.5) (xorBeforeC) {\Large $\xor$}; % Símbolo de XOR
+    \node at (0, -5.5) (inicioR3) {};
+
+    \draw[->] (7.8, -5) -- (7.8, -4.5) -- (-1, -4.5) -- (xorBeforeC);
+
+    \draw[->] (xorBeforeC) -- (inicioR3);
+
+    % Adicionar porta lógica AND rotacionada abaixo das posições 91 e 92
+    \node at (9.1, 1) (bit91) {};
+    \node at (9.2, 1) (bit92) {};
+    \node[and gate US, draw, logic gate inputs=nn, rotate=-90, xscale=0.6] (andgate) at (9.15, -0.5) {}; % Porta lógica AND rotacionada
+    
+    % Conectar os bits 91 e 92 à porta AND rotacionada
+    \draw[->] (9.1, 0) -- (andgate.input 2);
+    \draw[->] (9.2, 0) -- (andgate.input 1);
+
+    % Adicionar um novo XOR após o Registrador A
+    \node at (10.5, 0.5) (xorAfterA) {\Large $\xor$}; 
+    
+    % Desenhar uma seta do registrador A para o XOR novo
+    \draw[->] (9.3, 0.5) -- (xorAfterA);
+    
+    % Desenhar uma seta da porta AND para o XOR novo
+    \draw[->] (andgate.output) -- (9.15, -1) -- (10.5, -1) -- (xorAfterA);
+
+    % Adicionar porta lógica AND rotacionada abaixo das posições 82 e 83
+    \node at (8.2, -2) (bit82) {};
+    \node at (8.3, -2) (bit83) {};
+    \node[and gate US, draw, logic gate inputs=nn, rotate=-90, xscale=0.6] (andgate2) at (8.25, -3.5) {}; % Porta lógica AND rotacionada
+    
+    % Conectar os bits 82 e 83 à porta AND rotacionada
+    \draw[->] (8.2, -3) -- (andgate2.input 2);
+    \draw[->] (8.3, -3) -- (andgate2.input 1);
+
+    % Adicionar um novo XOR após o Registrador B
+    \node at (9.5, -2.5) (xorAfterB) {\Large $\xor$}; 
+    
+    % Desenhar uma seta do registrador B para o XOR novo
+    \draw[->] (8.4, -2.5) -- (xorAfterB);
+    
+    % Desenhar uma seta da porta AND para o XOR novo
+    \draw[->] (andgate2.output) -- (8.25, -4) -- (9.5, -4) -- (xorAfterB);
+
+    % Adicionar porta lógica AND rotacionada abaixo das posições 109 e 110
+    \node at (10.9, -5) (bit109) {};
+    \node at (11, -5) (bit110) {};
+    \node[and gate US, draw, logic gate inputs=nn, rotate=-90, xscale=0.6] (andgate3) at (10.95, -6.5) {}; % Porta lógica AND rotacionada
+    
+    % Conectar os bits 82 e 83 à porta AND rotacionada
+    \draw[->] (10.9, -6) -- (andgate3.input 2);
+    \draw[->] (11, -6) -- (andgate3.input 1);
+
+    % Adicionar um novo XOR após o Registrador A
+    \node at (12, -5.5) (xorAfterC) {\Large $\xor$}; 
+    
+    % Desenhar uma seta do registrador C para o XOR novo
+    \draw[->] (11.1, -5.5) -- (xorAfterC);
+    
+    % Desenhar uma seta da porta AND para o XOR novo
+    \draw[->] (andgate3.output) -- (10.95, -7) -- (12, -7) -- (xorAfterC);
+
+    % Desenha a seta do bit 66 subindo, indo e descendo até o XORAfterA
+    \draw[->] (6.6, 1) -- (6.6, 1.7) -- (10.5, 1.7) -- (xorAfterA);
+
+    % Desenha a seta do bit 69 subindo, indo e descendo até o XORAfterB
+    \draw[->] (6.9, -2) -- (6.9, -1.3) -- (9.5, -1.3) -- (xorAfterB);
+
+    % Desenha a seta do bit 69 subindo, indo e descendo até o XORAfterB
+    \draw[->] (6.6, -5) -- (6.6, -4.3) -- (12, -4.3) -- (xorAfterC);
+
+    % Adicionar um novo XOR foward
+    \node at (13, -2.5) (xorFoward) {\Large $\xor$}; 
+
+    % Desenha a seta do XorAfterA até o XorFoward
+    \draw[->] (xorAfterA) -- (13, 0.5) -- (xorFoward);
+
+    % Desenha a seta do XorAfterB até o XorFoward
+    \draw[->] (xorAfterB) -- (xorFoward);
+
+    % Desenha a seta do XorAfterC até o XorFoward
+    \draw[->] (xorAfterC) -- (13, -5.5) -- (xorFoward);
+
+    % Desenha a seta do XorFoward pra fora
+    \draw[->] (xorFoward) -- (14, -2.5);
+
+    % Desenha a seta do XorAfterA pra xorBeforeB
+    \draw[->] (11, 0.5) -- (11, -1.1) -- (-1.5, -1.1) -- (-1.5, -2.5) -- (xorBeforeB);
+    
+    % Desenha a seta do XorAfterB pra xorBeforeC
+    \draw[->] (10, -2.5) -- (10, -4.1) -- (-1.5, -4.1) -- (-1.5, -5.5) -- (xorBeforeC);
+
+    % Desenha a seta do XorAfterC pra xorBeforeA
+    \draw[->] (12.5, -5.5) -- (12.5, -7.1) -- (-2, -7.1) -- (-2, 0.5) -- (xorBeforeA);
+\end{tikzpicture}
 
 Resumindo, o Trivium é um algoritmo de cifra de fluxo que utiliza três registradores interligados para gerar uma sequência pseudoaleatória de bits.
 Em cada passo, os registradores realizam operações lógicas e de deslocamento, trocando bits de saída entre si e inserindo novos bits com base em cálculos de feedback.

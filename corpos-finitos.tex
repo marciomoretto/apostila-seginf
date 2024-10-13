@@ -111,7 +111,7 @@ Agora podemos reescrever o resultado da multiplicação como:
 \end{eqnarray*}
 \end{example}
 
-Como vimos no Capítulo \label{sec:aes} a cifra de bloco padrão desde 2000, o AES, funciona em turnos que repetem as operações {\em AddRoundKey}, {\em SubBytes}, {\em ShiftRow} e {\em MixColumns}.
+Como vimos na Seção \label{sec:aes} a cifra de bloco padrão desde 2000, o AES, funciona em turnos que repetem as operações {\em AddRoundKey}, {\em SubBytes}, {\em ShiftRow} e {\em MixColumns}.
 A operação {\em SubBytes} é onde ocorre a fase de confusão.
 Seja $A_i$ um vetor de um byte (8 bits) que representa um dos 16 elementos do estado que alimenta o turno do algoritmo AES.
 A operação {\em SubBytes} tem duas etapas:
@@ -160,64 +160,57 @@ O resultado deve passar agora pela fase {\em affine mapping}:
 0\\ 0\\ 1\\ 0\\ 0\\ 1\\ 0\\ 1\\\end{array} \right)
 \end{displaymath}
 
-Na prática, porém, é possível e mais simples précomputar os resultados de SubBytes em uma tabela (a Figura \ref{fig:subbyte} apresenta essa tabela usando representação hexadecimal dos polinômios).
+Na prática, porém, é possível e mais simples précomputar os resultados de SubBytes em uma tabela (a Tabela \ref{tab:sbox} na Seção \ref{sec:aes} apresenta essa tabela usando representação hexadecimal dos polinômios).
 No caso a entrada é $C2_{16}$ e a saída $25_{16}$ exatamente conforme computamos.
 \end{example}
 
 
-\begin{figure}[!htp]
-  \centering
-    \includegraphics[width=\textwidth]{imagens/aes-subbyte.jpg}
-  \caption{Tabela SubByte precomputada.}
-  \label{fig:subbyte}
-\end{figure}
-
 Na fase de descriptografia do AES outra matriz e outra constante são aplicadas e em seguida é calculado o inverso em GF($2^8$) de forma a reverter o processo.
 
-Na fase {\em MixColumn} são selecionados quatro bytes que são dispostos em um vetor para ser multiplicado por uma matriz, cada passo da multiplicação é calculado em $GF(2^8)$.
+%Na fase {\em MixColumn} são selecionados quatro bytes que são dispostos em um vetor para ser multiplicado por uma matriz, cada passo da multiplicação é calculado em $GF(2^8)$.
 
 
-\begin{example}
-  Considere que os bytes $B_0, B_5, B_{10}$ e $B_{15}$ foram selecionados.
-  Fazemos a seguinte conta:
+%\begin{example}
+%  Considere que os bytes $B_0, B_5, B_{10}$ e $B_{15}$ foram selecionados.
+%  Fazemos a seguinte conta:
 
-\begin{displaymath}
-\left(\begin{array}{cccc}
-02_{16} & 03_{16} & 01_{16} & 01_{16} \\
-01_{16} & 02_{16} & 03_{16} & 01_{16} \\
-01_{16} & 01_{16} & 02_{16} & 03_{16} \\
-03_{16} & 01_{16} & 01_{16} & 02_{16} \\
-\end{array} \right) 
-\left( \begin{array}{c}
-B_0\\ B_5\\ B_{10}\\ B_{15}\\\end{array} \right)
-=
-\left( \begin{array}{c}
-C_0\\ C_1\\ C_2\\ C_3\\\end{array} \right)
-\end{displaymath}  
+%\begin{displaymath}
+%\left(\begin{array}{cccc}
+%02_{16} & 03_{16} & 01_{16} & 01_{16} \\
+%01_{16} & 02_{16} & 03_{16} & 01_{16} \\
+%01_{16} & 01_{16} & 02_{16} & 03_{16} \\
+%03_{16} & 01_{16} & 01_{16} & 02_{16} \\
+%\end{array} \right) 
+%\left( \begin{array}{c}
+%B_0\\ B_5\\ B_{10}\\ B_{15}\\\end{array} \right)
+%=
+%\left( \begin{array}{c}
+%C_0\\ C_1\\ C_2\\ C_3\\\end{array} \right)
+%\end{displaymath}  
 
-Para facilitar as contas suponha que todos os bytes selecionados ($B_0, B_5, B_{10}$ e $B_{15}$)são $25_{16}$.
-Neste caso precisamos calcular $02_{16} \cdot 25_{16}$ e $03 \cdot 25_{16}$:
+%Para facilitar as contas suponha que todos os bytes selecionados ($B_0, B_5, B_{10}$ e $B_{15}$)são $25_{16}$.
+%Neste caso precisamos calcular $02_{16} \cdot 25_{16}$ e $03 \cdot 25_{16}$:
 
 
-\begin{eqnarray*}
-  02_{16} \cdot 25_{16} & = & x(x^5 + x^2 + 1)\\
-                      & = & x^6 + x^3 + x\\
-  03_{16} \cdot 25_{16} & = & (x + 1)(x^5 + x^2 + 1)\\ 
-                      & = & x^6 + x^5 + x^3 + x^2 + x + 1\\ 
-\end{eqnarray*}
+%\begin{eqnarray*}
+%  02_{16} \cdot 25_{16} & = & x(x^5 + x^2 + 1)\\
+%                      & = & x^6 + x^3 + x\\
+%  03_{16} \cdot 25_{16} & = & (x + 1)(x^5 + x^2 + 1)\\ 
+ %                     & = & x^6 + x^5 + x^3 + x^2 + x + 1\\ 
+%\end{eqnarray*}
 
-Neste caso, como todos $B_i$ são iguais, todos os $C_i$ também o são e são calculados da seguinte forma:
+%Neste caso, como todos $B_i$ são iguais, todos os $C_i$ também o são e são calculados da seguinte forma:
 
-\begin{displaymath}
-  \begin{array}{cccccccccc}
-    01_{16} \cdot 25_{16} & = & & x^5 + & & & x^2 + & & 1\\
-    01_{16} \cdot 25_{16} & = & & x^5 + & & & x^2 + & & 1\\
-    02_{16} \cdot 25_{16} & = & x^6 + & & & x^3 + & & x & \\
-    03_{16} \cdot 25_{16} & = & x^6 + & x^5 + & & x^3 + & x^2 + & x + & 1\\
-    \hline
-    C_i & = & & x^5 + & & & x^2 + &  & 1\\
-  \end{array}
-\end{displaymath}
-\end{example}
+%\begin{displaymath}
+%  \begin{array}{cccccccccc}
+%    01_{16} \cdot 25_{16} & = & & x^5 + & & & x^2 + & & 1\\
+%    01_{16} \cdot 25_{16} & = & & x^5 + & & & x^2 + & & 1\\
+%    02_{16} \cdot 25_{16} & = & x^6 + & & & x^3 + & & x & \\
+%    03_{16} \cdot 25_{16} & = & x^6 + & x^5 + & & x^3 + & x^2 + & x + & 1\\
+%    \hline
+%    C_i & = & & x^5 + & & & x^2 + &  & 1\\
+%  \end{array}
+%\end{displaymath}
+%\end{example}
 
-No processo de descriptografia uma outra matriz é usada para calcular o {\em MixCloumn}, uma que reverte o que foi calculado neste passo.
+%No processo de descriptografia uma outra matriz é usada para calcular o {\em MixCloumn}, uma que reverte o que foi calculado neste passo.
