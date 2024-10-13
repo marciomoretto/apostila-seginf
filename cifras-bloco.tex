@@ -409,19 +409,132 @@ Assim, o DES é descrito como uma função que combina uma chave de 56 bits com 
 
 A chave de 56 bits passa por um processo chamado \textit{key schedule}, que gera 16 subchaves, cada uma com 48 bits, para serem usadas em cada uma das 16 rodadas de criptografia, similar a uma cifra de fluxo.
 
+Antes de começar o processo da rede de Feistel, é aplicada uma permutação inicial dos 64 bits do bloco.
+o $58^o$ é colocado na primeira posição, em seguida vem o $50^o$ e assim por diante conforme mostrado na tabela \ref{tab:IP}, organizada em 8 linhas para facilitar a leitura.
+Ao final da Rede de Feistel uma permutação inversa a essa é aplicada.
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|*{8}{c|}}
+\hline
+58 & 50 & 42 & 34 & 26 & 18 & 10 & 2 \\
+\hline
+60 & 52 & 44 & 36 & 28 & 20 & 12 & 4 \\
+\hline
+62 & 54 & 46 & 38 & 30 & 22 & 14 & 6 \\
+\hline
+64 & 56 & 48 & 40 & 32 & 24 & 16 & 8 \\
+\hline
+57 & 49 & 41 & 33 & 25 & 17 & 9  & 1 \\
+\hline
+59 & 51 & 43 & 35 & 27 & 19 & 11 & 3 \\
+\hline
+61 & 53 & 45 & 37 & 29 & 21 & 13 & 5 \\
+\hline
+63 & 55 & 47 & 39 & 31 & 23 & 15 & 7 \\
+\hline
+\end{tabular}
+\caption{Sequência da permutação inicial}
+\end{table}
+
 Em cada rodada do DES, a mesma função é aplicada.
 Essa função recebe uma subchave de 48 bits e metade do bloco de 64 bits (ou seja, 32 bits) como entrada, e produz uma nova sequência de 32 bits como saída.
 Aqui está como essa função funciona:
 
 \begin{enumerate}
-    \item {\em Expansão}: Primeiro, os 32 bits do bloco são expandidos para 48 bits,
+\item {\em Expansão}: Primeiro, os 32 bits do bloco são expandidos para 48 bits,
+
+  Na fase de expansão, começamos copiando o último bit, o $32^\text{o}$, para a primeira posição e depois copiamos os primeiros 5 bits da sequência.
+  Em seguida, repetimos o $4^\text{o}$ e o $5^\text{o}$ bits.
+  Continuamos com os próximos 4 bits e então repetimos o $8^\text{o}$ e o $9^\text{o}$ bits, e seguimos esse padrão até alcançar o $32^\text{o}$ bit.
+  Por fim, repetimos o primeiro bit da sequência.
+  Com esse processo, exatamente 16 bits são repetidos, transformando uma sequência de 32 bits em uma de 48 bits.
+
+  A tabela abaixo indica a ordem dos bits resultantes, ela está organizada em 8 linhas para facilitar a leitura:
+  
+\begin{table}[h!]
+\centering
+\begin{tabular}{|*{6}{c|}}
+\hline
+32 & 1  & 2  & 3  & 4  & 5  \\
+\hline
+4  & 5  & 6  & 7  & 8  & 9  \\
+\hline
+8  & 9  & 10 & 11 & 12 & 13 \\
+\hline
+12 & 13 & 14 & 15 & 16 & 17 \\
+\hline
+16 & 17 & 18 & 19 & 20 & 21 \\
+\hline
+20 & 21 & 22 & 23 & 24 & 25 \\
+\hline
+24 & 25 & 26 & 27 & 28 & 29 \\
+\hline
+28 & 29 & 30 & 31 & 32 & 1  \\
+\hline
+\end{tabular}
+\caption{Sequência de expansão}
+\end{table}
+
     \item {\em XOR}: Esses 48 bits são combinados com a subchave utilizando a operação XOR (ou exclusivo),
-    \item {\em Divisão}: O resultado é então dividido em 8 partes, cada uma com 6 bits,
-    \item {\em S-Boxes}: Cada uma dessas partes de 6 bits passa por uma substituição através de uma tabela especial chamada \textit{SBox}, que reduz os 6 bits para 4 bits.
+    \item {\em S-Boxes}: O resultado é então dividido em 8 partes, cada uma com 6 bits.
+      Cada uma dessas partes de 6 bits passa por uma substituição através de uma tabela especial chamada \textit{SBox}, que reduz os 6 bits para 4 bits.
+
+      A Tabela \ref{tab:s1} apresenta uma das 8 SBoxes do DES, especificamente a primeira ($S_1$), usada aqui como exemplo.
+      O processo de leitura das tabelas funciona da seguinte maneira:
+      suponha que a entrada seja a sequência de 6 bits $010110_2$.
+      O primeiro e o último bit ($0$ e $0$) determinam a linha, que nesse caso é a linha $00_2$, ou seja, a primeira linha da tabela.
+      Os quatro bits restantes ($1011_2$) formam a coluna, que corresponde à décima primeira coluna.
+      Com essas coordenadas, a saída da tabela será o valor $12$, que em binário é representado como $1100_2$.
+      
       Essa é a fase de \textit{confusão}.
-    \item {\em Redução}: Após essa substituição, os 8 grupos de 4 bits são combinados de volta em uma sequência de 32 bits,
-    \item {\em Difusão}: Finalmente, esses 32 bits são embaralhados em um processo chamado \textit{difusão}, que espalha as mudanças por todo o bloco, garantindo que até mesmo pequenas alterações na entrada resultem em grandes mudanças na saída.
+
+\begin{table}[h!]
+  \label{tab:s1}
+  \small %
+\centering
+\begin{tabular}{|c|cccccccccccccccc| }
+\hline
+  & 0  & 1  & 2  & 3 & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11 & 12 & 13 & 14 & 15 \\
+\hline
+0 & 14 & 4  & 13 & 1 & 2  & 15 & 11 & 8  & 3  & 10 & 6  & 12 & 5  & 9  & 0  & 7  \\
+1 & 0  & 15 & 7  & 4 & 14 & 2  & 13 & 1  & 10 & 6  & 12 & 11 & 9  & 5  & 3  & 8  \\
+2 & 4  & 1  & 14 & 8 & 13 & 6  & 2  & 11 & 15 & 12 & 9  & 7  & 3  & 10 & 5  & 0  \\
+3 & 15 & 12 & 8  & 2 & 4  & 9  & 1  & 7  & 5  & 11 & 3  & 14 & 10 & 0  & 6  & 13 \\
+\hline
+\end{tabular}
+\caption{Tabela SBox 1}
+\end{table}
+
+      
+    \item {\em Difusão}:
+      A combinação da saída dos oito SBoxes resulta em uma sequência de 32 bits.
+      Esses 32 bits são embaralhados em um processo chamado \textit{difusão}, que espalha as mudanças por todo o bloco, garantindo que até mesmo pequenas alterações na entrada resultem em grandes mudanças na saída.
+
+      O bit da posição 16 vai para a primeira posição seguido do sétimo e assim por diante conforme indicado no diagram abaixo organizado em 4 linhas para facilitar a visualização:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|*{8}{c|}}
+\hline
+16 & 7  & 20 & 21 & 29 & 12 & 28 & 17 \\
+\hline
+1  & 15 & 23 & 26 & 5  & 18 & 31 & 10 \\
+\hline
+2  & 8  & 24 & 14 & 32 & 26 & 3  & 9  \\
+\hline
+19 & 13 & 30 & 6  & 22 & 11 & 4  & 25 \\
+\hline
+\end{tabular}
+\caption{Sequência da permutação}
+\end{table}
+      
+      
 \end{enumerate}
+
+
+
 
 \begin{figure}[!htp]
   \begin{tikzpicture}
@@ -486,7 +599,7 @@ No entanto, surpreendentemente, o DES resistiu a essa técnica.
 Isso levou à suspeita de que os pesquisadores da NSA já conheciam a criptoanálise diferencial e ajustaram o DES de forma que ele se tornasse seguro contra esse tipo de ataque.
 
 Em 1993, um artigo já alertava para a fragilidade dessa chave, propondo um projeto de hardware que, teoricamente, seria capaz de quebrar uma chave de 56 bits em apenas um dia e meio.
-Essa previsão se tornou realidade em 1998, quando a {\em Electronic Frontier Foundation} (EFF)  — uma organização sem fins lucrativos que defende a privacidade, a liberdade de expressão e os direitos digitais na internet — construiu uma máquina chamada Deep Crack.
+Essa previsão se tornou realidade em 1998, quando a {\em Electronic Frontier Foundation} (EFF)  -- uma organização sem fins lucrativos que defende a privacidade, a liberdade de expressão e os direitos digitais na internet -- construiu uma máquina chamada Deep Crack.
 Este dispositivo, que custou cerca de 250 mil dólares, conseguiu quebrar uma cifra DES em 56 horas, aproximadamente dois dias e meio.
 
 A situação se agravou ainda mais em 2006, quando pesquisadores alemães desenvolveram um hardware de baixo custo — em torno de 10 mil dólares — capaz de realizar um ataque de força bruta ao DES em menos de uma semana.
@@ -528,7 +641,7 @@ Essa técnica envolve a substituição de dados em cada rodada seguida por uma p
 No \textit{AES}, o bloco de dados a ser criptografado é inicialmente dividido em 8 sequências de 16 bits. Essas sequências são organizadas em uma estrutura conhecida como \textit{estado}, que é representada por uma matriz 4x4, onde cada célula da matriz corresponde a um bloco de 8 bits.
 
 Durante o processo de criptografia, o AES realiza várias rodadas, onde em cada rodada o algoritmo aplica uma série de transformações ao estado.
-As transformações em cada rodada são as seguintes (conforme ilustrado na Figura \ref{fig:aes}):
+As transformações em cada rodada são as seguintes:
 
 \begin{enumerate}
 \item {\em AddRoundKey:}
@@ -538,10 +651,58 @@ As transformações em cada rodada são as seguintes (conforme ilustrado na Figu
 
 \item {\em SubBytes:}
   No segundo passo, cada byte do estado é substituído por um novo byte utilizando uma tabela de substituição chamada {\em SBox}, que é bijetora, garantindo que cada entrada tenha uma saída única e distinta.
-  Diferente do DES, onde as SBoxes não possuem uma explicação teórica conhecida, a SBox do AES é baseada em operações sobre corpos finitos de Galois\footnote{Um exemplo de como computar o SBox bem como a tabela précomputada em hexadecimal estão no Apêndice \ref{cha:corpos-finitos}}.
+  Diferente do DES, onde as SBoxes não possuem uma explicação teórica conhecida, a SBox do AES é baseada em operações sobre corpos finitos de Galois\footnote{Um exemplo de como computar o SBox pode ser encontrado no Apêndice \ref{cha:corpos-finitos}}.
   Isso assegura que a tabela seja inversível, ou seja, a transformação pode ser revertida.
   Embora essa tabela possa ser gerada dinamicamente, ela é tipicamente preprocessada para otimizar a eficiência durante as operações de criptografia.
+  
+  A Tabela \ref{tab:sbox} mostra o SBpox précomputado e deve ser lida da seguinte maneira:
+  Digamos que a entrada é $3D_{16}$ substitumos esse valor pelo valor da linha $3$ coluna $D$ que neste caso é $80_{16}$.
+  
   Este passo corresponde a fase de confusão.
+
+  \begin{table}[h!]
+    \label{tab:sbox}
+    \centering
+    \scriptsize %
+    \begin{tabular}{|c|*{16}{c|}}
+      \hline
+      & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F \\
+      \hline
+      0 & 63 & 7C & 77 & 7B & F2 & 6B & 6F & C5 & 30 & 01 & 67 & 2B & FE & D7 & AB & 76 \\
+      \hline
+      1 & CA & 82 & C9 & 7D & FA & 59 & 47 & F0 & AD & D4 & A2 & AF & 9C & A4 & 72 & C0 \\
+      \hline
+      2 & B7 & FD & 93 & 26 & 36 & 3F & F7 & CC & 34 & A5 & E5 & F1 & 71 & D8 & 31 & 15 \\
+      \hline
+      3 & 04 & C7 & 23 & C3 & 18 & 96 & 05 & 9A & 07 & 12 & 80 & E2 & EB & 27 & B2 & 75 \\
+      \hline
+      4 & 09 & 83 & 2C & 1A & 1B & 6E & 5A & A0 & 52 & 3B & D6 & B3 & 29 & E3 & 2F & 84 \\
+      \hline
+      5 & 53 & D1 & 00 & ED & 20 & FC & B1 & 5B & 6A & CB & BE & 39 & 4A & 4C & 58 & CF \\
+      \hline
+      6 & D0 & EF & AA & FB & 43 & 4D & 33 & 85 & 45 & F9 & 02 & 7F & 50 & 3C & 9F & A8 \\
+      \hline
+      7 & 51 & A3 & 40 & 8F & 92 & 9D & 38 & F5 & BC & B6 & DA & 21 & 10 & FF & F3 & D2 \\
+      \hline
+      8 & CD & 0C & 13 & EC & 5F & 97 & 44 & 17 & C4 & A7 & 7E & 3D & 64 & 5D & 19 & 73 \\
+      \hline
+      9 & 60 & 81 & 4F & DC & 22 & 2A & 90 & 88 & 46 & EE & B8 & 14 & DE & 5E & 0B & DB \\
+      \hline
+      A & E0 & 32 & 3A & 0A & 49 & 06 & 24 & 5C & C2 & D3 & AC & 62 & 91 & 95 & E4 & 79 \\
+      \hline
+      B & E7 & C8 & 37 & 6D & 8D & D5 & 4E & A9 & 6C & 56 & F4 & EA & 65 & 7A & AE & 08 \\
+      \hline
+      C & BA & 78 & 25 & 2E & 1C & A6 & B4 & C6 & E8 & DD & 74 & 1F & 4B & BD & 8B & 8A \\
+      \hline
+      D & 70 & 3E & B5 & 66 & 48 & 03 & F6 & 0E & 61 & 35 & 57 & B9 & 86 & C1 & 1D & 9E \\
+      \hline
+      E & E1 & F8 & 98 & 11 & 69 & D9 & 8E & 94 & 9B & 1E & 87 & E9 & CE & 55 & 28 & DF \\
+      \hline
+      F & 8C & A1 & 89 & 0D & BF & E6 & 42 & 68 & 41 & 99 & 2D & 0F & B0 & 54 & BB & 16 \\
+      \hline
+    \end{tabular}
+    \caption{SBox do AES em notação hexadecimal}
+  \end{table}
   
 \item {\em ShiftRows:}
   Em seguida, ocorre a etapa de \textit{ShiftRows}, onde as linhas da matriz são rotacionadas.
