@@ -617,6 +617,7 @@ Os passos seguintes do Trivium são:
     \end{itemize}
 \end{enumerate}
 
+% quero substituir essa imagem por um diagrama com o o do livro do Paar
 \begin{figure}
   \centering
   \includegraphics[width=.5\textwidth]{imagens/trivium.png}
@@ -627,8 +628,28 @@ Resumindo, o Trivium é um algoritmo de cifra de fluxo que utiliza três registr
 Em cada passo, os registradores realizam operações lógicas e de deslocamento, trocando bits de saída entre si e inserindo novos bits com base em cálculos de feedback.
 A combinação dos bits de saída dos três registradores gera o fluxo de bits que é usado para criptografar ou descriptografar mensagens.
 
+A Tabela \ref{tab:trivium} resume as especificações do Trivium, a posição do feedack-bit e do feed-foward bit de cada um dos três registradores.
+
+\begin{table}[h!]
+  \label{tab:trivium}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Registrador} & \textbf{Feedback Bit} & \textbf{Feedforward Bit} & \textbf{Tamanho} \\
+\hline
+A & 69 & 66 & 93 \\
+\hline
+B & 78 & 69 & 84 \\
+\hline
+C & 87 & 66 & 111 \\
+\hline
+\end{tabular}
+\caption{Especificações do Trivium}
+\end{table}
+
 A escolha de um bom gerador de números pseudo-aleatórios (GNP) é crucial para garantir a segurança de uma cifra de fluxo.
-Utilizar geradores inadequados pode comprometer seriamente a integridade do sistema criptográfico. Um erro comum é utilizar funções padrão de bibliotecas de programação, como a função \texttt{rand} da biblioteca padrão da linguagem \texttt{C}.
+Utilizar geradores inadequados pode comprometer seriamente a integridade do sistema criptográfico.
+Um erro comum é utilizar funções padrão de bibliotecas de programação, como a função \texttt{rand} da biblioteca padrão da linguagem \texttt{C}.
 Embora essas funções sejam adequadas para simulações e outras aplicações não críticas, elas não oferecem o nível de segurança necessário para aplicações criptográficas.
 
 Para garantir a segurança de sistemas criptográficos, é essencial utilizar GNPs que foram rigorosamente avaliados e validados pela comunidade criptográfica.
