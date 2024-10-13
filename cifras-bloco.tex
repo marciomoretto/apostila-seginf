@@ -410,9 +410,8 @@ Assim, o DES é descrito como uma função que combina uma chave de 56 bits com 
 A chave de 56 bits passa por um processo chamado \textit{key schedule}, que gera 16 subchaves, cada uma com 48 bits, para serem usadas em cada uma das 16 rodadas de criptografia, similar a uma cifra de fluxo.
 
 Antes de começar o processo da rede de Feistel, é aplicada uma permutação inicial dos 64 bits do bloco.
-o $58^o$ é colocado na primeira posição, em seguida vem o $50^o$ e assim por diante conforme mostrado na tabela \ref{tab:IP}, organizada em 8 linhas para facilitar a leitura.
+o $58^o$ é colocado na primeira posição, em seguida vem o $50^o$ e assim por diante conforme mostrado na Tabela \ref{tab:IP}, organizada em 8 linhas para facilitar a leitura.
 Ao final da Rede de Feistel uma permutação inversa a essa é aplicada.
-
 
 \begin{table}[h!]
 \centering
@@ -435,6 +434,7 @@ Ao final da Rede de Feistel uma permutação inversa a essa é aplicada.
 63 & 55 & 47 & 39 & 31 & 23 & 15 & 7 \\
 \hline
 \end{tabular}
+\label{tab:IP}
 \caption{Sequência da permutação inicial}
 \end{table}
 
@@ -451,9 +451,9 @@ Aqui está como essa função funciona:
   Por fim, repetimos o primeiro bit da sequência.
   Com esse processo, exatamente 16 bits são repetidos, transformando uma sequência de 32 bits em uma de 48 bits.
 
-  A tabela abaixo indica a ordem dos bits resultantes, ela está organizada em 8 linhas para facilitar a leitura:
+  A Tabela \ref{tab:expansao} indica a ordem dos bits resultantes, ela está organizada em 8 linhas para facilitar a leitura.
   
-\begin{table}[h!]
+  \begin{table}[h!]
 \centering
 \begin{tabular}{|*{6}{c|}}
 \hline
@@ -474,6 +474,7 @@ Aqui está como essa função funciona:
 28 & 29 & 30 & 31 & 32 & 1  \\
 \hline
 \end{tabular}
+\label{tab:expansao}
 \caption{Sequência de expansão}
 \end{table}
 
@@ -491,7 +492,6 @@ Aqui está como essa função funciona:
       Essa é a fase de \textit{confusão}.
 
 \begin{table}[h!]
-  \label{tab:s1}
   \small %
 \centering
 \begin{tabular}{|c|cccccccccccccccc| }
@@ -504,6 +504,7 @@ Aqui está como essa função funciona:
 3 & 15 & 12 & 8  & 2 & 4  & 9  & 1  & 7  & 5  & 11 & 3  & 14 & 10 & 0  & 6  & 13 \\
 \hline
 \end{tabular}
+  \label{tab:s1}
 \caption{Tabela SBox 1}
 \end{table}
 
@@ -756,7 +757,7 @@ Em outras palavras, a única maneira conhecida de quebrar a criptografia do AES 
 \label{sec:exercicios}
 
 \begin{exercicio}
-  Considere a definição de segurança contra ataques ETP em que consideramos qualquer adversário -- não apenas os eficientes -- e exigimos que $Pr[PrivK^{cpa}_{\Pi,\mathcal{A}}(n) = 1] = \frac{1}{2}$.
+  Considere a definição de segurança contra ataques ETP em que consideramos qualquer adversário -- não apenas os eficientes -- e exigimos que a probabilidade de que ele consiga distinguir duas mensagens em que uma delas foi cifrada com probabilidade exatamente $\frac{1}{2}$.
   Mostre que é impossível construir um sistema que satisfaça essa definição de segurança.
 \end{exercicio}
 
@@ -765,7 +766,7 @@ Mostre que a operação $R_i \xor f_i(R_{i-1})$ na rede de Feistel de fato recup
 \end{exercicio}
 
 \begin{exercicio}
-  Mostre que os modos EBC e Ctr são corretos, ou seja, que em ambos os casos $D(k, E(k,m)) = m$;
+  Mostre que os modos LCE  e Ctr são corretos, ou seja, que em ambos os casos $D(k, E(k,m)) = m$;
 \end{exercicio}
 
 \begin{exercicio}
@@ -781,8 +782,5 @@ Mostre que a operação $R_i \xor f_i(R_{i-1})$ na rede de Feistel de fato recup
 
 \begin{exercicio}
 Suponha que um bit em uma cifra tenha sido alterado por um erro.
-Qual o efeito disso na mensagem descriptografada caso a cifra tenha sido produzida usando o modo Ctr? E no caso de ter sido produzida usando o modo EBC?  
+Qual o efeito disso na mensagem descriptografada caso a cifra tenha sido produzida usando o modo Ctr? E no caso de ter sido produzida usando o modo LCE?  
 \end{exercicio}
-
-
-

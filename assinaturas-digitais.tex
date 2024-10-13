@@ -1,4 +1,4 @@
-\chapter{Assinaturas Digitais e Protocolos}
+\chapter{Assinaturas Digitais}
 \label{cha:assinaturas-digitais}
 
 No capítulo anterior, vimos que é possível construir um sistema de criptografia onde as partes não precisam trocar um segredo antecipadamente.
@@ -68,6 +68,52 @@ O esquema todo é formado por três algoritmos:
 A correção deste sistema segue os mesmos passos da correção do sistema de criptografia RSA que vimos no capítulo anterior.
 Além disso, podemos provar que se o sistema RSA é seguro e se o hash $H$ usado é resistente à colisão, então o sistema acima é {\em seguro contra falsificação}.
 Esse sistema é a base do sistema de assinatura do protocolo \texttt{RSA PKCS \#1 v2.1}.
+
+\section{Esquemas de Indentificação e DSA}
+\label{sec:dsa}
+
+Um {\em esquema de identificação} é um protocolo de comunicação entre duas partes:
+o {\em provador}, que deseja provar sua identidade, e o {\em verificador}, que deseja confirmá-la.
+Esse processo é interativo e envolve uma sequência passos:
+
+\begin{enumerate}
+\item O provador usa um algoritmo $\mathcal{P}_1$ com sua chave secreta $sk$ para gerar uma {\em mensagem inicial} $I$ e um estado $st$ e envia $I$ para o verificador.
+\item O verificador escolhe aleatoriamente um {\em desafio} $r$ de um conjunto gerado a partida da chave pública do provador e envia $r$ de volta para o provador.
+\item O provador usa outro algoritmo $\mathcal{P}_2$ com sua chave secreta $sk$, o estado $st$ e o desafio $r$ para gerar uma resposta $s$ que ele envia para o verificador.
+\item Por fim, o verificador testa se uma função de verificação $\mathcal{V}$ com as entradas da chave públcia $pk$, o desafio $r$ e o estado $s$ calcula corretamente a mensagem inicial $I$.
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm,auto,>=latex]
+\tikzset{
+  player/.style={draw,shape=rectangle,rounded corners,minimum width=4em,minimum height=6em}
+}
+% Nodes
+\node[draw=none] (prover) at (0,0) {\stickfigure};
+\node[draw=none] (verifier) at (6,0) {\stickfigure};
+
+% Arrows and Labels
+\draw[->] (0.5,1) --  node[above]{$I = \mathcal{P}_1(sk)$} (5.5,1);
+\draw[->] (verifier) -- node[midway,above]{$r \leftarrow \Omega_{pk}$} (prover);
+\draw[->] (0.5,-1) -- node[midway,above]{$s = \mathcal{P}_2(sk, st, r)$} (5.5,-1);
+\draw[->] (verifier) -- ++(0,-2) node[right]{$\mathcal{V}(pk, r, s) = I?$};
+
+\end{tikzpicture}
+\end{center}
+
+A segurança desse esquema depende de o provador ser o único que possui a chave secreta, garantindo que apenas ele possa responder corretamente ao desafio.
+
+A partir de esquemas de identificação seguros, podemos gerar assinaturas digitais usando a {\em transformação de Fiat-Shamir}.
+Nessa transformação, um esquema de identificação é modificado para eliminar a interatividade, tornando-o adequado para assinaturas digitais.
+Em vez de o verificador enviar o desafio, esse desafio é gerado por meio de uma função de hash aplicada à mensagem e à informação do provador.
+Essa técnica permite transformar um protocolo interativo em uma assinatura digital não interativa, que pode ser verificada por qualquer pessoa a partir da chave pública do provador.
+
+O DSA (Digital Signature Algorithm) é um dos algoritmos mais usados para criar assinaturas digitais e baseia sua segurança no problema matemático do logaritmo discreto.
+Assim como no esquema de identificação, o remetente, usando sua chave privada, gera uma assinatura baseada na mensagem, e o receptor, com a chave pública do remetente, verifica se a assinatura é válida.
+O DSA também utiliza funções de hash para garantir que a assinatura seja única para cada mensagem, aumentando a segurança.
+
+Uma variação do DSA, chamada ECDSA (Elliptic Curve Digital Signature Algorithm), segue o mesmo princípio, mas em vez de usar grupos cíclicos clássicos, utiliza curvas elípticas.
+A principal vantagem do ECDSA é que ele oferece a mesma segurança do DSA com chaves de tamanho muito menor, o que torna o processo de assinatura e verificação mais eficiente.
 
 \section{Infraestrutura de Chaves Públicas}
 \label{sec:pki}
@@ -145,7 +191,7 @@ Introduzido em 1999, o protocolo TLS é dividido em duas fases principais:
 a fase de {\em handshake}, responsável por estabelecer as chaves de criptografia simétrica entre o cliente e o servidor, e a fase {\em record-layer}, que assegura a confidencialidade, integridade e autenticidade da comunicação.
 Durante o handshake, o servidor apresenta um certificado digital, que foi emitido por uma autoridade certificadora utilizando o modelo de delegação.
 Esse certificado vincula a identidade do servidor à sua chave pública.
-O cliente verifica o certificado e, se for válido, utiliza a chave pública do servidor para encapsular uma chave secreta que será usada na comunicação.
+O cliente verifica o certificado usando as chaves públicas de autoridades certificadoras que considera confiáveis e, se for válido, utiliza a chave pública do servidor para encapsular uma chave secreta que será usada na comunicação.
 Ao final desse processo, cliente e servidor compartilham chaves simétricas autênticas, que são então usadas para criptografar e autenticar as mensagens trocadas.
 
 \subsection{Secure Shell (SSH)}
@@ -165,26 +211,34 @@ O PGP ({\em Pretty Good Privacy}) foi desenvolvido no início dos anos 1990 por 
 O PGP combina criptografia híbrida, compactação de arquivos, assinaturas digitais e o modelo de {\em rede de confiança} para a certificação de chaves públicas, contrastando com o modelo de delegação de autoridade utilizado pelo protocolo TLS/SSL.
 Em vez de confiar em uma autoridade central para a validação das chaves, o PGP permite que os usuários verifiquem manualmente a autenticidade das chaves públicas e publiquem certificados em servidores de chaves.
 Originalmente, as {\em cryptoparties} eram eventos onde as pessoas se reuniam para verificar esses certificados, fortalecendo a rede de confiança do PGP
-O protocolo permite que os usuários criptografem mensagens, assinem digitalmente, ou façam ambos, utilizando algoritmos como RSA, DSA, ou El Gamal, em combinação com técnicas de compactação e modos de operação de cifra como o {\em Cipher Feedback} (CFB).
+
+O protocolo permite que os usuários criptografem mensagens, assinem digitalmente, ou realizem ambas as operações, utilizando algoritmos como RSA, DSA ou ElGamal.
+Para criptografar uma mensagem, o PGP gera uma chave efêmera que é criptografada de forma assimétrica usando a chave pública do destinatário.
+Esta chave efêmera é então utilizada para criptografar a mensagem compactada utilizando criptografia simétrica no modo {\em Cipher Feedback} (CFB) que é menos comum do que os modeos ECB e Ctr apresentados no livro.
 
 \subsection{Off The Record (OTR)}
 
-Enquanto o PGP foi projetado para comunicação assíncrona, como e-mails, o {\em Off-the-Record Messaging} (OTR) foi desenvolvido para modelar uma conversa privada em comunicação síncrona, como em chats \cite{Borisov04}.
-Assim como o PGP, o OTR garante autenticidade, integridade e confidencialidade, mas também oferece {\em sigilo perfeito para o futuro} (impedindo a decifração de mensagens antigas mesmo que as chaves sejam comprometidas) e {\em negação plausível} (o destinatário não pode provar a terceiros quem foi o remetente da mensagem).
-O OTR inicia com um handshake em que as partes trocam e verificam chaves temporárias. Para criptografia, o OTR utiliza técnicas como o algoritmo AES em modo contador -- que é um modo maleável, como vimos no Capítulo \ref{cha:cifras-de-bloco} -- e aplica um processo de revezamento e esquecimento de chaves para garantir sigilo futuro.
-A negação plausível é assegurada não só pelo uso de um modo maleável de criptografia, mas também ao expor as chaves de autenticação após o uso, impossibilitando que o destinatário prove quem enviou a mensagem.
-O protocolo também permite a verificação manual de fingerprints ou a utilização de métodos mais sofisticados, como o protocolo do ``milionário socialista'', para autenticar chaves em comunicação síncrona.
+Enquanto o PGP foi projetado para comunicação assíncrona, como e-mails, o protocolo Off-the-Record (OTR) foi desenvolvido para conversas privadas em comunicação síncrona, como em chats \cite{Borisov04}.
+O PGP simula uma carta assinada e carimbada, garantindo autenticidade e integridade, enquanto o OTR simula uma conversa ao pé do ouvido, oferecendo, além da confidencialidade, negação plausível -- o destinatário não pode provar quem enviou a mensagem.
+
+O OTR também oferece sigilo perfeito para o futuro, impedindo que mensagens antigas sejam decifradas mesmo que as chaves sejam comprometidas.
+Ele utiliza o algoritmo AES em modo contador (Ctr), um modo maleável, e adota um processo de revezamento e esquecimento de chaves para garantir esse sigilo.
+A negação plausível é reforçada pela exposição das chaves de autenticação após o uso, tornando impossível provar a origem das mensagens após sua leitura.
+
+Para mitigar ataques de Man-in-the-Middle, o protocolo permite a verificação manual de fingerprints ou o uso de métodos mais avançados, como o protocolo do ``milionário socialista'', que depende da comunicação síncrona.
 
 \subsection{Signal}
 
-O \textit{protocolo Signal}, inicialmente chamado de Axolotl, foi desenvolvido para solucionar os desafios de segurança em mensageiros modernos, que operam de maneira assíncrona, ao contrário do OTR, que foi projetado para comunicação síncrona. Assim como o OTR, o Signal opera em duas fases: handshake e troca de mensagens. No entanto, o Signal adota uma abordagem mais robusta, dispensando o uso de assinaturas digitais e fortalecendo a negação plausível.
+O \textit{protocolo Signal}, inicialmente chamado de Axolotl, foi desenvolvido para solucionar os desafios de segurança em mensageiros modernos, que operam de maneira assíncrona, ao contrário do OTR, que foi projetado para comunicação síncrona.
+Assim como o OTR, o Signal opera em duas fases: handshake e troca de mensagens.
+No entanto, o Signal adota uma abordagem mais robusta e elegante, dispensando o uso de assinaturas digitais durante o handshake e fortalecendo a negação plausível, evitando ter que expor as chaves de autenticação após a verificação.
 
-Durante o handshake, as partes geram uma {\em chave raiz} derivada de suas chaves permanentes e efêmeras, que é usada para gerar uma {\em chave da cadeia} e uma {\em chave mestra} para criptografia e autenticação.
+Durante o handshake, as partes geram uma {\em chave raiz} derivada de suas chaves permanentes e efêmeras, que é usada para gerar uma {\em chave de cadeia} e uma {\em chave mestra} para criptografia e autenticação.
 O protocolo introduz o conceito de \textit{ratchet}, que permite o revezamento e esquecimento de chaves de forma mais frequente.
-Como no protocolo OTR, a chave mestra é trocada sempre que um usuário responde a uma mensagem, mas, além disso, a chave da cadeia é trocada a cada nova mensagem, o que garante uma camada adicional de segurança.
+Como no protocolo OTR, a chave mestra é trocada sempre que um usuário responde a uma mensagem, mas, além disso, a chave da cadeia é trocada por uma subchave a cada nova mensagem independente se for uma resposta ou uma nova mensagem do mesmo usuário.
 
 O Signal utiliza o modelo de certificação \textit{Trust On First Use (TOFU)}, semelhante ao SSH, e oferece a opção de verificação manual de fingerprints.
-Originalmente implementado no aplicativo open source Textsecure, o protocolo Signal foi incorporado ao WhatsApp em 2016.
+Originalmente implementado no aplicativo de código aberto Textsecure, o protocolo Signal foi incorporado ao WhatsApp em 2016.
 O Textsecure passou a ser chamado de Signal e, além de manter seu código aberto, possui uma política de privacidade que minimiza o armazenamento de metadados dos usuários.
 
 \section{Exercícios}

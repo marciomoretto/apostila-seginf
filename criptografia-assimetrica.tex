@@ -119,7 +119,7 @@ Um número $a$ possui inverso multiplicativo em $\mathbb{Z}_n$ se e somente se $
 \begin{proof}
 
 Se $a$ e $n$ são primos entre si, então é possível mostrar que existem números inteiros $x$ e $y$ tais que $ax + ny = 1$ (isso é conhecido como a identidade de Bezout).
-Nesse caso, $x \times a = 1$ no sistema módulo $n$, ou seja, $x$ é o inverso de $a$.
+Nesse caso, $ax = 1$ no sistema módulo $n$, ou seja, $x$ é o inverso de $a$.
 
 Por outro lado, se $a$ e $n$ não são primos entre si, então existe um número $b > 1$ que divide tanto $a$ quanto $n$.
 Agora, imagine que $a$ tivesse um inverso, ou seja, um valor $x$ tal que $ax$ é igual a 1 no sistema módulo $n$.
@@ -250,12 +250,12 @@ Como vimos, o cálculo de $d$ é feito usando o Algoritmo Estendido de Euclides.
 Em sua versão crua, o sistema de RSA é definido pela seguinte tripla de algoritmos:
 
 \begin{itemize}
-\item $Gen$ gera um par de chaves, pública ($e, N$) e privada ($d$).
-\item $E$ criptografa uma mensagem $m$ elevando-a a $e$ e calculando o móulo po $N$.
+\item[] $Gen$ gera um par de chaves, pública ($e, N$) e privada ($d$).
+\item[] $E$ criptografa uma mensagem $m$ elevando-a a $e$ e calculando o móulo por $N$.
   \begin{displaymath}
     m^e\ mod\ N
   \end{displaymath}
-\item $D$ descriptografa a cifra $c$ elevando-a a $d$ e calculando o módulo por $N$.
+\item[] $D$ descriptografa a cifra $c$ elevando-a a $d$ e calculando o módulo por $N$.
   \begin{displaymath}
     c^d\ mod\ N
   \end{displaymath}

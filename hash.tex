@@ -179,11 +179,11 @@ Essas strings são usadas em cada uma das 80 rodadas de processamento da funçã
 Antes de começar as rodadas, são definidos valores iniciais fixos para cinco variáveis: 
 
 \begin{itemize}
-  \item $A = \texttt{67452301}$
-  \item $B = \texttt{EFCDAB89}$
-  \item $C = \texttt{98BADCFE}$
-  \item $D = \texttt{10325476}$
-  \item $E = \texttt{C3D2E1F0}$
+  \item[] $A = \texttt{67452301}$
+  \item[] $B = \texttt{EFCDAB89}$
+  \item[] $C = \texttt{98BADCFE}$
+  \item[] $D = \texttt{10325476}$
+  \item[] $E = \texttt{C3D2E1F0}$
 \end{itemize}
 
 Esses valores serão alterados em cada uma das 80 rodadas para ajudar a processar a mensagem.
@@ -202,23 +202,23 @@ Para adicionar uma camada extra de complexidade e segurança, as constantes $K_t
 \begin{enumerate}
 \item {\em Rodadas 0-19:}
   \begin{itemize}
-  \item $K_t := \texttt{5A827999}$
-  \item $f_t(B,C,D) := (B \land C) \lor (B \land D)$
+  \item[] $K_t := \texttt{5A827999}$
+  \item[] $f_t(B,C,D) := (B \land C) \lor (B \land D)$
   \end{itemize}
 \item {\em Rodadas 20-39:}
   \begin{itemize}
-  \item $K_t := \texttt{6ED9EBA1}$
-  \item $f_t(B,C,D) := B \xor C \xor D$
+  \item[] $K_t := \texttt{6ED9EBA1}$
+  \item[] $f_t(B,C,D) := B \xor C \xor D$
   \end{itemize}
 \item {\em Rodadas 40-59:}
   \begin{itemize}
-  \item $K_t := \texttt{8F1BBCDC}$
-  \item $f_t(B,C,D) := (B \land C) \lor (B \land D) \lor (C \land D)$
+  \item[] $K_t := \texttt{8F1BBCDC}$
+  \item[] $f_t(B,C,D) := (B \land C) \lor (B \land D) \lor (C \land D)$
   \end{itemize}
 \item {\em Rodadas 60-79:}
   \begin{itemize}
-  \item $K_t := \texttt{CA62C1D6}$
-  \item $f_t(B,C,D) := B \xor C \xor D$
+  \item[] $K_t := \texttt{CA62C1D6}$
+  \item[] $f_t(B,C,D) := B \xor C \xor D$
   \end{itemize}
 \end{enumerate}
 
