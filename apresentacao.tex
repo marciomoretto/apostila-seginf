@@ -2,32 +2,29 @@
 
 Esta obra nasceu como uma apostila de notas de aula para a disciplina de Segurança da Informação, ministrada no segundo semestre de 2017 para as turmas diurnas e noturnas do curso de Sistemas de Informação da Escola de Artes, Ciências e Humanidades (EACH) da USP.
 A primeira versão foi preparada para o curso de verão oferecido entre 2 e 6 de fevereiro de 2015, no campus leste da USP, como parte das atividades do projeto de Privacidade e Vigilância do Grupo de Políticas Públicas em Acesso à Informação (GPoPAI).
-Este curso foi inspirado pelo conteúdo do curso online gratuito do professor Dan Boneh, disponível na plataforma Coursera, que por sua vez se baseia no livro de Jonathan Katz e Yehuda Lindell, Introduction to Modern Cryptography.
 
-Ao longo dos anos, a apostila evoluiu e foi continuamente revisada.
+O curso foi inicialmente oferecido em um contexto em que se fazia urgente a sensibilização sobre a importância da adoção de ferramentas de comunicação segura.
+Com as revelações de Edward Snowden, em 2013, sobre a vigilância em massa conduzida pela NSA, tornou-se evidente a necessidade de capacitar a sociedade para se proteger contra essas práticas invasivas. O objetivo do curso não era apenas educar sobre criptografia, mas também mobilizar os participantes a adotar práticas seguras em suas comunicações diárias.
+
+A recepção positiva e o feedback dos participantes das primeiras edições do curso destacaram a demanda por uma educação prática e acessível em segurança da informação. Isso me motivou a adaptar o curso para o formato de graduação, integrando-o ao currículo de Sistemas de Informação da EACH-USP.
+Desde então, o curso tem sido oferecido regularmente, com foco em apresentar primitivas criptográficas como ``blocos de construção'' para protocolos de segurança robustos.
+Embora o curso seja teórico, ele foi concebido para ser acessível, com ênfase em como definir e reconhecer o que faz uma primitiva criptográfica ser considerada segura.
+Estudamos diferentes definições de segurança e as suposições que sustentam essas garantias.
+
 Ministrei regularmente a disciplina de graduação em Segurança da Informação desde 2016 até o momento em que escrevo estas linhas no segundo semestre de 2023.
-As primeiras versões do material foram fortemente influenciadas pelo livro de Katz e Lindell.
-Com o tempo, outras referências tornaram-se essenciais, como o curso no YouTube de Christof Paar e o livro Understanding Cryptography, escrito por ele e Jan Pelzl.
-Em especial, o capítulo sobre Funções de Mão Única foi fortemente inspirado pelo livro Foundations of Cryptography, de Oded Goldreich.
-As referências históricas desta obra foram retiradas de fontes como o livro de divulgação científica, O Código, de Simon Singh e a obra The Codebreakers de David Kahn, essa, mais acadêmica, traz uma análise aprofundada sobre a história da criptografia.
+As primeiras versões do material foram fortemente influenciadas pelo livro de Jonathan Katz e Yehuda Lindell, {\em Introduction to Modern Cryptography}, e pela abordagem do curso online de Dan Boneh, disponível na plataforma Coursera.
+Com o tempo, outras referências se tornaram essenciais, como o curso de Christof Paar no YouTube e o livro {\em Understanding Cryptography}, escrito por ele e Jan Pelzl.
+Em especial, o capítulo sobre Funções de Mão Única foi inspirado pelo livro {\em Foundations of Cryptography}, de Oded Goldreich.
+As referências históricas, por sua vez, foram retiradas principalmente dos livros {\em O Código}, de Simon Singh, e {\em The Codebreakers}, de David Kahn.
+
+Esta disciplina tem uma conexão importante com outras áreas do currículo de Sistemas de Informação, funcionando como uma conclusão que amarra temas explorados em disciplinas como análise de algoritmos, redes, matemática discreta e teoria da computação.
+A disciplina foi concebida como uma aplicação prática da teoria da computação, permitindo aos alunos compreender as primitivas criptográficas no contexto real de uso e, com isso, evitar falhas que possam comprometer a segurança da informação.
+
+Embora a disciplina e este livro não tenham como objetivo que os alunos implementem primitivas ou protocolos criptográficos, o conhecimento das garantias de segurança permite que eles compreendam os protocolos que utilizarão no futuro, garantindo assim que erros não comprometam a integridade das informações sob sua responsabilidade.
 
 Ao longo dos anos, tive a oportunidade de revisar as notas com base no feedback dos alunos e na leitura gradual dos artigos originais.
 Essas referências estão citadas ao longo do livro.
-
-O projeto de Privacidade e Vigilância do GPoPAI se desenvolveu no contexto da crise de vigilância em massa revelada por Edward Snowden em 2013.
-Esta crise desencadeou uma série de eventos globais, e em São Paulo deu origem às criptorraves, um evento anual que acontece desde então, promovendo discussões sobre privacidade e segurança digital.
-Como participante ativo de praticamente todas as edições, essas experiências também influenciaram profundamente a minha formação na área.
-
-Este livro foi pensado como uma obra didática voltada para alunos de graduação em cursos de ciências da computação e áreas afins, como sistemas de informação e engenharias, especialmente para aqueles no terceiro ou quarto ano, que já tenham cursado disciplinas fundamentais como Introdução à Análise de Algoritmos, Teoria da Computação e Redes.
-Embora a disciplina de segurança da informação esteja frequentemente mais ligada ao campo das redes, a abordagem adotada neste livro, focada na criptografia moderna e suas definições de segurança, é mais próxima de uma aplicação da Teoria da Computação.
-O objetivo é apresentar as principais primitivas criptográficas, com ênfase nas definições de segurança e nas suposições necessárias em cada caso para garantir essa segurança.
-Cada primitiva criptográfica enfatiza o modelo de ameaça e a garantia de segurança associada.
-Ao abordar sistemas de informação, o reconhecimento de modelos de ameaça é uma maneira eficaz de identificar vulnerabilidades potenciais.
-Embora este não seja o foco principal do livro, esperamos que os leitores se familiarizem com essas ideias ao vê-las repetidas vezes aplicadas nas definições de segurança das primitivas criptográficas.
-Além disso, buscamos motivar o leitor com exemplos históricos e casos modernos de falhas de segurança relacionados aos temas abordados.
-Protocolos são tratados de maneira rápida no último capítulo, sem foco nos detalhes de implementação.
-Este livro, portanto, não se destina a quem pretende implementar primitivas criptográficas, e o autor desaconselha fortemente que isso seja feito por amadores.
-O propósito é fornecer uma base sólida sobre os fundamentos criptográficos e as suposições de segurança subjacentes aos protocolos que os leitores possam utilizar em suas práticas.
+Além disso, o envolvimento com eventos como as Criptorraves, que surgiram como resposta à crise de vigilância em massa revelada por Snowden, influenciaram diretamente minha formação e as edições do curso.
 
 É importante ressaltar que, até o momento, desconheço a existência de livros didáticos em português que abordem o tema da criptografia partindo da abordagem da criptografia moderna.
 A publicação deste livro busca preencher essa lacuna, oferecendo aos estudantes e profissionais uma introdução acessível e completa sobre o tema, com foco nas bases teóricas e práticas essenciais para entender as técnicas e algoritmos usados atualmente.
@@ -59,9 +56,6 @@ A disciplina que deu origem ao livro tem uma carga didática total de 60 horas.
 Organizei o curso em 12 aulas de aproximadamente 4 horas cada, sendo que cada uma corresponde a um capítulo do livro, com exceção do capítulo sobre cifras de bloco, que ocupa duas aulas:
 uma para as definições e modos de operação e outra para as construções práticas, como o DES e o AES.
 Para completar a carga horária, incluo uma aula de apresentação do curso e algumas aulas dedicadas à correção de listas de exercícios, resolução de dúvidas e provas ao final de cada uma das duas partes.
-
-Agradeço aos organizadores de todas as edições da Criptorrave, a todos meus professores de Computação e colegas do curso de Sistemas de Informação, principalmente aos coordenadores que me permitiram oferecer essa disciplinas diversas vezes, e especialmente aos alunos que participaram do curso de verão e das disciplinas de graduação oferecidas de 2016 a 2023.
-Suas contribuições, dúvidas e sugestões foram valiosas para o aprimoramento contínuo destas notas, que agora organizo em formato de livro.
 
 
 %Alguns direitos sobre o conteúdo desta apostila são protegidos pelo autor sob licença Creative Commons

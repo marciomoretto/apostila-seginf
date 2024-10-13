@@ -1,68 +1,68 @@
 \babel@toc {portuguese}{}\relax 
-\contentsline {chapter}{\numberline {1}Introdução}{11}{chapter.1}%
-\contentsline {part}{I\hspace {1em}Criptografia Simétrica}{15}{part.1}%
-\contentsline {chapter}{\numberline {2}Cifras Clássicas}{17}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Cifra de Deslocamento}{20}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Cifra de Substituição}{24}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Cifra de Vigenère}{28}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Máquinas de Criptografar}{31}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Exercício}{32}{section.2.5}%
-\contentsline {chapter}{\numberline {3}Criptografia Moderna}{35}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Sigilo Perfeito}{35}{section.3.1}%
-\contentsline {section}{\numberline {3.2}One Time Pad}{38}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Criptografia Moderna}{43}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Abordagem Assintótica}{46}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Exercícios}{47}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Cifras de Fluxo}{49}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{51}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Modos de Operação}{56}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Construções Práticas}{58}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}RDRL}{59}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Trivium}{62}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}Exercicios}{66}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Cifras de Bloco}{69}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Modos de Operação}{72}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Construções Práticas}{77}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Data Encryption Standard (DES)}{78}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{84}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Exercícios}{87}{section.5.3}%
-\contentsline {chapter}{\numberline {6}Integridade e Autenticidade}{89}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{91}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}EBC-CAM}{92}{subsection.6.1.1}%
-\contentsline {section}{\numberline {6.2}Criptografia Autenticada}{94}{section.6.2}%
-\contentsline {subsection}{\numberline {6.2.1}Comunicação Segura}{98}{subsection.6.2.1}%
-\contentsline {section}{\numberline {6.3}Exercícios}{100}{section.6.3}%
-\contentsline {chapter}{\numberline {7}Funções de Mão Única}{101}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Construindo um GNP}{102}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Construindo uma FPA e um PPA}{103}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Conclusão}{105}{section.7.3}%
-\contentsline {section}{\numberline {7.4}Exercícios}{106}{section.7.4}%
-\contentsline {part}{II\hspace {1em}Criptografia Assimétrica}{107}{part.2}%
-\contentsline {chapter}{\numberline {8}Funções de Hash}{109}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Construções}{112}{section.8.1}%
-\contentsline {subsection}{\numberline {8.1.1}SHA-1}{113}{subsection.8.1.1}%
-\contentsline {section}{\numberline {8.2}Aplicações}{116}{section.8.2}%
-\contentsline {subsection}{\numberline {8.2.1}HMAC}{116}{subsection.8.2.1}%
-\contentsline {subsection}{\numberline {8.2.2}Funções de Derivação de Chaves}{118}{subsection.8.2.2}%
-\contentsline {section}{\numberline {8.3}Exercícios}{122}{section.8.3}%
-\contentsline {chapter}{\numberline {9}Distribuição de Chaves}{125}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Centro de Distribuição de Chaves}{125}{section.9.1}%
-\contentsline {section}{\numberline {9.2}Protocolo de Diffie-Hellman}{128}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Exercícios}{134}{section.9.3}%
-\contentsline {chapter}{\numberline {10}Criptografia Assimétrica}{137}{chapter.10}%
-\contentsline {section}{\numberline {10.1}El Gammal}{139}{section.10.1}%
-\contentsline {section}{\numberline {10.2}RSA}{139}{section.10.2}%
-\contentsline {section}{\numberline {10.3}Sistemas Híbridos}{145}{section.10.3}%
-\contentsline {section}{\numberline {10.4}Exercícios}{146}{section.10.4}%
-\contentsline {chapter}{\numberline {11}Assinaturas Digitais}{147}{chapter.11}%
-\contentsline {section}{\numberline {11.1}Assinatura RSA}{148}{section.11.1}%
-\contentsline {section}{\numberline {11.2}Esquemas de Indentificação e DSA}{149}{section.11.2}%
-\contentsline {section}{\numberline {11.3}Infraestrutura de Chaves Públicas}{150}{section.11.3}%
-\contentsline {section}{\numberline {11.4}Protocolos}{153}{section.11.4}%
-\contentsline {subsection}{\numberline {11.4.1}Transport Layer Security (TLS/SSL)}{153}{subsection.11.4.1}%
-\contentsline {subsection}{\numberline {11.4.2}Secure Shell (SSH)}{153}{subsection.11.4.2}%
-\contentsline {subsection}{\numberline {11.4.3}Pretty Good Privacy (PGP)}{154}{subsection.11.4.3}%
-\contentsline {subsection}{\numberline {11.4.4}Off The Record (OTR)}{155}{subsection.11.4.4}%
-\contentsline {subsection}{\numberline {11.4.5}Signal}{155}{subsection.11.4.5}%
-\contentsline {section}{\numberline {11.5}Exercícios}{156}{section.11.5}%
-\contentsline {chapter}{\numberline {A}Corpos Finitos}{157}{appendix.A}%
+\contentsline {chapter}{\numberline {1}Introdução}{13}{chapter.1}%
+\contentsline {part}{I\hspace {1em}Criptografia Simétrica}{17}{part.1}%
+\contentsline {chapter}{\numberline {2}Cifras Clássicas}{19}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Cifra de Deslocamento}{22}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Cifra de Substituição}{26}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Cifra de Vigenère}{30}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Máquinas de Criptografar}{33}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Exercício}{34}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Criptografia Moderna}{37}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Sigilo Perfeito}{37}{section.3.1}%
+\contentsline {section}{\numberline {3.2}One Time Pad}{40}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Criptografia Moderna}{45}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Abordagem Assintótica}{48}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Exercícios}{49}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Cifras de Fluxo}{51}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Segurança das Cifras de Fluxo}{53}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Modos de Operação}{58}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Construções Práticas}{60}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}RDRL}{61}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Trivium}{64}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Exercicios}{68}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Cifras de Bloco}{71}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Modos de Operação}{74}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Construções Práticas}{79}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Data Encryption Standard (DES)}{80}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Advanced Encryption Standard (AES)}{86}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Exercícios}{89}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Integridade e Autenticidade}{91}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Código de Autenticação de Mensagem}{93}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}EBC-CAM}{94}{subsection.6.1.1}%
+\contentsline {section}{\numberline {6.2}Criptografia Autenticada}{96}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Comunicação Segura}{100}{subsection.6.2.1}%
+\contentsline {section}{\numberline {6.3}Exercícios}{102}{section.6.3}%
+\contentsline {chapter}{\numberline {7}Funções de Mão Única}{103}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Construindo um GNP}{104}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Construindo uma FPA e um PPA}{105}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Conclusão}{107}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Exercícios}{108}{section.7.4}%
+\contentsline {part}{II\hspace {1em}Criptografia Assimétrica}{109}{part.2}%
+\contentsline {chapter}{\numberline {8}Funções de Hash}{111}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Construções}{114}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}SHA-1}{115}{subsection.8.1.1}%
+\contentsline {section}{\numberline {8.2}Aplicações}{118}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}HMAC}{118}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Funções de Derivação de Chaves}{120}{subsection.8.2.2}%
+\contentsline {section}{\numberline {8.3}Exercícios}{124}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Distribuição de Chaves}{127}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Centro de Distribuição de Chaves}{127}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Protocolo de Diffie-Hellman}{130}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Exercícios}{136}{section.9.3}%
+\contentsline {chapter}{\numberline {10}Criptografia Assimétrica}{139}{chapter.10}%
+\contentsline {section}{\numberline {10.1}El Gammal}{141}{section.10.1}%
+\contentsline {section}{\numberline {10.2}RSA}{141}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Sistemas Híbridos}{147}{section.10.3}%
+\contentsline {section}{\numberline {10.4}Exercícios}{148}{section.10.4}%
+\contentsline {chapter}{\numberline {11}Assinaturas Digitais}{149}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Assinatura RSA}{150}{section.11.1}%
+\contentsline {section}{\numberline {11.2}Esquemas de Indentificação e DSA}{151}{section.11.2}%
+\contentsline {section}{\numberline {11.3}Infraestrutura de Chaves Públicas}{152}{section.11.3}%
+\contentsline {section}{\numberline {11.4}Protocolos}{155}{section.11.4}%
+\contentsline {subsection}{\numberline {11.4.1}Transport Layer Security (TLS/SSL)}{155}{subsection.11.4.1}%
+\contentsline {subsection}{\numberline {11.4.2}Secure Shell (SSH)}{155}{subsection.11.4.2}%
+\contentsline {subsection}{\numberline {11.4.3}Pretty Good Privacy (PGP)}{156}{subsection.11.4.3}%
+\contentsline {subsection}{\numberline {11.4.4}Off The Record (OTR)}{157}{subsection.11.4.4}%
+\contentsline {subsection}{\numberline {11.4.5}Signal}{157}{subsection.11.4.5}%
+\contentsline {section}{\numberline {11.5}Exercícios}{158}{section.11.5}%
+\contentsline {chapter}{\numberline {A}Corpos Finitos}{159}{appendix.A}%
