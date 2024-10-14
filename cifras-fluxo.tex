@@ -632,9 +632,7 @@ Os passos seguintes do Trivium são:
     \end{itemize}
 \end{enumerate}
 
-\usetikzlibrary{shapes.gates.logic.US, positioning}
-
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8]
     % Registrador 1 (93 bits)
     \draw (0,0) rectangle (9.3,1) node[pos=.5] {A (93 bits)};
     
@@ -649,8 +647,12 @@ Os passos seguintes do Trivium são:
     \node at (-1, 0.5) (xorBeforeA) {\Large $\xor$}; % Símbolo de XOR
     \node at (0, 0.5) (inicioR1) {};
 
+    % Desenha a seta do bit 69 subindo, voltando e descendo até o XOR com curvas arredondadas
+  %  \draw[->] (6.9, 1) to[out=90, in=0] (3.5, 1.5) to[out=180, in=90] (-1, 1.5) -- (xorBeforeA);
+
+    
     % Desenha a seta do bit 69 subindo, voltando e descendo até o XOR
-    \draw[->] (6.9, 1) -- (6.9, 1.5) -- (-1, 1.5) -- (xorBeforeA);
+    \draw[->] (6.9, 1) to[out=90, in=0] (6, 1.5) -- (0, 1.5) to[out=180, in=90] (xorBeforeA);
 
     % Desenha a seta do XOR para o início do registrador 1
     \draw[->] (xorBeforeA) -- (inicioR1);
@@ -659,7 +661,8 @@ Os passos seguintes do Trivium são:
     \node at (-1, -2.5) (xorBeforeB) {\Large $\xor$}; % Símbolo de XOR
     \node at (0, -2.5) (inicioR2) {};
 
-    \draw[->] (7.8, -2) -- (7.8, -1.5) -- (-1, -1.5) -- (xorBeforeB);
+    %    \draw[->] (7.8, -2) -- (7.8, -1.5) -- (-1, -1.5) -- (xorBeforeB);
+    \draw[->] (7.8, -2) to[out=90, in=0] (7, -1.5) -- (0, -1.5) to[out=180, in=90] (xorBeforeB);
 
     \draw[->] (xorBeforeB) -- (inicioR2);
 
@@ -667,7 +670,8 @@ Os passos seguintes do Trivium são:
     \node at (-1, -5.5) (xorBeforeC) {\Large $\xor$}; % Símbolo de XOR
     \node at (0, -5.5) (inicioR3) {};
 
-    \draw[->] (7.8, -5) -- (7.8, -4.5) -- (-1, -4.5) -- (xorBeforeC);
+%    \draw[->] (7.8, -5) -- (7.8, -4.5) -- (-1, -4.5) -- (xorBeforeC);
+    \draw[->] (7.8, -5) to[out=90, in=0] (7, -4.5) -- (0, -4.5) to[out=180, in=90] (xorBeforeC);
 
     \draw[->] (xorBeforeC) -- (inicioR3);
 
@@ -687,7 +691,10 @@ Os passos seguintes do Trivium são:
     \draw[->] (9.3, 0.5) -- (xorAfterA);
     
     % Desenhar uma seta da porta AND para o XOR novo
-    \draw[->] (andgate.output) -- (9.15, -1) -- (10.5, -1) -- (xorAfterA);
+%    \draw[->] (andgate.output) -- (9.15, -1) -- (10.5, -1) -- (xorAfterA);
+    \draw[->] (andgate.output) to[out=270, in=180] (9.5, -1) -- (10.2, -1) to[out=0, in=270] (xorAfterA);
+
+    
 
     % Adicionar porta lógica AND rotacionada abaixo das posições 82 e 83
     \node at (8.2, -2) (bit82) {};
@@ -705,8 +712,9 @@ Os passos seguintes do Trivium são:
     \draw[->] (8.4, -2.5) -- (xorAfterB);
     
     % Desenhar uma seta da porta AND para o XOR novo
-    \draw[->] (andgate2.output) -- (8.25, -4) -- (9.5, -4) -- (xorAfterB);
-
+    %\draw[->] (andgate2.output) -- (8.25, -4) -- (9.5, -4) -- (xorAfterB);
+    \draw[->] (andgate2.output) to[out=270, in=180] (8.5, -4) -- (9.2, -4) to[out=0, in=270] (xorAfterB);
+    
     % Adicionar porta lógica AND rotacionada abaixo das posições 109 e 110
     \node at (10.9, -5) (bit109) {};
     \node at (11, -5) (bit110) {};
@@ -723,40 +731,63 @@ Os passos seguintes do Trivium são:
     \draw[->] (11.1, -5.5) -- (xorAfterC);
     
     % Desenhar uma seta da porta AND para o XOR novo
-    \draw[->] (andgate3.output) -- (10.95, -7) -- (12, -7) -- (xorAfterC);
-
+ %   \draw[->] (andgate3.output) -- (10.95, -7) -- (12, -7) -- (xorAfterC);
+    \draw[->] (andgate3.output) to[out=270, in=180] (11.2, -7) -- (11.7, -7) to[out=0, in=270] (xorAfterC);
+    
     % Desenha a seta do bit 66 subindo, indo e descendo até o XORAfterA
-    \draw[->] (6.6, 1) -- (6.6, 1.7) -- (10.5, 1.7) -- (xorAfterA);
+%    \draw[->] (6.6, 1) -- (6.6, 1.7) -- (10.5, 1.7) -- (xorAfterA);
+    \draw[->] (6.6, 1) to[out=90, in=180] (7.3, 1.7) -- (9.8, 1.7)  to[out=0, in=90] (xorAfterA);
+
 
     % Desenha a seta do bit 69 subindo, indo e descendo até o XORAfterB
-    \draw[->] (6.9, -2) -- (6.9, -1.3) -- (9.5, -1.3) -- (xorAfterB);
-
+%    \draw[->] (6.9, -2) -- (6.9, -1.3) -- (9.5, -1.3) -- (xorAfterB);
+    \draw[->] (6.9, -2) to[out=90, in=180] (7.6, -1.3) -- (8.8, -1.3)  to[out=0, in=90] (xorAfterB);
+    
     % Desenha a seta do bit 69 subindo, indo e descendo até o XORAfterB
-    \draw[->] (6.6, -5) -- (6.6, -4.3) -- (12, -4.3) -- (xorAfterC);
-
+%    \draw[->] (6.6, -5) -- (6.6, -4.3) -- (12, -4.3) -- (xorAfterC);
+    \draw[->] (6.6, -5) to[out=90, in=180] (7.3, -4.3) -- (11.3, -4.3)  to[out=0, in=90] (xorAfterC);
+    
     % Adicionar um novo XOR foward
     \node at (13, -2.5) (xorFoward) {\Large $\xor$}; 
 
     % Desenha a seta do XorAfterA até o XorFoward
-    \draw[->] (xorAfterA) -- (13, 0.5) -- (xorFoward);
+%    \draw[->] (xorAfterA) -- (13, 0.5) -- (xorFoward);
+    \draw[->] (xorAfterA) to[out=0, in=180] (12.2, 0.5) to[out=0, in=90] (xorFoward);
+
 
     % Desenha a seta do XorAfterB até o XorFoward
     \draw[->] (xorAfterB) -- (xorFoward);
 
     % Desenha a seta do XorAfterC até o XorFoward
-    \draw[->] (xorAfterC) -- (13, -5.5) -- (xorFoward);
+    %\draw[->] (xorAfterC) -- (13, -5.5) -- (xorFoward);
+    \draw[->] (xorAfterC) to[out=0, in=180] (12.3, -5.5) to[out=0, in=270] (xorFoward);
 
     % Desenha a seta do XorFoward pra fora
     \draw[->] (xorFoward) -- (14, -2.5);
 
     % Desenha a seta do XorAfterA pra xorBeforeB
-    \draw[->] (11, 0.5) -- (11, -1.1) -- (-1.5, -1.1) -- (-1.5, -2.5) -- (xorBeforeB);
-    
+   % \draw[->] (11, 0.5) -- (11, -1.1) -- (-1.7, -1.1) -- (-1.7, -2.5) -- (xorBeforeB);
+    \draw[->] (11.2, 0.5)
+          to[out=270, in=0] (10.7, -1.1) 
+          to[out=180, in=0] (-1.3, -1.1) 
+          to[out=180, in=180] (-1.5, -2.5) -- (xorBeforeB);
+
+
     % Desenha a seta do XorAfterB pra xorBeforeC
-    \draw[->] (10, -2.5) -- (10, -4.1) -- (-1.5, -4.1) -- (-1.5, -5.5) -- (xorBeforeC);
+    %\draw[->] (10, -2.5) -- (10, -4.1) -- (-1.7, -4.1) -- (-1.7, -5.5) -- (xorBeforeC);
+    \draw[->] (10.2, -2.5)
+          to[out=270, in=0] (9.7, -4.1) 
+          to[out=180, in=0] (-1.3, -4.1) 
+          to[out=180, in=180] (-1.5, -5.5) -- (xorBeforeC);
 
     % Desenha a seta do XorAfterC pra xorBeforeA
-    \draw[->] (12.5, -5.5) -- (12.5, -7.1) -- (-2, -7.1) -- (-2, 0.5) -- (xorBeforeA);
+          %\draw[->] (12.5, -5.5) -- (12.5, -7.1) -- (-2, -7.1) -- (-2, 0.5) -- (xorBeforeA);
+    % Desenha a seta do XorAfterC para xorBeforeA com curvas arredondadas
+    \draw[->] (12.5, -5.5) to[out=0, in=0] (12.8, -7.1) 
+          to[out=180, in=0] (-1, -7.1) 
+          to[out=180, in=270] (-2.8, -3.5) 
+          to[out=90, in=180] (-1.5, 0.5) -- (xorBeforeA);
+
 \end{tikzpicture}
 
 Resumindo, o Trivium é um algoritmo de cifra de fluxo que utiliza três registradores interligados para gerar uma sequência pseudoaleatória de bits.
