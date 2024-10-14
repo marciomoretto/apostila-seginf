@@ -60,9 +60,9 @@ Esse esquema não é seguro até aplicarmos o paradigma {\em hash-and-sign}.
 O esquema todo é formado por três algoritmos:
 
 \begin{itemize}
-\item $Gen$: gera um par de chaves $sk = d$ e $pk = e, N$ como vimos no capítulo anterior.
-\item $Sign$: calcula o hash de $m$ e eleva esse valor por $d$ módulo $N$ ($t = H(m)^d\ mod\ N$).
-\item $Ver$: eleva $t$ a $e$ e verifica se o resultado é equivalente a $H(m)\ mod\ N$ 
+\item[] $Gen$: gera um par de chaves $sk = d$ e $pk = e, N$ como vimos no capítulo anterior.
+\item[] $Sign$: calcula o hash de $m$ e eleva esse valor por $d$ módulo $N$ ($t = H(m)^d\ mod\ N$).
+\item[] $Ver$: eleva $t$ a $e$ e verifica se o resultado é equivalente a $H(m)\ mod\ N$ 
 \end{itemize}
 
 A correção deste sistema segue os mesmos passos da correção do sistema de criptografia RSA que vimos no capítulo anterior.
@@ -142,26 +142,26 @@ Neste caso, a autoridade $A$ pode emitir um {\em certificado} $cert_{A \to B}$, 
 Existem diversos modelos de {\em infraestrutura de chaves públicas} (PKI):
 
 \begin{itemize}
-\item {\em Autoridade Certificadora Única:}
+\item[] {\em Autoridade Certificadora Única:}
   \begin{itemize}
   \item Neste cenário, assume-se que todos possuem a chave pública da autoridade certificadora $A$, que foi obtida de maneira segura.
   \item Sempre que algum novo ator $B$ precisar publicar sua chave pública, ele deve se apresentar a essa autoridade e comprovar sua identidade para obter o certificado $cert_{A \to B}$.
   \end{itemize}
     
-\item {\em Múltiplas Autoridades Certificadoras:}
+\item[] {\em Múltiplas Autoridades Certificadoras:}
   \begin{itemize}
   \item Neste cenário, existem várias autoridades certificadoras, e assume-se que todos possuem chaves públicas de algumas ou todas elas.
   \item Quando um novo ator precisar publicar sua chave, ele pode procurar uma ou mais autoridades para gerar o certificado, que será válido para aqueles que confiam na autoridade certificadora que o emitiu.
   \item Neste cenário, a comunicação é tão segura quanto a menos confiável das autoridades incluídas na lista das partes.
   \end{itemize}
     
-\item {\em Delegação de Autoridade:}
+\item[] {\em Delegação de Autoridade:}
   \begin{itemize}
   \item Neste cenário, as autoridades certificadoras não apenas podem certificar a autenticidade de uma chave pública, mas também podem produzir um certificado especial $cert^*$ que dá o poder a outro de produzir certificados.
   \item Por exemplo, se $C$ conseguir um certificado de $B$ sobre a autenticidade de sua chave $cert_{B \to C}$, e $B$ possuir um certificado especial de $A$ que o autorize a produzir certificados em seu nome $cert^*_{A \to B}$, alguém que possui a chave pública de $A$ pode verificar o certificado $cert^*_{A \to B}$ e usar a chave pública assinada de $B$ para verificar $cert_{B \to C}$.
   \end{itemize}
     
-\item {\em Rede de Confiança:}
+\item[] {\em Rede de Confiança:}
   \begin{itemize}
   \item Neste cenário, todas as partes atuam como autoridades certificadoras e podem assinar certificados para qualquer chave que verificaram.
   \item Cabe a cada um avaliar a confiança que tem em seus colegas quanto à idoneidade em produzir certificados.

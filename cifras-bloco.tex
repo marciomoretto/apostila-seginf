@@ -4,7 +4,7 @@
 No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques apenas contra o texto cifrado (``ciphertext only'').
 Para que isso seja viável, é necessário supor a existência de um gerador de números pseudo-aleatórios, ou seja, um algoritmo capaz de gerar uma sequência de bits que, para todos os efeitos práticos, não pode ser distinguida de uma sequência realmente aleatória.
 
-Embora essa definição de segurança seja um pouco mais fraca do que a apresentada no Capítulo \ref{cha:sigilo-perfeito}, ela tem a vantagem de não exigir chaves extremamente longas.
+Embora essa definição de segurança seja um pouco mais fraca do que a apresentada no Capítulo \ref{cha:criptografia-moderna}, ela tem a vantagem de não exigir chaves extremamente longas.
 No entanto, assim como o ``One-Time Pad'' (OTP), as cifras de fluxo também apresentam dois problemas importantes:
 se uma chave for reutilizada, a segurança é completamente comprometida, e se o adversário souber partes da mensagem original, não há garantias de segurança.
 
@@ -287,7 +287,7 @@ A explicação indica que o tamanho dos blocos também influencia em sua seguran
 Isso ocorre, pois quanto menores os blocos maior a chance de gerar vetores inciais idênticos, e portanto, de criptografar duas mensagens distintas com a mesma chave.
 
 Optamos por apresentar os modos EBC e Ctr devido à sua ampla utilização e reconhecimento.
-O modo EBC é empregado no protocolo de segurança SSH (Secure Shell), que permite o acesso remoto seguro a sistemas, enquanto o Ctr é utilizado no protocolo de criptografia do WhatsApp e no TLS (Transport Layer Security), que protege comunicações na web, como em conexões via HTTPS.
+O modo EBC é empregado no protocolo de segurança SSH (Secure Shell), que permite o acesso remoto seguro a sistemas, enquanto o Ctr é utilizado no protocolo de criptografia do WhatsApp e no TLS (Transport Layer Security), que protege comunicações na web, como em conexões via {\tt https}.
 Além desses, existem outros modos, como o CFB (Cipher Feedback Mode), usado no protocolo PGP (Pretty Good Privacy), que pode ser usado para criptografia ponta a ponta garantindo a privacidade de e-mails.
 
 \section{Construções Práticas}

@@ -8,7 +8,7 @@ A ideia geral da construção é a seguinte:
 partimos de uma sequência aleatória de bits chamada de semente e, a partir dela, geramos uma sequência maior de bits para encriptar a mensagem usando a operação de OU exclusivo (XOR), assim como no OTP.
 Embora essa sequência seja gerada de maneira determinística, a segurança do sistema depende do fato de que ela se pareça aleatória.
 
-Informalmente, um {\em gerador de números pseudoaleatórios} (GNP) é uma função que recebe uma semente aleatória e a expande em uma sequência maior que aparenta ser aleatória.
+Informalmente, um {\em Gerador de Números Pseudoaleatórios} (GNP) é uma função que recebe uma semente aleatória e a expande em uma sequência maior que aparenta ser aleatória.
 A qualidade de um GNP é medida pela sua capacidade de produzir sequências que são indistinguíveis de sequências verdadeiramente aleatórias para qualquer adversário eficiente.
 
 Sistemas de cifra de fluxo foram estudados extensamente nos anos 80 \cite{Blum84,Yao82}.
@@ -39,7 +39,7 @@ Os distinguidores são essenciais para avaliar a robustez de um GNP, pois nos aj
 Uma bateria de distinguidores pode ser usada para verificar a qualidade de um GNP.
 Idealmente, nenhum teste eficiente deveria ser capaz de distinguir a sequência gerada por um GNP de uma sequência verdadeiramente aleatória, ou pelo menos, deveria ser incapaz de fazê-lo com uma probabilidade considerável\footnote{Usaremos o termo ``considerável'' para probabilidades não desprezíveis.}.
 
-Definimos um gerador de números pseudo-aleatórios (GNP) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
+Definimos um Gerador de Números Pseudo-aleatórios (GNP) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
 O fator de expansão do GNP, representado pela função $l$, indica quanto maior é a sequência produzida em comparação com a semente inicial.
 
 Para que um GNP seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória.
@@ -73,7 +73,7 @@ Portanto, embora seja teoricamente possível distinguir sequências geradas por 
 
 Como adiantamos no capítulo anterior, uma vez definida claramente a suposição que estamos fazendo, podemos tentar provar que, com essa suposição, somos capazes de construir um sistema seguro.
 A abordagem para este tipo de prova é uma redução, similar às reduções que vimos em Teoria da Computação.
-Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um gerador de números pseudo-aleatórios (GNP).
+Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um GNP.
 
 Reduções são ferramentas poderosas em teoria da computação e criptografia.
 Elas nos permitem transformar um problema desconhecido ou difícil em um problema conhecido ou mais simples.
@@ -184,16 +184,16 @@ Ou seja, se o GNP é seguro, então não existe adversário eficiente capaz de d
   \end{tikzpicture}
 \end{center}
 
-Algoritmos validados empiricamente como bons geradores de números pseudo-aleatórios (GNP) podem, portanto, ser utilizados para gerar cifras seguras, para ataques apenas contra o texto cifrado.
+Algoritmos validados empiricamente como bons GNPs podem, portanto, ser utilizados para gerar cifras seguras, para ataques apenas contra o texto cifrado.
 Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do GNP de uma sequência verdadeiramente aleatória.
 
-Em outras palavras, um gerador de números pseudoaleatórios (GNP) é uma função $G$ que, a partir de um elemento aleatório escolhido no conjunto $\{0,1\}^n$, produz deterministicamente um elemento no conjunto maior $\{0,1\}^N$, onde $N$ é muito maior que $n$.
+Em outras palavras, um GNP é uma função $G$ que, a partir de um elemento aleatório escolhido no conjunto $\{0,1\}^n$, produz deterministicamente um elemento no conjunto maior $\{0,1\}^N$, onde $N$ é muito maior que $n$.
 O gerador é considerado seguro se um adversário não for capaz de distinguir a saída de $G$ de uma escolha verdadeiramente aleatória feita diretamente no conjunto maior $\{0,1\}^N$.
 
 Nos próximos capítulos, vamos explorar definições mais robustas de segurança e as suposições associadas a essas definições.
 Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto claro escolhido (chosen-plaintext) e ataques de texto cifrado escolhido (chosen-ciphertext).
 
-Antes de concluir este capítulo, é importante lembrar que as cifras de fluxo compartilham uma limitação significativa com a cifra de uso único (One-Time Pad, OTP):
+Antes de concluir este capítulo, é importante lembrar que as cifras de fluxo compartilham uma limitação significativa com a cifra de uso único (One-Time Pad):
 a repetição do uso da mesma chave.
 Assim como no OTP, se a mesma chave for reutilizada para criptografar diferentes mensagens, a segurança do sistema é comprometida.
 Isso ocorre porque a reutilização da chave permite que um adversário determine informações sobre as mensagens originais ao analisar as cifras resultantes.
@@ -208,10 +208,10 @@ O Teorema \ref{theo:stream} supõe que a mensagem a ser criptografada tem um tam
 No entanto, em muitas aplicações práticas, precisamos criptografar mensagens de tamanho arbitrário.
 Para resolver esse problema, existem dois modos de operação para cifras de fluxo: o modo síncrono e o modo assíncrono.
 
-No modo síncrono, o gerador de chaves (GNP) gera um fluxo contínuo de bits independente do texto claro.
+No modo síncrono, o GNP gera um fluxo contínuo de bits independente do texto claro.
 Já no modo assíncrono, o fluxo de chaves depende tanto da chave inicial quanto do texto cifrado anterior, permitindo uma ressincronização automática em caso de perda de dados.
 
-Tipicamente, um gerador de números pseudo-aleatórios (GNP) é composto por dois algoritmos: 
+Tipicamente, um GNP é composto por dois algoritmos: 
 \begin{itemize}
 \item O primeiro algoritmo, $Init$, recebe como entrada uma semente $s$ e, opcionalmente, um {\em vetor inicial} $VI$.
   Ele devolve um estado inicial $st_0$.
@@ -282,8 +282,8 @@ Embora o vetor inicial não precise ser mantido em segredo, ele deve ser escolhi
 \section{Construções Práticas}
 \label{sec:construcoes-praticas}
 
-A existência de geradores de números pseudo-aleatórios (GNPs) não foi demonstrada matematicamente.
-No Apêndice \ref{cha:owf}, discutimos por que é tão desafiador encontrar um GNP que seja comprovadamente seguro.
+A existência de GNPs não foi demonstrada matematicamente.
+No Capítulo \ref{cha:owf}, discutimos por que é tão desafiador encontrar um GNP que seja comprovadamente seguro.
 O ponto crucial, por enquanto, é que é extremamente difícil demonstrar matematicamente a segurança de um sistema de criptografia baseado em GNPs.
 
 Devido a essa dificuldade, a abordagem predominante na validação de GNPs é empírica.
@@ -463,7 +463,7 @@ Um bom RDRL é aquele que tem um ciclo longo, idealmente próximo de $2^n - 1$, 
 Como discutido anteriormente, o comportamento de um RDRL é definido por um vetor de bits que determina o coeficiente de realimentação.
 Dado um RDRL com $n$ registradores, certos vetores de feedback produzem ciclos ideais, enquanto outros não.
 Os vetores que geram um ciclo ideal representam polinômios irredutíveis de grau $n$.
-Um polinômio irredutível é aquele que não pode ser fatorado em polinômios de grau menor -- eles funcionam como números primos no universo dos polinômios.
+Um polinômio irredutível é aquele que não pode ser fatorado em polinômios de grau menor -- eles funcionam como números primos no universo dos polinômios\footnote{No Apêndice \ref{cha:corpos-finitos} apresentamos alguns exemplos.}.
 
 Por exemplo, o polinômio $x^3 + x^2 + x + 1$ (representado pelo vetor binário $1111_2$) pode ser fatorado como $(x^2 + 1)(x + 1)$ no caso de coeficientes binários, que é o nosso contexto.
 Por outro lado, o polinômio $x^3 + x + 1$ (representado pelo vetor binário \(1011_2\)) é irredutível.
