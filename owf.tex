@@ -108,14 +108,52 @@ Agora que entendemos como construir um GNP a partir de uma Função de Mão Úni
 A construção de uma FPA é um passo fundamental em criptografia moderna, pois ela desempenha um papel central em vários protocolos de segurança.
 Para construir uma FPA segura, precisaremos de um GNP que expanda o tamanho da entrada, ou seja, que gere uma saída com o dobro do tamanho da entrada original. 
 
-Seja $G$ um GNP que dobra o tamanho da entrada e $k$ a chave que vamos usar para gerar a função $f_k$.
-Primeiro, aplicamos $G$ ao bloco $x$.
-Se o primeiro bit da chave $k$ for 0, pegamos a primeira metade dos bits gerados; se for 1, pegamos a segunda metade.
-Em seguida, aplicamos $G$ ao bloco escolhido e repetimos o processo para o próximo bit de $k$, continuando assim até processar todos os bits de $k$.
+Seja $G$ um GNP que dobra o tamanho da entrada $m$ e $k$ a chave que vamos usar para gerar a função $f_k$.
+Primeiro, aplicamos $G$ à chave $k$.
+Se o primeiro bit $m_1$ do bloco $m$ for 0, pegamos a primeira metade dos bits gerados (representado por $G_0$); se for 1, pegamos a segunda metade (representado por $G_1$).
+Em seguida, aplicamos $G$ ao bloco escolhido e repetimos o processo para o próximo bit $m_2$ de $m$, continuando assim até processar todos os bits de $m$.
+Ou seja:
+
+\begin{displaymath}
+f_k(m_1 \dots m_n) = G_{m_n}(\dots(G_{m_1}(k) \dots )
+\end{displaymath}
 
 \begin{theorem}[Yao]
   Se $G$ é um GNP que dobra o tamanho da entrada, então a construção acima gera uma FPA.
 \end{theorem}
+
+O diagrama abaixo representa um bloco de apenas dois bits:
+
+\begin{tikzpicture}
+  [-latex]
+
+  % Raiz da árvore
+  \node (root) at (0,0) {$k$};
+  
+  % Primeira camada de nós
+  \node (G0k) at (-3,-2) {$G_0(k)$};
+  \node (G1k) at (3,-2) {$G_1(k)$};
+  
+  % Segunda camada de nós à esquerda
+  \node (G00k) at (-4.5,-4) {$G_0(G_0(k))$};
+  \node (G01k) at (-1.5,-4) {$G_1(G_0(k))$};
+  
+  % Segunda camada de nós à direita
+  \node (G10k) at (1.5,-4) {$G_0(G_1(k))$};
+  \node (G11k) at (4.5,-4) {$G_1(G_1(k))$};
+
+  % Conectando nós da raiz para a primeira camada
+  \draw (root) -- (G0k) node[midway, above, sloped] {0};
+  \draw (root) -- (G1k) node[midway, above, sloped] {1};
+  
+  % Conectando nós da primeira camada para a segunda camada à esquerda
+  \draw (G0k) -- (G00k) node[midway, above, sloped] {0};
+  \draw (G0k) -- (G01k) node[midway, above, sloped] {1};
+  
+  % Conectando nós da primeira camada para a segunda camada à direita
+  \draw (G1k) -- (G10k) node[midway, above, sloped] {0};
+  \draw (G1k) -- (G11k) node[midway, above, sloped] {1};
+\end{tikzpicture}
 
 Para completar, a partir de uma FPA é possível construir uma PRP usando uma rede de Feistel como vimos no Capítulo \ref{cha:cifras-de-bloco}.
 Para garantir uma PPA segura, precisamos de uma rede com pelo menos três passos em que cada passo use uma chave distinta.
