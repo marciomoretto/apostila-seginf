@@ -315,13 +315,13 @@ No jogo, o adversário tenta adivinhar qual mensagem foi cifrada com base apenas
 
 Os modelos de ameaças que estudaremos na apostila incluem:
 \begin{itemize}
-\item[] {\em Ataque apenas ao texto cifrado (ciphertext-only):} 
+\item[] {\em Ataque apenas ao texto cifrado (ATC):} 
   Este é o modelo assumido na definição de sigilo perfeito.
   Nele, supomos que o adversário tem acesso apenas a um texto cifrado de tamanho arbitrário.
-\item[] {\em Ataque com escolha de texto plano (ataque chosen-plaintext):}
+\item[] {\em Ataque com escolha de texto plano (ETP):}
   Neste modelo, além de assumir que o adversário tem acesso à cifra, supomos que ele é capaz de escolher algumas mensagens e ver como elas seriam cifradas pelo sistema.
   Isso dá ao adversário mais informações para tentar descobrir a chave de criptografia ou a mensagem original.
-\item[] {\em Ataque com escolha de texto cifrado (ataque chosen-ciphertext):}
+\item[] {\em Ataque com escolha de texto cifrado (ETC):}
   Neste modelo, assumimos que o adversário é capaz de escolher certas cifras e ver como elas seriam decifradas pelo sistema.
   Esse é um modelo de ameaça mais poderoso, pois permite ao adversário interagir com o sistema de criptografia de maneira mais direta e potencialmente descobrir vulnerabilidades.
 \end{itemize}
@@ -355,6 +355,8 @@ Em termos práticos, buscamos uma noção de segurança que imponha requisitos s
 Especificamente, queremos que um adversário precise rodar seu algoritmo por um {\em intervalo de tempo muito grande} para ter sucesso.
 Além disso, esperamos que o adversário possa eventualmente derrotar o sistema, mas com uma {\em probabilidade extremamente baixa}.
 
+Essas dois conceitos, porém, carecem de rigor científico:
+
 \begin{itemize}
 \item[] {\em Intervalo bem grande de tempo}:
   O que consideramos um tempo razoavelmente longo para resistir a ataques muda com o tempo.
@@ -370,7 +372,7 @@ Além disso, esperamos que o adversário possa eventualmente derrotar o sistema,
 Em vez de estabelecer valores fixos para esses limites, adotamos uma {\em abordagem assintótica}, como fazemos ao analisar algoritmos ou avaliar a complexidade de um problema de computação.
 Vamos supor que, ao gerar a chave, o algoritmo $Gen$ recebe um parâmetro de segurança $n$ e estabelecemos nossos limites em função deste parâmetro.
 
-Para os efeitos desta apostila, podemos assumir que o parâmetro está relacionado ao tamanho da chave a ser gerada e que é de conhecimento público.
+Para os efeitos deste livro, podemos assumir que o parâmetro está relacionado ao tamanho da chave a ser gerada e que é de conhecimento público.
 O parâmetro de segurança permite que as partes ajustem seu sistema para o nível desejado de segurança.
 Aumentar o parâmetro de segurança geralmente resulta em um aumento no tempo de processamento do sistema e no tamanho da chave.
 

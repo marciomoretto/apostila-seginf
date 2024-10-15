@@ -1,7 +1,7 @@
 \chapter{Cifras de Bloco}
 \label{cha:cifras-de-bloco}
 
-No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques apenas contra o texto cifrado (``ciphertext only'').
+No capítulo anterior, vimos que é possível construir um sistema criptográfico seguro contra ataques apenas contra o texto cifrado (ATC).
 Para que isso seja viável, é necessário supor a existência de um gerador de números pseudo-aleatórios, ou seja, um algoritmo capaz de gerar uma sequência de bits que, para todos os efeitos práticos, não pode ser distinguida de uma sequência realmente aleatória.
 
 Embora essa definição de segurança seja um pouco mais fraca do que a apresentada no Capítulo \ref{cha:criptografia-moderna}, ela tem a vantagem de não exigir chaves extremamente longas.
@@ -11,10 +11,10 @@ se uma chave for reutilizada, a segurança é completamente comprometida, e se o
 O modelo das cifras de fluxo é ideal para descrever as Máquinas Enigma, utilizadas pelo exército nazista durante a década de 1940.
 A cifra empregada por essas máquinas foi quebrada não apenas pelo avanço tecnológico, que possibilitou a construção da máquina Bombe e do computador Colossus, mas também porque os aliados conseguiram obter trechos de mensagens já descriptografadas.
 
-Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque com texto original conhecido (``known plaintext''), onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
+Com base na teoria da criptografia moderna, podemos afirmar que o tipo de ataque realizado pelos ingleses é classificado como um ataque com texto original conhecido, onde o atacante tem acesso tanto ao texto cifrado quanto a uma versão conhecida do texto original.
 
 Neste capítulo, vamos explorar um modelo de ataque ainda mais poderoso:
-os ataques com escolha de texto plano (ETP).
+os ataques com {\em Escolha de Texto Plano} (ETP).
 Nesse modelo, imaginamos que o adversário tem acesso a um ``oráculo''.
 Esse oráculo é como uma caixa mágica que permite ao adversário enviar mensagens de sua escolha e receber de volta a versão criptografada dessas mensagens.
 O adversário pode usar essas informações para tentar descobrir a chave de criptografia ou outros segredos do sistema \cite{Bellare97}.
@@ -22,7 +22,7 @@ O adversário pode usar essas informações para tentar descobrir a chave de cri
 É importante notar que os ataques com texto original conhecido são um caso particular desse modelo mais geral, mas há situações em que devemos considerar que o adversário possui essa capacidade adicional, o que torna o cenário de segurança ainda mais desafiador.
 
 
-Vamos explicar a segurança contra ataques com escolha de texto plano (ETP) de maneira semelhante à segurança contra ataques em que o adversário só tem acesso ao texto cifrado (\textit{ciphertext only}).
+Vamos explicar a segurança contra ataques ETP de maneira semelhante à segurança contra ataques ATC.
 A garantia de segurança que buscamos continua sendo a mesma que discutimos anteriormente, mas agora vamos considerar um cenário de ameaças mais poderoso.
 
 O modelo pode ser descrito da seguinte forma:
@@ -87,7 +87,7 @@ Quando aplicamos essa função a uma entrada, ela ``embaralha'' os bits de manei
   \end{tikzpicture}
 \end{center}
 
-Na cifra de bloco, uma chave é escolhida aleatoriamente em $\{0,1\}^n$, e a partir dessa chave é gerada deterministicamente uma função dentro do conjunto de todas as funções $F_n$, que, dado um bloco de $n$ bits, produz um novo bloco de $n$ bits.
+Na cifra de bloco, uma chave é escolhida aleatoriamente em $\{0,1\}^n$, e a partir dessa chave é gerada deterministicamente uma função dentro do conjunto de todas as funções $F_n = \{f: \{0,1\}^n \to \{0,1\}^n\}$, que, dado um bloco de $n$ bits, produz um novo bloco de $n$ bits.
 Uma cifra de blocos é considerada segura se um adversário não for capaz de distinguir esse processo de uma escolha aleatória de uma função diretamente em $F_n$.
 
 Em outras palavras, para qualquer adversário que tente diferenciar entre essas duas situações, a função pseudoaleatória será tão boa quanto uma função completamente aleatória.
@@ -106,7 +106,7 @@ Na próxima seção, veremos como essas cifras de bloco podem ser combinadas par
 \label{sec:modos-de-operacao-bloco}
 
 Uma cifra de bloco é usada para criptografar informações em pedaços de tamanho fixo, chamados de {\em blocos}.
-No entanto, na prática, muitas vezes precisamos criptografar mensagens que são maiores ou menores que esse tamanho fixo.
+No entanto, na prática, muitas vezes precisamos criptografar mensagens que são maiores que esse tamanho fixo.
 Para lidar com isso, precisamos de uma forma de combinar os blocos criptografados pela cifra de bloco para proteger a mensagem inteira.
 
 Uma maneira simples e intuitiva de fazer isso é chamada de {\em Livro de Código Eletrônico} (LCE).
@@ -125,7 +125,7 @@ Se ele criptografar essas mensagens e o texto cifrado resultar em dois blocos id
 Se os blocos cifrados forem diferentes, ele saberá que as partes da mensagem original também eram diferentes.
 
 Em outras palavras, esse adversário consegue distinguir entre as duas cifras ao observar como cada bloco é criptografado.
-Isso significa que o modo LCE não é seguro nem mesmo contra {\em ataques apenas contra a cifra}.
+Isso significa que o modo LCE não é seguro nem mesmo contra ataques ATC.
 A Figura \ref{fig:ecb-exemplo} ilustra essa vulnerabilidade.\footnote{Imagem tirada do verbete {\em Modo de Operação (criptografia)} da Wikipédia (\url{https://pt.wikipedia.org})}.
 
 \begin{figure}[!htp]
@@ -160,7 +160,7 @@ O funcionamento é o seguinte:
 \end{itemize}
 
 Essa cadeia de dependência faz com que, mesmo que dois blocos da mensagem original sejam iguais, seus blocos cifrados finais sejam diferentes, porque cada um deles leva em conta o bloco anterior.
-Ao final, o resultado é uma sequência de blocos cifrados, onde cada um depende do anterior, tornando o sistema muito mais seguro.
+
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -255,11 +255,11 @@ O modo Ctr também é seguro contra ataques do tipo ETP.
 \begin{theorem}
 Um sistema que utiliza uma função pseudoaleatória segura no modo Ctr é seguro contra ataques do tipo ETP.
 \end{theorem}
-
-Para se convencer de que o teorema é válido, vamos considerar dois sistemas de criptografia:
+\begin{proof}
+  Para se convencer de que o teorema é válido, vamos considerar dois sistemas de criptografia:
 o sistema $\Pi$, que usa uma função pseudoaleatória no modo contador (Ctr), e o sistema $\Pi'$, que é semelhante, mas usa uma função realmente aleatória.
 
-Suponha que exista um adversário $\mathcal{A}$ que tenta atacar o sistema.
+Suponha que exista um adversário que tenta atacar o sistema.
 Para analisar a segurança, podemos imaginar que estamos tentando construir um distinguidor que tenta identificar se o sistema está usando uma função pseudoaleatória ou uma função realmente aleatória.
 
 O processo seria o seguinte:
@@ -282,6 +282,7 @@ No entanto, como o número total de possibilidades para o vetor inicial é enorm
 
 Portanto, a chance do adversário ter sucesso em um ataque ETP contra o sistema $\Pi$ é apenas desprezivelmente superior a $1/2$.
 Isso nos permite concluir que o sistema $\Pi$ é seguro contra ataques ETP.
+\end{proof}
 
 A explicação indica que o tamanho dos blocos também influencia em sua segurança.
 Isso ocorre, pois quanto menores os blocos maior a chance de gerar vetores inciais idênticos, e portanto, de criptografar duas mensagens distintas com a mesma chave.
@@ -410,7 +411,7 @@ Assim, o DES é descrito como uma função que combina uma chave de 56 bits com 
 A chave de 56 bits passa por um processo chamado \textit{key schedule}, que gera 16 subchaves, cada uma com 48 bits, para serem usadas em cada uma das 16 rodadas de criptografia, similar a uma cifra de fluxo.
 
 Antes de começar o processo da rede de Feistel, é aplicada uma permutação inicial dos 64 bits do bloco.
-o $58^o$ é colocado na primeira posição, em seguida vem o $50^o$ e assim por diante conforme mostrado na Tabela \ref{tab:IP}, organizada em 8 linhas para facilitar a leitura.
+O $58^o$ é colocado na primeira posição, em seguida vem o $50^o$ e assim por diante conforme mostrado na Tabela \ref{tab:IP}, organizada em 8 linhas para facilitar a leitura.
 Ao final da Rede de Feistel uma permutação inversa a essa é aplicada.
 
 \begin{table}[h!]
@@ -595,16 +596,16 @@ Um dos pontos mais discutidos foi o descarte de 8 bits da chave original de 64 b
 Na época, uma chave de 56 bits estava no limite da segurança, mas hoje sabemos que ela é vulnerável a ataques de força bruta.
 
 Além do pequeno tamanho da chave, outro aspecto suspeito foi a modificação das S-Boxes pela NSA (Agência de Segurança Nacional dos Estados Unidos) sem grandes explicações antes que o algoritmo fosse adotado como padrão.
-Anos mais tarde, pesquisadores apresentaram uma técnica chamada {\em criptoanálise diferencial}, que tornou várias cifras inseguras.
+Anos mais tarde, pesquisadores apresentaram uma técnica chamada {\em criptoanálise diferencial} \cite{DifferentialCryptanalysis}, que tornou várias cifras inseguras.
 No entanto, surpreendentemente, o DES resistiu a essa técnica.
 Isso levou à suspeita de que os pesquisadores da NSA já conheciam a criptoanálise diferencial e ajustaram o DES de forma que ele se tornasse seguro contra esse tipo de ataque.
 
-Em 1993, um artigo já alertava para a fragilidade dessa chave, propondo um projeto de hardware que, teoricamente, seria capaz de quebrar uma chave de 56 bits em apenas um dia e meio.
+Em 1993, um artigo já alertava para a fragilidade de chaves de 56 bits, propondo um projeto de hardware que, teoricamente, seria capaz de quebrá-las em apenas um dia e meio.
 Essa previsão se tornou realidade em 1998, quando a {\em Electronic Frontier Foundation} (EFF)  -- uma organização sem fins lucrativos que defende a privacidade, a liberdade de expressão e os direitos digitais na internet -- construiu uma máquina chamada Deep Crack.
 Este dispositivo, que custou cerca de 250 mil dólares, conseguiu quebrar uma cifra DES em 56 horas, aproximadamente dois dias e meio.
 
 A situação se agravou ainda mais em 2006, quando pesquisadores alemães desenvolveram um hardware de baixo custo — em torno de 10 mil dólares — capaz de realizar um ataque de força bruta ao DES em menos de uma semana.
-Essa evolução mostra que, enquanto nos anos 80 apenas grandes potências mundiais tinham os recursos para construir máquinas desse tipo, hoje em dia, qualquer entidade com recursos relativamente modestos pode quebrar o DES.
+Essa evolução mostra que, enquanto nos anos 1980 apenas grandes potências mundiais tinham os recursos para construir máquinas desse tipo, hoje em dia, qualquer entidade com recursos relativamente modestos pode quebrar o DES.
 
 Com essas revelações e avanços, o DES, que antes era o padrão de segurança, é agora considerado totalmente inseguro para proteger informações sensíveis.
 

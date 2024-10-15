@@ -21,7 +21,7 @@ Uma {\em Função de Mão Única} (FMU) $f: \{0,1\}^n \to \{0,1\}^n$ é uma fun�
 \item[] {\em Difícil de inverter}: Dado um resultado $y$, é muito difícil achar um $x$ que produza $y$ (encontrar uma pré-imagem não é algo que possa ser feito em tempo polinomial).
 \end{itemize}
 
-Em termos mais rigorosos, uma FMU é tal que, se um adversário eficiente recebe $y$, ele só é capaz de encontrar um $x$ que produza $y$ (ou seja, $f(x) = y$) com uma probabilidade desprezível \cite{Diffie76,Yao82}.
+Em termos mais rigorosos, uma FMU é tal que, se um adversário eficiente (polinomial) recebe $y$, ele só é capaz de encontrar um $x$ que produza $y$ (ou seja, $f(x) = y$) com uma probabilidade desprezível \cite{Diffie76,Yao82}.
 
 \begin{example}
   Uma candidata a função de mão é única é a seguinte função, onde $x$ e $y$ são números primos do mesmo tamanho:
@@ -42,7 +42,7 @@ A dificuldade de inverter esta função está associada ao {\em problema do loga
 
 Chamamos de {\em predicado de núcleo duro} um pequeno pedaço de informação, como um único bit, sobre $x$ que a função de mão única mantém escondido \cite{Blum84}.
 Mesmo que o adversário conheça $y = f(x)$ ele não obtem informação adicional sobre esse bit.
-Em outras palavras, a chance de o adversário adivinhar o bit é desprezivelmente maior do que meio.
+Em outras palavras, a chance de o adversário polinomial adivinhar o bit é desprezivelmente maior do que meio.
 
 \begin{theorem}[Goldreich-Levin]
   Assuma que uma função de mão única existe $f$.
@@ -104,9 +104,12 @@ Essa construção nos leva ao seguinte teorema:
 
 \section{Construindo uma FPA e um PPA}
 
-Podemos criar uma Função Pseudoaleatória (FPA) a partir de um Gerador de Números Pseudoaleatórios (GNP) que dobra o tamanho da entrada.
+Agora que entendemos como construir um GNP a partir de uma Função de Mão Única, vamos avançar para a construção de uma Função Pseudo-aleatória (FPA).
+A construção de uma FPA é um passo fundamental em criptografia moderna, pois ela desempenha um papel central em vários protocolos de segurança.
+Para construir uma FPA segura, precisaremos de um GNP que expanda o tamanho da entrada, ou seja, que gere uma saída com o dobro do tamanho da entrada original. 
 
-Primeiro, aplicamos $G$ ao bloco $x$, o que gera uma sequência de bits com o dobro do tamanho do bloco.
+Seja $G$ um GNP que dobra o tamanho da entrada e $k$ a chave que vamos usar para gerar a função $f_k$.
+Primeiro, aplicamos $G$ ao bloco $x$.
 Se o primeiro bit da chave $k$ for 0, pegamos a primeira metade dos bits gerados; se for 1, pegamos a segunda metade.
 Em seguida, aplicamos $G$ ao bloco escolhido e repetimos o processo para o próximo bit de $k$, continuando assim até processar todos os bits de $k$.
 
@@ -114,7 +117,8 @@ Em seguida, aplicamos $G$ ao bloco escolhido e repetimos o processo para o próx
   Se $G$ é um GNP que dobra o tamanho da entrada, então a construção acima gera uma FPA.
 \end{theorem}
 
-Para completar, a partir de uma FPA é possível construir uma PRP usando uma rede de Feistel com três passos em que cada passo usa uma chave distinta.
+Para completar, a partir de uma FPA é possível construir uma PRP usando uma rede de Feistel como vimos no Capítulo \ref{cha:cifras-de-bloco}.
+Para garantir uma PPA segura, precisamos de uma rede com pelo menos três passos em que cada passo use uma chave distinta.
 \begin{displaymath}
   f_{k_1,k_2,k_3}^{(3)}(x) := Feistel_{f_{k_1},f_{k_2},f_{k_3}}(x)
 \end{displaymath}
@@ -128,14 +132,14 @@ Lembrando que:
 
 
 \begin{theorem}
-  Se $f$ é uma PRF então $f^{(3)}$ é uma permutação pseudoaleatória.
+  Se $f$ é uma Função Pseudo-aleatória então $f^{(3)}$ é uma Permutação Pseudo-aleatória.
 \end{theorem}
 
 Resumindo, a existência de uma função de mão única é um ponto de partida na criptografia, pois ela nos permite construir Geradores de Números Pseudoaleatórios (GNP), Funções Pseudoaleatórias (FPA) e Permutações Pseudoaleatórias (PPA).
 \begin{itemize}
-\item No Capítulos \ref{cha:cifras-de-fluxo} vimos que a existência de um GNP é condição suficiente para construir um sistema seguro contra ataques {\em ciphertext only}.
+\item No Capítulos \ref{cha:cifras-de-fluxo} vimos que a existência de um GNP é condição suficiente para construir um sistema seguro contra ataques ATC.
 \item Nos Capítulos \ref{cha:cifras-de-bloco} e \ref{cha:mac} aprendemos que, se temos uma FPA, podemos construir sistemas de criptografia ainda mais robustos. Esses sistemas são seguros contra ataques mais avançados, como os ataques onde o atacante pode escolher textos para cifrar (ETP) ou até mesmo descriptografar (ETC).
-  Além disso, a existência de uma FPA é suficiente para criar sistemas que garantem a autenticidade das mensagens.
+  Além disso, a existência de uma FPA é suficiente para criar sistemas que garantem a autenticidade das mensagens seguro contra falsificação.
 \end{itemize}
 
 O teorema a seguir aborda a condição reversa, mostrando que a existência de uma função de mão única não só permite a criação de GNP, FPA e PPA, mas também que essa função de mão única é necessária para que essas construções existam:
@@ -143,8 +147,8 @@ O teorema a seguir aborda a condição reversa, mostrando que a existência de u
 \begin{theorem}
   Se existe um sistema seguro contra ataques {\em apenas contra o texto cifrado} (ATC) que protega uma mensagem duas vezes maior do que sua chave então existe uma função de mão única.
 \end{theorem}
-
-Para provar o teorema imagine que temos um sistema de criptografia que é seguro contra ataques cyphertext only que consegue cifrar uma mensagem duas vezes maior do que a chave.
+\begin{proof}
+Para provar o teorema imagine que temos um sistema de criptografia que é seguro contra ataques ATC que consegue cifrar uma mensagem duas vezes maior do que a chave.
 
 Queremos provar que, se tal sistema seguro existe, então também deve existir uma função de mão única.
 
@@ -153,9 +157,10 @@ Primeiro vamos sortear uma sequencia de bits aleatórios $r$ e então vamos cons
   f(k, m, r) := E(k, m||r)||m
 \end{displaymath}
 
-Se um adversário polinomail for capaz de inverter $f$ então ele recupera $r$ e como $m$ está exposto, ele recupera a mensagem $m||r$.
+Se um adversário polinomial for capaz de inverter $f$ então ele recupera $r$ e como $m$ está exposto, ele recupera a mensagem $m||r$.
 Mas neste caso, o sistema de criptografia não seria seguro.
 Como assumimos que o sistema é seguro, não deve ser possível inverter $f$.
+\end{proof}
 
 \section{Conclusão}
 

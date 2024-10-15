@@ -30,9 +30,9 @@ As assinaturas digitais, que veremos neste capítulo, são o equivalente àos c�
 
 Um {\em sistema de assinatura digital} consiste de três algoritmos:
 \begin{itemize}
-\item $Gen$ gera um par de chaves sendo um pública $pk$ e outra secreta $sk$.
-\item $Sign$ recebe a chave secreta $sk$ e uma mensagem $m$ e produz uma assinatura $t$.
-\item $Ver$ recebe a chave pública $pk$, uma mensagem $m$ e uma assinatura $t$ e verifica se essa assinatura é válida para mensagem $m$ e de fato da pessoa que possui a chave secreta.
+\item[] $Gen$ gera um par de chaves sendo um pública $pk$ e outra secreta $sk$.
+\item[] $Sign$ recebe a chave secreta $sk$ e uma mensagem $m$ e produz uma assinatura $t$.
+\item[] $Ver$ recebe a chave pública $pk$, uma mensagem $m$ e uma assinatura $t$ e verifica se essa assinatura é válida para mensagem $m$ e de fato da pessoa que possui a chave secreta.
 \end{itemize}
 
 A ideia é garantir que qualquer pessoa possa verificar se uma determinada mensagem foi assinada pela pessoa que detém a chave secreta correspondente à chave pública.

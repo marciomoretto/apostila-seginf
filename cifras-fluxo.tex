@@ -2,7 +2,7 @@
 \label{cha:cifras-de-fluxo}
 
 No capítulo anterior, apresentamos uma definição formal para segurança contra ataques em que o adversário tem acesso apenas ao texto cifrado.
-Neste capítulo, vamos apresentar uma forma de construir um sistema que satisfaz essa definição.
+Neste capítulo, vamos apresentar uma forma de construir uma classe de sistemas que satisfazem essa definição, as {\em cifras de fluxo}.
 
 A ideia geral da construção é a seguinte:
 partimos de uma sequência aleatória de bits chamada de semente e, a partir dela, geramos uma sequência maior de bits para encriptar a mensagem usando a operação de OU exclusivo (XOR), assim como no OTP.
@@ -39,10 +39,10 @@ Os distinguidores são essenciais para avaliar a robustez de um GNP, pois nos aj
 Uma bateria de distinguidores pode ser usada para verificar a qualidade de um GNP.
 Idealmente, nenhum teste eficiente deveria ser capaz de distinguir a sequência gerada por um GNP de uma sequência verdadeiramente aleatória, ou pelo menos, deveria ser incapaz de fazê-lo com uma probabilidade considerável\footnote{Usaremos o termo ``considerável'' para probabilidades não desprezíveis.}.
 
-Definimos um Gerador de Números Pseudo-aleatórios (GNP) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
+Definimos um {\em Gerador de Números Pseudo-aleatórios} (GNP) como um algoritmo $G$ que recebe uma semente $s$ de um determinado tamanho $n$ e produz uma sequência maior de bits de tamanho $l(n)$.
 O fator de expansão do GNP, representado pela função $l$, indica quanto maior é a sequência produzida em comparação com a semente inicial.
 
-Para que um GNP seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória.
+Para que um GNP seja considerado seguro, a sequência gerada a partir da semente deve ser indistinguível de uma sequência verdadeiramente aleatória de mesmo tamanho ($r$).
 Em outras palavras, não deve ser possível para nenhum algoritmo eficiente distinguir entre a sequência gerada pelo GNP e uma sequência aleatória com uma probabilidade significativa.
 
 Em outras palavras, um GNP é seguro se para todo algoritmo polinomial $D$ (distinguidor), a diferença na probabilidade de $D$ identificar corretamente a origem da sequência ($|Pr[D(r) = 1] - Pr[D(G(s)) = 1]|$) for desprezível.
@@ -73,12 +73,12 @@ Portanto, embora seja teoricamente possível distinguir sequências geradas por 
 
 Como adiantamos no capítulo anterior, uma vez definida claramente a suposição que estamos fazendo, podemos tentar provar que, com essa suposição, somos capazes de construir um sistema seguro.
 A abordagem para este tipo de prova é uma redução, similar às reduções que vimos em Teoria da Computação.
-Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas ({\em ciphertext-only}) ao problema de construir um GNP.
+Neste caso, vamos reduzir o problema de construir um sistema seguro contra ataques contra o texto cifrado apenas (ATC) ao problema de construir um GNP.
 
 Reduções são ferramentas poderosas em teoria da computação e criptografia.
 Elas nos permitem transformar um problema desconhecido ou difícil em um problema conhecido ou mais simples.
 Se conseguirmos mostrar que resolver um problema implica resolver outro problema, estabelecemos uma relação de dependência entre eles.
-Neste contexto, se pudermos construir um GNP seguro, podemos utilizar esse GNP para construir um sistema de criptografia que seja seguro contra ataques ciphertext-only.
+Neste contexto, se pudermos construir um GNP seguro, podemos utilizar esse GNP para construir um sistema de criptografia que seja seguro contra ataques ATC.
 
 O processo de redução pode ser descrito da seguinte maneira:
 
@@ -101,7 +101,7 @@ Ela também facilita a compreensão das relações entre diferentes problemas de
 
 Ao estabelecer essa conexão entre GNPs e sistemas de criptografia, criamos uma base sólida para desenvolver e analisar algoritmos de criptografia modernos, garantindo que nossas construções sejam robustas e confiáveis sob as suposições corretas.
 
-A {\em cifra de fluxo} é um método de criptografia que converte texto claro $m$ em texto cifrado $c$, utilizando um fluxo de chaves pseudoaleatórias gerado por um gerador de números pseudoaleatórios (GNP).
+A {\em cifra de fluxo} é um método de criptografia que converte texto plano $m$ em texto cifrado $c$, utilizando um fluxo de chaves pseudoaleatórias gerado por um gerador de números pseudoaleatórios (GNP).
 Este método é amplamente utilizado devido à sua eficiência e capacidade de operar em dados de tamanho variável, tornando-o ideal para aplicações como comunicação em tempo real e transmissão de dados.
 
 O processo para criptografar uma mensagem $m$ usando uma cifra de fluxo é o seguinte:
@@ -130,7 +130,7 @@ Para descriptografar o processo é similar:
 
 \begin{theorem}
   \label{theo:stream}
-  Uma cifra de fluxo para uma mensagem de tamanho fixo $n$ que utiliza um gerador de número pseudoaleatório para expandir a chave é seguro contra ataques {\em ciphertext only}.
+  Uma cifra de fluxo para uma mensagem de tamanho fixo $n$ que utiliza um gerador de número pseudoaleatório para expandir a chave é seguro contra ataques ATC.
 \end{theorem}
 \begin{proof}
 Para provar o teorema vamos mostrar que se existisse um adversário capaz de quebrar nosso sistema de criptografia, poderíamos usar esse adversário para criar um teste eficiente (distinguidor) que diferencie entre uma sequência gerada por um GNP e uma sequência aleatória.
@@ -176,7 +176,7 @@ Ou seja, se o GNP é seguro, então não existe adversário eficiente capaz de d
     \node[above] at ($(small.north) + (0,0.5)$) {$\{0,1\}^n$};
 
     % Conjunto grande label
-    \node[above] at ($(large.north) + (0,2)$) {$\{0,1\}^N$};
+    \node[above] at ($(large.north) + (0,2)$) {$\{0,1\}^{l(n)}$};
 
     % Seta abaulada representando a função de a para B usando bend left
     \draw[->, thick, >=latex] (small.east) to[bend left=30] node[midway, above] {$G$} (large.west);
@@ -187,11 +187,11 @@ Ou seja, se o GNP é seguro, então não existe adversário eficiente capaz de d
 Algoritmos validados empiricamente como bons GNPs podem, portanto, ser utilizados para gerar cifras seguras, para ataques apenas contra o texto cifrado.
 Essa segurança se baseia na dificuldade que qualquer adversário eficiente teria em distinguir a saída do GNP de uma sequência verdadeiramente aleatória.
 
-Em outras palavras, um GNP é uma função $G$ que, a partir de um elemento aleatório escolhido no conjunto $\{0,1\}^n$, produz deterministicamente um elemento no conjunto maior $\{0,1\}^N$, onde $N$ é muito maior que $n$.
-O gerador é considerado seguro se um adversário não for capaz de distinguir a saída de $G$ de uma escolha verdadeiramente aleatória feita diretamente no conjunto maior $\{0,1\}^N$.
+Em outras palavras, um GNP é uma função $G$ que, a partir de um elemento aleatório escolhido no conjunto $\{0,1\}^n$, produz deterministicamente um elemento no conjunto maior $\{0,1\}^{l(n)}$, onde $l(n) > n$. 
+O gerador é considerado seguro se um adversário não for capaz de distinguir a saída de $G$ de uma escolha verdadeiramente aleatória feita diretamente no conjunto maior $\{0,1\}^{l(n)}$.
 
 Nos próximos capítulos, vamos explorar definições mais robustas de segurança e as suposições associadas a essas definições.
-Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto claro escolhido (chosen-plaintext) e ataques de texto cifrado escolhido (chosen-ciphertext).
+Analisaremos como essas definições mais fortes podem nos proteger contra adversários com capacidades adicionais e em diferentes cenários de ataque, como os ataques de texto plano escolhido (ETP) e ataques de texto cifrado escolhido (ETC).
 
 Antes de concluir este capítulo, é importante lembrar que as cifras de fluxo compartilham uma limitação significativa com a cifra de uso único (One-Time Pad):
 a repetição do uso da mesma chave.
@@ -207,9 +207,6 @@ Além disso, a gestão segura das chaves e a geração de chaves verdadeiramente
 O Teorema \ref{theo:stream} supõe que a mensagem a ser criptografada tem um tamanho fixo previamente conhecido.
 No entanto, em muitas aplicações práticas, precisamos criptografar mensagens de tamanho arbitrário.
 Para resolver esse problema, existem dois modos de operação para cifras de fluxo: o modo síncrono e o modo assíncrono.
-
-No modo síncrono, o GNP gera um fluxo contínuo de bits independente do texto claro.
-Já no modo assíncrono, o fluxo de chaves depende tanto da chave inicial quanto do texto cifrado anterior, permitindo uma ressincronização automática em caso de perda de dados.
 
 Tipicamente, um GNP é composto por dois algoritmos: 
 \begin{itemize}
@@ -313,7 +310,7 @@ Esse processo contínuo de avaliação e teste é essencial para identificar e u
 \subsection{RDRL}
 \label{sec:lfsr}
 
-Os registradores de deslocamento com realimentação linear, conhecidos como {\em Registradores de Deslocamento com Retroalimentação Linear} (RDRLs), são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
+Os {\em Registradores de Deslocamento com Retroalimentação Linear} (RDRLs) são uma classe de algoritmos frequentemente utilizados em criptografia para gerar sequências pseudo-aleatórias de bits.
 
 Um RDRL é composto por duas partes principais:
 \begin{enumerate}
@@ -453,7 +450,7 @@ Portanto, os primeiros bits da sequência gerada seriam: {\tt 1}, {\tt 0}, {\tt 
 
 
 Um RDRL com $n$ registradores é capaz de gerar no máximo $2^n - 1$ bits antes de começar a repetir sua sequência.
-Isso ocorre porque o número de estados possíveis para um vetor de registradores com $n$ bits é $2^n$, e o estado em que todos os bits são 0 não é válido-- se ele ocorresse, o RDRL continuaria gerando apenas 0s indefinidamente.
+Isso ocorre porque o número de estados possíveis para um vetor de registradores com $n$ bits é $2^n$, e o estado em que todos os bits são 0 não é válido -- se ele ocorresse, o RDRL continuaria gerando apenas 0s indefinidamente.
 Assim, depois de no máximo $2^n - 1$ passos, o RDRL retornará a um estado anterior, iniciando assim um ciclo.
 
 O tamanho do ciclo de um RDRL refere-se ao número de bits gerados antes que a sequência comece a se repetir.
@@ -468,12 +465,11 @@ Um polinômio irredutível é aquele que não pode ser fatorado em polinômios d
 Por exemplo, o polinômio $x^3 + x^2 + x + 1$ (representado pelo vetor binário $1111_2$) pode ser fatorado como $(x^2 + 1)(x + 1)$ no caso de coeficientes binários, que é o nosso contexto.
 Por outro lado, o polinômio $x^3 + x + 1$ (representado pelo vetor binário \(1011_2\)) é irredutível.
 Portanto, para um registrador de 4 bits, o vetor binário $1011_2$ gera um ciclo ideal de tamanho $2^4 - 1 = 15$, enquanto o vetor $1111_2$ não produz um ciclo ideal.
-Contudo, não demonstraremos formalmente este resultado. 
+Não demonstraremos formalmente este resultado. 
 
 A linearidade dos RDRLs é um problema, pois torna previsível antecipar os próximos bits gerados com base nos anteriores.
 Essa previsibilidade compromete a segurança de sistemas de cifra de fluxo.
 
-Na próxima seção, veremos como combinar múltiplos RDRLs de forma a quebrar essa linearidade, produzindo assim um GNP mais robusto e seguro, adequado para aplicações criptográficas.
 
 %O segredo de um RDRL, ou sua ``chave'', é a semente $s_0 \dots s_{n-1}$.
 %Lembre-se de que assumimos que o mecanismo (neste caso, os coeficientes de feedback) é sempre conhecido publicamente. Isso significa que qualquer segurança do sistema depende exclusivamente da semente inicial.
@@ -536,10 +532,6 @@ Na próxima seção, veremos como combinar múltiplos RDRLs de forma a quebrar e
 %  Usando os bits observados e os coeficientes de feedback conhecidos, fomos capazes de determinar a semente inicial do RDRL.
 %  Isso demonstra como um adversário pode comprometer a segurança do RDRL ao observar um número suficiente de bits gerados.
 %\end{example}
-
-O RDRL não é considerado seguro para aplicações criptográficas porque a operação que gera novos bits é linear.
-Essa linearidade permite que o RDRL seja previsível e, portanto, vulnerável a ataques.
-Um adversário que observa um número suficiente de bits gerados pelo RDRL pode resolver um sistema de equações lineares para determinar a semente inicial e, consequentemente, prever todos os bits subsequentes.
 
 Embora os RDRLs não sejam seguros, muitos Geradores de Números Pseudo-Aleatórios (GNPs) usados na prática são versões modificadas deste esquema geral.
 A segurança dos GNPs modernos geralmente depende da introdução de não-linearidades no processo de geração de bits.
@@ -813,7 +805,7 @@ C & 87 & 66 & 111 \\
 \caption{Especificações do Trivium}
 \end{table}
 
-A escolha de um bom gerador de números pseudo-aleatórios (GNP) é crucial para garantir a segurança de uma cifra de fluxo.
+A escolha de um bom GNP é crucial para garantir a segurança de uma cifra de fluxo.
 Utilizar geradores inadequados pode comprometer seriamente a integridade do sistema criptográfico.
 Um erro comum é utilizar funções padrão de bibliotecas de programação, como a função \texttt{rand} da biblioteca padrão da linguagem \texttt{C}.
 Embora essas funções sejam adequadas para simulações e outras aplicações não críticas, elas não oferecem o nível de segurança necessário para aplicações criptográficas.

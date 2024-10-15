@@ -1,19 +1,19 @@
 \chapter{Introdução}
 \label{cha:introducao}
 
-A crise que veio à tona com as denúncias de Edward Snowden em 2013 revelou a extensão dos programas de vigilância em massa conduzidos pela NSA e outras agências de inteligência ao redor do mundo.
+A crise que veio à tona com as denúncias de Edward Snowden em 2013 revelou a extensão dos programas de vigilância em massa conduzidos pela Agência Nacional de Segurância (NSA) dos EUA.
 Essas revelações mostraram como a privacidade de cidadãos comuns estava sendo sistematicamente violada, provocando uma reação significativa de diversos setores da sociedade civil.
 
-Em resposta à crise de privacidade, grupos autônomos, em parceria com ONGs e outros agentes da sociedade civil organizada, começaram a organizar eventos conhecidos como {\em criptoparties} e {\em cryptorraves}.
+Em resposta a essa crise, grupos autônomos, em parceria com ONGs e outros agentes da sociedade civil organizada, começaram a organizar eventos conhecidos como {\em criptoparties} e {\em cryptorraves}.
 Esses eventos tinham como objetivo promover o uso de criptografia ponta a ponta entre a população, ensinando técnicas e ferramentas para proteger a privacidade das comunicações.
 
 São Paulo tornou-se um importante centro para esses eventos, sediando algumas das maiores criptoparties e cryptorraves do mundo.
 Nesses eventos, voluntários ensinavam aos participantes como usar tecnologias de criptografia para proteger suas comunicações.
 
-Criptografia ponta a ponta (E2EE) é uma técnica de comunicação segura onde somente as partes que estão se comunicando podem ler as mensagens.
+Criptografia ponta a ponta é uma técnica de comunicação segura onde somente as partes que estão se comunicando podem ler as mensagens.
 Isso significa que, mesmo que a comunicação seja interceptada, ninguém além dos destinatários pretendidos pode acessar o conteúdo.
 
-Para entender a importância da criptografia ponta a ponta (E2EE), é fundamental compará-la com outros modelos de comunicação segura.
+Para entender a importância da criptografia ponta a ponta, é fundamental compará-la com outros modelos de comunicação segura.
 Um desses modelos é o protocolo SSL/TLS, amplamente utilizado na web.
 
 SSL (Secure Sockets Layer) e seu sucessor, TLS (Transport Layer Security), são protocolos de segurança que protegem as comunicações na internet.
@@ -76,31 +76,30 @@ A criptografia ponta a ponta funciona da seguinte forma:
   \caption{Criptografia ponta a ponta}
 \end{figure}
 
-Antes da popularização da criptografia de ponta a ponta (E2EE), a vigilância em massa abusava do acesso a servidores de grandes empresas como Microsoft, Meta, Alphabet, Apple, entre outras.
-A concentração das comunicações globais nos servidores dessas poucas empresas-- conhecidas como big techs-- cria o que, no jargão da área, é chamado de ponto único de falha.
+
+A concentração das comunicações globais nos servidores de um conjunto de poucas empresas-- conhecidas como big techs-- cria o que, no jargão da área, é chamado de ponto único de falha.
 Quando uma organização como a NSA conseguia acesso a esses servidores, ela podia monitorar os dados de centenas de milhões de usuários dessas plataformas.
 Isso era possível porque, embora a comunicação entre o usuário e o servidor fosse segura graças ao protocolo SSL/TLS, esse protocolo protege apenas a comunicação em trânsito e não garante a segurança dos dados armazenados nos servidores.
 Assim, as mensagens e outros dados ficavam acessíveis aos administradores dessas plataformas ou a quem tivesse acesso aos servidores, permitindo a vigilância em massa.
 
 A popularização da criptografia ponta a ponta obriga uma mudança significativa na abordagem da vigilância.
-Com E2EE, mesmo que uma organização tenha acesso aos servidores intermediários, ela não consegue ler o conteúdo das mensagens.
+Quando a maior parte da comunicação digital está seguro por criptografia ponta a ponta, mesmo que uma organização tenha acesso aos servidores intermediários, ela não consegue ler o conteúdo das mensagens.
 Somente os dispositivos dos remetentes e destinatários têm as chaves necessárias para descriptografar as mensagens.
 Isso força as agências de vigilância a mudarem o foco de uma vigilância em massa para uma vigilância direcionada a alvos específicos, que são suspeitos de atividades ilícitas.
 
 Nos primeiros eventos de criptoparty, as tecnologias ensinadas eram frequentemente obsoletas, como o PGP (Pretty Good Privacy).
-Embora o PGP garanta a criptografia ponta a ponta (E2EE), ele é complexo e de difícil uso para a maioria das pessoas, exigindo a troca manual de chaves públicas.
+Embora o PGP garanta a criptografia ponta a ponta, ele é complexo e de difícil uso para a maioria das pessoas, exigindo a troca manual de chaves públicas.
 A complexidade e a dificuldade de uso do PGP limitaram sua adoção em larga escala, evidenciando a necessidade de uma tecnologia mais acessível.
 Reconhecendo essa necessidade, formou-se um consenso entre ativistas e tecnólogos de que era crucial desenvolver ferramentas de criptografia que fossem acessíveis a todos.
 
-Foi nesse contexto que o Signal foi desenvolvido por ativistas de privacidade.
+Foi nesse contexto que o Signal foi desenvolvido por ativistas engajados em difundir o uso de ferramentas de segurança da informação.
 O Signal oferece criptografia ponta a ponta de forma simples e intuitiva, tornando a segurança acessível para todos os usuários.
 A maior conquista desse movimento foi a implementação do protocolo de criptografia desenvolvido para o Signal no WhatsApp, um aplicativo com uma base de usuários de muitos milhões.
 A adoção do protocolo de criptografia ponta a ponta do Signal pelo WhatsApp marcou um avanço significativo na proteção da privacidade em comunicações digitais, democratizando o acesso a comunicações seguras para uma vasta audiência global.
 
-A popularização da criptografia ponta a ponta representa um avanço crucial na proteção da privacidade individual, mas também levanta novos desafios e questões sobre a relação entre segurança, privacidade e controle.
+A popularização da criptografia ponta a ponta representa um importante avanço na proteção da privacidade individual, mas também levanta novos desafios e questões sobre a relação entre segurança, privacidade e controle.
 As tecnologias de criptografia estão em constante evolução, e o debate sobre sua implementação envolve diversos atores: a sociedade civil, a academia, o governo e as empresas.
 Cada um desses grupos tem sua própria visão e papel na busca por soluções que equilibrem a necessidade de segurança com os direitos fundamentais à privacidade.
-
 
 Ao longo deste livro, apresentamos as principais primitivas criptográficas e mostramos como elas garantem, de maneira formal, diferentes noções de segurança.
 Nosso foco foi oferecer uma base sólida para que os leitores compreendam os fundamentos da criptografia moderna, abordando as definições de segurança e as suposições necessárias para garantir a robustez dos sistemas criptográficos.

@@ -82,7 +82,7 @@ Após verificar essas informações, o CDC emite o ticket de serviço, que é cr
 O modelo CDC, no entanto, tem limitações importantes.
 Ele pressupõe a existência de um administrador confiável que gerencia todas as chaves permanentes dos usuários.
 Além disso, esse modelo possui um problema significativo conhecido como ponto único de falha.
-Isso significa que se o servidor do administrador falhar, todas as comunicações seguras entre os usuários ficarão interrompidas.
+Isso significa que se o servidor do administrador falhar, todas as comunicações seguras entre os usuários ficarão comprometidas.
 
 Portanto, embora o modelo CDC possa funcionar bem em ambientes fechados com uma hierarquia bem definida, ele não é ideal.
 Em ambientes abertos e distribuídos, onde não há uma autoridade central confiável ou onde a disponibilidade contínua do servidor não pode ser garantida, esse modelo é inadequado e pode levar a falhas significativas na segurança e na comunicação.
@@ -130,7 +130,7 @@ Um grupo pode ser finito ou infinito dependendo se o conjunto $G$ tiver um núme
 Quando ele é finito, o número total de elementos em $G$ é chamado de {\em ordem} do grupo.
 
 Além disso, se a operação der o mesmo resultado independentemente da ordem em que você combina os elementos, o grupo é chamado de {\em abeliano} ou {\em comutativo}.
-Ou seja, $a \circ b = b \circ a$.
+Ou seja, em um grupo abeliano, $a \circ b = b \circ a$.
 
 O conjunto dos número inteiros com a operação de adição é um grupo abeliano.
 Já o conjunto dos números naturais não é porque nenhum número natural tem inverso aditivo.
@@ -140,7 +140,7 @@ Já o conjunto dos número racionais sem o $0$ é um grupo.
 
 Vamos apenas apresentar um grupo finito:
 \begin{example}
-  Se $p$ um número primo, o conjunto $\mathbb{Z}_p^\star = \{ 1, \dots, p-1\}$ que possui $p$ elementos com a operação de multiplicação módulo $p$ é um grupo (Lembre que o módulo o resto da operação por $p$).
+  Se $p$ um número primo, o conjunto $\mathbb{Z}_p^\star = \{ 1, \dots, p-1\}$ que possui $p - 1$ elementos com a operação de multiplicação módulo $p$ é um grupo (Lembre que o módulo o resto da operação por $p$).
 
     Não é difícil se convencer de que essa estrutura é fechada, associativa e que o $1$ é seu elemento neutro.
     O difícil é motrar que todos elementos possuem inverso.
@@ -234,7 +234,7 @@ Funciona assim:
 \item Alice envia para Bob o grupo que ela criou, o gerador, e o valor $h_A$ que ela calculou.
 (As vezes $h_A$ é chamado de chave pública de Alice e $x$ sua chave privada).
 \item Quando Bob recebe essas informações, ele também escolhe um número secreto, $y$, e usa esse número para calcular um valor $h_B$, combinando o gerador $g$ consigo mesmo $y$ vezes.
-  Ou seja, $h_b = g^y$.
+  Ou seja, $h_B = g^y$.
 \item Agora Bob envia $h_B$ para Alice.
   (As vezes $h_B$ é chamado de chave pública de bob e $y$ sua chave privada).
 \item Agora, Alice e Bob podem calcular uma chave secreta que ambos compartilham.
@@ -270,7 +270,7 @@ A ideia básica é que você pode calcular $g^x$ multiplicando $g$ por ele mesmo
 Nesse método, começamos com $g^0 = 1$, já que qualquer número elevado a zero é 1.
 Depois, continuamos multiplicando $g$ até chegar a $g^m$.
 Esse procedimento pode ser implementado de maneira simples, mas não é muito eficiente, pois leva $m$ passos para completar o cálculo.
-O tempo necessário para esse cálculo cresce linearmente com $m$ e exponencialmente com o tamanho de $m$ (lembre que podemos escrever o número $m$ em notação binária usando $log_2(m)$ dígitos), o que significa que o método fica muito lento para números grandes.
+O tempo necessário para esse cálculo cresce linearmente com $m$ e exponencialmente com o {\em tamanho} de $m$ (lembre que podemos escrever o número $m$ em notação binária usando $log_2(m)$ dígitos), o que significa que o método fica muito lento para números grandes.
 
 No entanto, podemos fazer isso de maneira muito mais rápida usando um truque inteligente chamado \textit{exponenciação rápida}.
 Em vez de calcular $g^m$ multiplicando $g$ repetidamente, podemos dividir o problema em partes menores e resolver cada parte de forma mais eficiente:
@@ -285,7 +285,7 @@ Em vez de calcular $g^m$ multiplicando $g$ repetidamente, podemos dividir o prob
 \end{displaymath}
 
 Em vez de precisar de $x$ passos, agora precisamos de apenas $\log_2(x)$ passos, o que é muito menor.
-Assim, o tempo necessário para calcular $g^m$ cresce linearmente com o tamanho do número $m$, o que torna esse método extremamente eficiente, mesmo para números grandes.
+Assim, o tempo necessário para calcular $g^m$ cresce linearmente com o {\em tamanho} do número $m$, o que torna esse método extremamente eficiente, mesmo para números grandes.
 
 A dificuldade em resolver o problema do logaritmo discreto é uma condição necessária, mas não suficiente por si só, para garantir a segurança do protocolo de Diffie-Hellman.
 Existem certas estruturas matemáticas que são bem adequadas para criar grupos cíclicos onde o problema do logaritmo discreto é considerado difícil de resolver.
@@ -304,7 +304,7 @@ Isso não afeta a segurança do sistema.
 Caso o problema do logaritmo discreto não seja difícil, Eva seria capaz de produzir $x$ e $y$ a partir de $g^x$ e $g^y$ e descobrir o valor de $g^{xy}$.
 Se o sistema for seguro, porém, o melhor que Eva pode fazer é tentar todos os valores de $\mathbb{Z}_n$ até encontrar $x$ ou $y$.
 Escolhendo grupos de ordem suficientemente grande, essa tarefa é computacionalmente inviável.
-Uma vez que as partes possuem o mesmo valor secreto, elas podem utilizá-lo para alimentar um KDF e gerar chaves para um sistema de criptografia simétrico.
+Uma vez que as partes possuem o mesmo valor secreto, elas podem utilizá-lo para alimentar um FDC e gerar chaves para um sistema de criptografia simétrico.
 
 Embora o protocolo de Diffie-Hellman permita a criação de uma chave secreta sem a necessidade de uma reunião física ou uma autoridade central confiável, ele não garante a autenticidade das partes envolvidas na comunicação.
 Isso significa que o protocolo é vulnerável a um tipo de ataque conhecido como ``Man in the Middle''.

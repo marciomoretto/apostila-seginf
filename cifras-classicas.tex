@@ -115,9 +115,9 @@ Mais adiante, veremos um outro modelo chamado assimétrico.
 
 Um sistema de criptografia simétrico é formado por três algoritmos:
 \begin{itemize}
-\item $Gen$: o algoritmo que gera uma chave secreta.
-\item $E$: o algoritmo que criptografa, ou seja, transforma uma mensagem em uma cifra.
-\item $D$: o algoritmo que descriptografa, ou seja, recupera a mensagem a partir de uma cifra.
+\item[] $Gen$: o algoritmo que gera uma chave secreta.
+\item[] $E$: o algoritmo que criptografa, ou seja, transforma uma mensagem em uma cifra.
+\item[] $D$: o algoritmo que descriptografa, ou seja, recupera a mensagem a partir de uma cifra.
 \end{itemize}
 
 Considere que temos um sistema $\Pi$ formado por três algoritmos como esses.
@@ -130,8 +130,8 @@ O sistema é considerado {\em correto} se, ao descriptografarmos $c$ com o algor
 O que chamamos na seção anterior de ``cifra de César'' não deve ser propriamente considerado um sistema de criptografia, pois não possui uma chave.
 No entanto, é possível e simples adaptar esse esquema para incorporar uma chave.
 
-Para fazer isso, em vez de deslocar as letras sempre três casas para frente, vamos assumir que foi sorteado previamente um número $k$ entre $0$ e $25$.
-Ou seja, nosso algoritmo $Gen$ sorteia um número de $0$ a $25$
+Para fazer isso, em vez de deslocar as letras sempre três casas para frente, vamos assumir que foi sorteado previamente um número $k$ entre $0$ e $22$.
+Ou seja, nosso algoritmo $Gen$ sorteia um número de $0$ a $22$
 Esse número será a chave da comunicação, e assumiremos que ambas as partes a compartilham.
 
 O mecanismo para criptografar uma mensagem ($E$) será deslocar cada letra $k$ posições para a direita.
@@ -236,9 +236,6 @@ Em sistemas com um grande universo de chaves, um ataque de força bruta se torna
   Muitos dos roteadores modernos possuem um mecanismo chamado WPS (Wi-Fi Protected Setup), que supostamente simplifica o processo de conexão, especialmente na configuração do hardware.
   O WPS permite que um usuário se conecte remotamente e sem fio ao roteador, desde que possua um PIN (Personal Identification Number).
   Esse PIN é uma sequência de oito dígitos de 0 a 9, o que significa que o universo das chaves é $10^8 \approx 2^{27}$.
-
-  Para entender melhor, o universo das chaves, $10^8$, significa que existem 100 milhões de combinações possíveis.
-  Em termos binários, isso é aproximadamente $2^{27}$, que é um número relativamente pequeno para os padrões de segurança modernos.
 
   Devido ao tamanho limitado do universo das chaves, um ataque de força bruta é viável.
   Um ataque de força bruta envolve tentar todas as combinações possíveis de PIN até encontrar a correta.
@@ -515,6 +512,10 @@ Cifra:    LVNUSHEELNUMN
 \end{verbatim}
 \end{example}
 
+Note que a primeira ocorrência da letra {\tt a} é substituída por {\tt N} e a segunda por {\tt E}.
+Isso jamais ocorre em cifras monoalfabéticas, nas quais cada letra é sempre substituída por um único símbolo fixo.
+Essa variação é justamente o que confere maior força às cifras polialfabéticas, como a cifra de Vigenère.
+
 Apesar da fama de ``inquebrável'' que a cifra de Vigenère ostentou até o começo do século XX, desde a metade do século anterior já eram conhecidos métodos de criptoanálise capazes de derrotar esse tipo de cifra.
 
 Em 1854, John Hall Brock Thwaites submeteu um texto cifrado utilizando uma cifra supostamente por ele inventada.
@@ -542,8 +543,8 @@ Neste caso, a distância é 16, o que significa que o tamanho da chave deve ser 
 Com esta informação, podemos aplicar um ataque de frequência nos caracteres de 2 a 2, de 4 a 4, de 8 a 8 e de 16 a 16.
 
 Embora a cifra de Vigenère seja significativamente mais complexa do que as cifras monoalfabéticas, ela não é invulnerável.
-Técnicas avançadas de criptoanálise, desenvolvidas ao longo do tempo, eventualmente permitiram a quebra dessa cifra.
-Por exemplo, o método de Kasiski e a análise de frequência foram ferramentas essenciais na criptoanálise da cifra de Vigenère.
+Técnicas avançadas de criptoanálise, desenvolvidas ao longo do tempo, acabaram por permitir sua quebra.
+Por exemplo, como vimos, uma combinação do método de Kasiski com análise de frequência é capaz de quebrá-la.
 
 \section{Máquinas de Criptografar}
 \label{sec:maquinas}

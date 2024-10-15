@@ -23,7 +23,7 @@ Na realidade, esses sistemas não oferecem nenhuma proteção contra modificaç�
 Isso significa que a cifra pode ser facilmente alterada por um adversário para produzir um efeito desejado.
 
 \begin{example}
-Vamos considerar um exemplo para ilustrar como um adversário pode injetar uma mensagem $m'$ em uma cifra.
+Vamos considerar um exemplo para ilustrar como um adversário pode injetar uma mensagem $m'$ em uma cifra de fluxo.
 Suponha que o adversário conheça a mensagem original $m$ e queira enganar o destinatário, fazendo-o acreditar que a mensagem recebida é $m'$.
 
 O adversário pode interceptar a cifra $c$, que foi gerada pela operação $c = G(k) \xor m$, e substituí-la por uma nova cifra $c'$, calculada da seguinte forma:
@@ -40,7 +40,7 @@ Isso permitiu ao adversário alterar o conteúdo da mensagem mesmo sem que ele p
 
 \begin{example}
   Outro erro comum é tentar garantir a integridade de uma mensagem cifrada usando um checksum.
-  Um {\em checksum}\footnote{Estudaremos isso no Capítulo \ref{cha:hash}} é como uma ``assinatura digital'' da mensagem, gerada por uma função que produz uma sequência de bits quase única para cada mensagem.
+  Um {\em checksum}\footnote{Estudaremos isso no Capítulo \ref{cha:hash}} é como espécie de ``impressão digital'' da mensagem, gerada por uma função que produz uma sequência de bits quase única para cada mensagem.
 (Vamos explorar isso em mais detalhes no próximo capítulo.)
 
 A ideia seria a seguinte: você gera um checksum para a mensagem $m$, anexa esse checksum ao final da mensagem, e só então criptografa tudo.
@@ -106,8 +106,9 @@ Vamos supor que o tamanho da mensagem $m$ seja um múltiplo de $n$, o tamanho do
 Podemos dividir a mensagem $m$ em blocos $m_1, m_2, \dots, m_l$, onde cada bloco $m_i$ tem tamanho $n$.
 
 A construção funciona da seguinte maneira:
-
-{\em Mac:} Este algoritmo gera um código de autenticação $t$ para a mensagem $m$ usando a chave $k$.
+\begin{itemize}
+\item[] $Gen$: gera uma chave aleatória de $n$ bits.
+\item[] $Mac$: gera um código de autenticação $t$ para a mensagem $m$ usando a chave $k$.
 
 Primeiro, definimos $t_0$ como um bloco de zeros de tamanho $n$.
 Em seguida, para cada bloco $m_i$ da mensagem, calculamos $t_i$ usando a função $f$ e a operação XOR, que combina o resultado do bloco anterior com o bloco atual:
@@ -117,7 +118,7 @@ t_i := f_k(t_{i-1} \oplus m_i)
 
 O resultado final $t_l$ é o código de autenticação.
 
-{\em Ver:} Este algoritmo verifica se o código $t$ corresponde à mensagem $m$ quando gerado pela mesma chave $k$.
+\item[] $Ver:$ verifica se o código $t$ corresponde à mensagem $m$ quando gerado pela mesma chave $k$.
 
 \begin{displaymath}
   Ver(k, m, t) :=  \left\{
@@ -127,7 +128,7 @@ O resultado final $t_l$ é o código de autenticação.
   \end{array}
   \right.
 \end{displaymath}
-
+\end{itemize}
 
 \begin{center}
 \begin{tikzpicture}[node distance=2cm,auto,>=latex]
@@ -182,7 +183,7 @@ Essas técnicas garantem que o EBC-CAM permaneça seguro, mesmo quando as mensag
 \section{Criptografia Autenticada}
 \label{label}
 
-No modelo ETP (Ataque com Escolha de Texto Plano), o adversário pode acessar um oráculo que criptografa mensagens escolhidas para tentar descobrir segredos do sistema.
+No modelo de ameaça ETP, o adversário pode acessar um oráculo que criptografa mensagens escolhidas para tentar descobrir segredos do sistema.
 Agora, vamos considerar um modelo ainda mais forte de ameaça.
 
 Além de poder enviar mensagens para serem criptografadas, o adversário também pode consultar como certas cifras seriam decifradas.
@@ -224,7 +225,7 @@ O jogo funciona assim:
 \end{tikzpicture}
 \end{center}
 
-Dizemos que um sistema é seguro contra o {\em Ataque com Escolha de Texto Cifrado} (ETC) se para qualquer adversário eficiente existe a chance do adversário vencer o jogo é desprezivelmente maior que $1/2$.
+Dizemos que um sistema é seguro contra o {\em Ataque com Escolha de Texto Cifrado} (ETC) se para qualquer adversário eficiente (polinomial) existe a chance do adversário vencer o jogo é desprezivelmente maior que $1/2$.
 
 Sistemas de criptografia que não garantem a integridade das mensagens não são seguros contra ataques do tipo ETC.
 Um exemplo que ilustra bem essa vulnerabilidade é o modo Ctr de cifração de blocos.
