@@ -46,7 +46,7 @@ Em outras palavras, a chance de o adversário polinomial adivinhar o bit é desp
 
 \begin{theorem}[Goldreich-Levin]
   Assuma que uma função de mão única existe $f$.
-  Então a função $g(x,r) = \langle f(x), r \rangle$ também é uma função de mão única e o predicado $x \xor r$ é um predicado de núcleo duro para $g$ \cite{Goldreich89}.
+  Então a função $g(x,r) = \langle f(x), r \rangle$ também é uma função de mão única e o predicado $\bigoplus_{i=1}^nx_ir_i$ é um predicado de núcleo duro para $g$ \cite{Goldreich89}.
 \end{theorem}
 
 Uma vez que conseguimos extrair um bit ``seguro'' de uma função de mão única, podemos usá-lo para criar um gerador de números pseudoaleatórios (GNP) que aumenta o tamanho da entrada em 1 bit.
