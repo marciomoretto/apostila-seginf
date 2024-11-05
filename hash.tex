@@ -59,18 +59,17 @@ Essa propriedade é mais forte do que outras propriedades que também desejamos 
 \end{itemize}
 
 
-Toda função de hash está vulnerável a ataques do tipo força bruta. Suponha que temos uma função $H_s$, que mapeia qualquer sequência de bits em uma saída de $n$ bits.
+Toda função de hash está vulnerável a ataques do tipo força bruta. Suponha que temos uma função $H_s$.
 Se calcularmos $H_s(m)$ para uma sequência grande de diferentes entradas, eventualmente encontraremos uma colisão.
 Isso é garantido pelo princípio da casa dos pombos:
 se temos mais itens do que ``caixas'' para colocá-los, pelo menos duas entradas diferentes acabarão na mesma caixa (ou seja, produzirão o mesmo resumo).
 
-
-Na verdade, se assumirmos que a função de hash se comporta como uma função aleatória, podemos mostrar que a probabilidade de encontrar uma colisão é maior que $50\%$ se testarmos cerca de $\sqrt{n}$ entradas diferentes.
+Na verdade, se assumirmos que a função de hash se comporta como uma função aleatória, podemos mostrar que a probabilidade de encontrar uma colisão em um conjunto com $n$ elementos é maior que $50\%$ se testarmos cerca de $\sqrt{n}$ entradas diferentes.
 Esse resultado é conhecido como o {\em paradoxo do aniversário}.
 Ele é chamado assim porque, por exemplo, em um grupo de 23 pessoas (pense um time de futebol, com titulares, reservas e o técnico), a chance de duas delas terem o mesmo aniversário é maior que $50\%$.
 Embora 23 pessoas pareça um número pequeno para essa coincidência, a matemática por trás do paradoxo explica essa alta probabilidade de colisão.
 
-Portanto, se quisermos um sistema de hash que ofereça segurança equivalente a uma função aleatória com uma chave de 128 bits, precisamos usar uma função de hash que produza uma saída de pelo menos 256 bits.
+Portanto, se quisermos um sistema de hash que ofereça segurança equivalente a uma função aleatória com uma chave de 128 bits -- ou seja se o universo de chaves tem $2^{128}$ --, precisamos usar uma função de hash que produza uma saída de pelo menos 256 bits -- para que o universo de possíveis resumos seja $2^{256}$ cuja raiz quadrada é $2^{128}$.
 
 À primeira vista, encontrar uma colisão qualquer pode parecer inofensivo, já que não controlamos quais valores vão colidir.
 No entanto, esse ataque pode ser mais perigoso do que parece.
