@@ -175,7 +175,7 @@ Essa função $h$ consiste em 80 rodadas de cálculos, onde a mensagem é proces
 O processo começa com o \textit{message schedule}, que gera 80 strings de 32 bits cada, chamadas $W_0, \dots, W_{79}$, a partir do bloco $x_i$ da mensagem que está sendo processado.
 Essas strings são usadas em cada uma das 80 rodadas de processamento da função de hash.
 
-Antes de começar as rodadas, são definidos valores iniciais fixos para cinco variáveis: 
+Antes de começar as rodadas, são definidos valores iniciais fixos para cinco variáveis cada uma com 32 bits que podem ser representadas com 8 dígitos hexadecimais: 
 
 \begin{itemize}
   \item[] $A = \texttt{67452301}$
@@ -190,11 +190,83 @@ Esses valores serão alterados em cada uma das 80 rodadas para ajudar a processa
 Durante as 80 rodadas, os valores $A, B, C, D, E$ são atualizados usando a seguinte fórmula:
 
 \begin{itemize}
-\item[] {\em Atualiza $A$:}
-  O novo valor de $A$ é calculado somando o valor de $E$, uma função específica $f_t(B,C,D)$ que depende dos valores de $B, C, D$, uma versão rotacionada de $A$, a string $W_j$ correspondente à rodada, e uma constante $K_t$.
 \item[] {\em Desloca os Valores:}
-  Os valores de $B, C, D, E$ são então ajustados para a próxima rodada, com $B$ sendo rotacionado 30 bits para a esquerda.
+  Os valores de $B, C, D, E$ são então deslocados, com $B$ sendo rotacionado 30 bits para a esquerda.
+
+  \begin{displaymath}
+    B, C, D, E = A, B_{<<30}, C, D 
+  \end{displaymath}
+
+\item[] {\em Atualiza $A$:}
+  O novo valor de $A$ é calculado somando o valor de $E$, uma função específica $f_t(B,C,D)$ que depende dos valores de $B, C, D$, uma versão rotacionada de $A$, a string $W_t$ correspondente à rodada, e uma constante $K_t$.
+
+  \begin{displaymath}
+    A = E \xor f_t(B,C,D) \xor A_{<<5} \xor W_t \xor K_t
+  \end{displaymath}
 \end{itemize}
+
+\begin{center}
+  \begin{tikzpicture}
+    % Define os vetores
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (A1) at (0, 0) {A};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (B1) at (2, 0) {B};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (C1) at (4, 0) {C};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (D1) at (6, 0) {D};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (E1) at (8, 0) {E};
+    
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (A2) at (0, -8) {A};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (B2) at (2, -8) {B};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (C2) at (4, -8) {C};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (D2) at (6, -8) {D};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (E2) at (8, -8) {E};
+
+    % Adiciona setas entre os elementos, do meio da parte inferior ao meio da parte superior
+    \draw[-latex] (A1.south) -- (B2.north);
+    \draw[-latex] (B1.south) -- (C2.north);
+    \draw[-latex] (C1.south) -- (D2.north);
+    \draw[-latex] (D1.south) -- (E2.north);
+
+    % Adiciona um nó para a anotação de shift <<30
+    \node[draw, fill=white, rounded corners] at (5.1, -4.5) {$\ll 30$};
+
+    % Nós intermediários f_t e XOR_1
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (ft) at (5, -1.5) {$f_t$};
+    \node (XOR1) at (8, -1.5) {\Large $\xor$};
+
+    % Setas de B, C e D para f_t e de f_t para XOR_1
+    \draw[-latex] (B1.south) -- (ft.north west);
+    \draw[-latex] (C1.south) -- (ft.north);
+    \draw[-latex] (D1.south) -- (ft.north east);
+    \draw[-latex] (ft.east) -- (XOR1.west);
+
+    \node (XOR2) at (8, -3) {\Large $\xor$};
+
+    % Nós intermediários XOR_3 e W_t com setas
+    \node (XOR3) at (8, -4.5) {\Large $\xor$};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (Wt) at (10, -4.5) {$W_t$};
+    \draw[-latex] (Wt.west) -- (XOR3.east);
+
+    % Nós intermediários XOR_4 e K_t com setas
+    \node (XOR4) at (8, -6) {\Large $\xor$};
+    \node[draw, minimum width=0.8cm, minimum height=0.8cm] (Kt) at (10, -6) {$K_t$};
+    \draw[-latex] (Kt.west) -- (XOR4.east);
+
+    % Conexões finais entre os nós intermediários
+    \draw[-latex] (A1.south) -| (0, -3) |- (XOR2.west);
+
+    % Adiciona um nó para a anotação de shift <<5
+    \node[draw, fill=white, rounded corners] at (4, -3) {$\ll 5$};
+    
+    \draw[-latex] (E1.south) -- (XOR1.north);
+    \draw[-latex] (XOR1.south) -- (XOR2.north);
+    \draw[-latex] (XOR2.south) -- (XOR3.north);
+    \draw[-latex] (XOR3.south) -- (XOR4.north);
+
+    % Seta final de XOR_4 para A2 com curva
+    \draw[-latex] (XOR4.west) -| (0, -6) -| (A2.north);
+    
+  \end{tikzpicture}
+\end{center}
 
 Para adicionar uma camada extra de complexidade e segurança, as constantes $K_t$ e as funções $f_t(B,C,D)$ mudam a cada 20 rodadas:
 
@@ -221,7 +293,8 @@ Para adicionar uma camada extra de complexidade e segurança, as constantes $K_t
   \end{itemize}
 \end{enumerate}
 
-Essas mudanças ajudam a garantir que a função de hash seja resistente a colisões e outras formas de ataque, tornando-a segura para uso em criptografia.
+Para cada bloco continuamos o processo partindo dos valores de $A, B, C, D$ e $E$ com os quais termiamos no bloco anterior.
+Ao final do processo, o valor do hash é formado pela concatenação dos valores contidos nessas variáveis.
 
 Em fevereiro de 2017, um grupo de pesquisadores da Google, em parceria com uma universidade holandesa, anunciou ter conseguido realizar um ataque prático ao algoritmo de hash SHA-1, demonstrando que é possível encontrar colisões -- ou seja, duas entradas diferentes que produzem o mesmo hash.
 

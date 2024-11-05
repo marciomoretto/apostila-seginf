@@ -42,9 +42,9 @@
 \contentsline {section}{\numberline {8.1}Construções}{114}{section.8.1}%
 \contentsline {subsection}{\numberline {8.1.1}SHA-1}{115}{subsection.8.1.1}%
 \contentsline {section}{\numberline {8.2}Aplicações}{118}{section.8.2}%
-\contentsline {subsection}{\numberline {8.2.1}HMAC}{118}{subsection.8.2.1}%
-\contentsline {subsection}{\numberline {8.2.2}Funções de Derivação de Chaves}{120}{subsection.8.2.2}%
-\contentsline {section}{\numberline {8.3}Exercícios}{124}{section.8.3}%
+\contentsline {subsection}{\numberline {8.2.1}HMAC}{119}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Funções de Derivação de Chaves}{121}{subsection.8.2.2}%
+\contentsline {section}{\numberline {8.3}Exercícios}{125}{section.8.3}%
 \contentsline {chapter}{\numberline {9}Distribuição de Chaves}{127}{chapter.9}%
 \contentsline {section}{\numberline {9.1}Centro de Distribuição de Chaves}{127}{section.9.1}%
 \contentsline {section}{\numberline {9.2}Protocolo de Diffie-Hellman}{130}{section.9.2}%
